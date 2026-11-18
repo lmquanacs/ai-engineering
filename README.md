@@ -7,8 +7,13 @@
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
 ![Editions](https://img.shields.io/badge/daily%20editions-2-9333ea)
 <!-- BADGES:END -->
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![Atom feed](https://img.shields.io/badge/feed-Atom-f26522)](https://raw.githubusercontent.com/lmquanacs/ai-engineering/main/feed.xml)
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
+
+**Stay current:** ⭐ star the repo · 👀 **Watch → Custom → Releases** for a weekly roll-up · 📡 subscribe to the [Atom feed](https://raw.githubusercontent.com/lmquanacs/ai-engineering/main/feed.xml) for every daily edition.
 
 ---
 
@@ -85,7 +90,7 @@ What shipped, what broke, and what's coming.
 | [**Research to watch**](learn/research/README.md) | Papers and experiments likely to reach practice | Staying ahead | daily |
 <!-- CATEGORIES:END -->
 
-> Have an idea for a category, or spotted a correction? [Open an issue](../../issues/new/choose).
+> Spotted something outdated, or know a tool that belongs here? [Open an issue](../../issues/new/choose) or send a PR. See [Contributing](#-contributing).
 
 ---
 
@@ -113,6 +118,8 @@ Source: primary link · Added: YYYY-MM-DD
 | [`.automation/sources.md`](.automation/sources.md) | Trusted primary sources per area |
 | [`.automation/update_index.py`](.automation/update_index.py) | Regenerates the category tables, group pages, digest index and badges, and expires 🆕 markers |
 | [`.automation/check_links.py`](.automation/check_links.py) | Fails if any relative link or anchor is broken |
+| [`feed.xml`](feed.xml) | Atom feed of the latest digests, written by `update_index.py` |
+| [`.automation/weekly_release.py`](.automation/weekly_release.py) | Notes for the Monday GitHub release that rolls up the week's digests |
 | [`.automation/templates/`](.automation/templates/) | Templates for a new category page and for a daily digest |
 
 **To add a category:** add an entry to `categories.json`, create `<path>/README.md` from the template, then run `python3 .automation/update_index.py && python3 .automation/check_links.py`. No other files need editing.
@@ -120,3 +127,17 @@ Source: primary link · Added: YYYY-MM-DD
 ## ⚠️ Before you install anything
 
 Agent skills and MCP servers run with **your** permissions. Read the `SKILL.md` and any bundled scripts, prefer official or vendor-maintained servers, use scoped OAuth tokens rather than long-lived keys, and load only the toolsets you need. See [AI security](architecture/security/README.md).
+
+## 🤝 Contributing
+
+The daily agent is fast but not infallible, and people who use these tools every day catch what it misses. The most useful contributions are small:
+
+- **Fix something outdated:** a version, price, model ID or install command that no longer matches its source.
+- **Suggest an item** that would change an engineer's decision (adopt, upgrade, migrate, avoid).
+- **Propose a category**, such as Azure or Google Cloud under ☁️ Platforms.
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for the entry format and the bar for inclusion, then [open an issue](../../issues/new/choose) or a pull request.
+
+## 📄 License
+
+[MIT](LICENSE). Use it, fork it, share it; a link back is appreciated.

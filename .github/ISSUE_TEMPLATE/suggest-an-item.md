@@ -5,10 +5,12 @@ title: "[suggest] "
 labels: suggestion
 ---
 
-**Category** (01–10 or "new category"):
+**Category** (e.g. Agent skills, MCP servers, LLM news, AI security, AWS, or "new category"):
 
-**Name + primary link** (repo, changelog, paper):
+**Name + primary link** (repo, changelog, pricing page, paper):
 
-**Why an engineer should care** (one or two sentences):
+**Why an engineer should care** (one or two sentences: what decision would it change?):
 
-**Correction?** (what's wrong, and the source that shows it):
+**Correction?** (what's wrong, and the source that shows the right value):
+
+- [ ] This is my own project (that's fine, just let us know)

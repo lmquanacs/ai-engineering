@@ -1,0 +1,34 @@
+name: Weekly release
+
+# Mondays 10:00 Brisbane (00:00 UTC), after the 9:00 daily update.
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build release notes
+        id: notes
+        run: python3 .automation/weekly_release.py --out release-notes.md >> "$GITHUB_OUTPUT"
+      - name: Publish release
+        if: steps.notes.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.notes.outputs.tag }}
+          TITLE: ${{ steps.notes.outputs.title }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; skipping."
+          else
+            gh release create "$TAG" --title "$TITLE" --notes-file release-notes.md --target main
+          fi

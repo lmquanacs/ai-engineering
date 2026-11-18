@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Contributing guide
+    url: https://github.com/lmquanacs/ai-engineering/blob/main/CONTRIBUTING.md
+    about: What makes a good entry, and how to open a pull request.

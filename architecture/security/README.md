@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-19_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -28,9 +28,19 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 
 ## 🚨 Recent items
 
-### Claude Code 2.1.319 security fixes · Nov 2026 🆕
-Fixes a sandbox escape during worktree creation and a Bash permission bypass using crafted environment prefixes. Auto mode now fails closed when the server-side check is unavailable. **Upgrade.**
-Source: [Claude Code changelog](https://code.claude.com/docs/en/changelog#2-1-319) · Added: 2026-11-18
+### Reference Git MCP server: command-execution advisories · 2026-11-18 🆕
+The MCP project published a batch of advisories against `mcp-server-git`. In each one, attacker-controlled Git configuration in the repository the agent operates on can make the server run a program. Triggers include a config include created by a merged branch (`git_merge`, GHSA-9vjp-x34c-xg6v), a promisor setting during a lazy fetch (GHSA-87qg-cmw8-jc5m) and a submodule's own config on `git_diff`, `git_checkout` and `git_add` (GHSA-8wv7-r664-7594). All are fixed in `mcp-server-git` **2026.11.18** (repo release v2.5.0). The same release fixes an SSRF-guard gap in `server-everything` 2.3.1 (GHSA-38j4-j742-j7r3), and two earlier `mcp-server-git` advisories were fixed in v2.4.0 on 2026-11-11.
+**Why it matters:** The Git server is in most "core six" MCP setups. Pointing an agent at an untrusted clone or branch was enough to get code execution. **Upgrade now**, and don't run it against untrusted repositories outside a sandbox.
+Sources: [GHSA-9vjp-x34c-xg6v (#5575)](https://github.com/modelcontextprotocol/servers/issues/5575) · [GHSA-87qg-cmw8-jc5m (#5574)](https://github.com/modelcontextprotocol/servers/issues/5574) · [GHSA-8wv7-r664-7594 (#5578)](https://github.com/modelcontextprotocol/servers/issues/5578) · [GHSA-38j4-j742-j7r3 (#5579)](https://github.com/modelcontextprotocol/servers/issues/5579) · Added: 2026-11-19
+
+### Microsoft `agent-framework` PyPI compromise · 2026-11-17 🆕
+Two malicious releases of Microsoft Agent Framework's PyPI meta-package, **1.26.1 and 1.26.2**, were uploaded on 2026-11-17 between about 20:35 and 21:08 UTC and were quarantined within the hour. Each drops a `.pth` file (`agent_framework_meta.pth` or `af_runtime_diag.pth`), so the stealer runs on **every Python start**, even if nothing imports the package. It takes secret-looking environment variables, credential files (Azure CLI, npm, pip, netrc, git, Docker, Hugging Face) and freshly minted Azure managed-identity and Azure DevOps OIDC tokens. 1.26.2 also takes GitHub Actions OIDC tokens. The data goes to a webhook.site URL. The last clean version is **1.26.0**. How the attacker got publishing access is not yet known.
+**Why it matters:** Any CI runner or dev box that resolved an unpinned `agent-framework` during that window should be treated as compromised. Pin to 1.26.0, check site-packages for those `.pth` files, search egress logs for webhook.site, rotate every secret on affected hosts, and review Entra ID federated credentials and sign-in logs. Rotating stored secrets alone is not enough, because the malware minted new tokens.
+Sources: [Wiz](https://www.wiz.io/blog/malicious-version-of-microsofts-agent-framework-published-to-pypi) · [StepSecurity](https://www.stepsecurity.io/blog/microsoft-agent-framework-pypi-package-compromised) · Added: 2026-11-19
+
+### Claude Code 2.1.319 → 2.1.325 security fixes · Nov 2026 🆕
+**2.1.319** fixes a sandbox escape during worktree creation and a Bash permission bypass using crafted environment prefixes, and auto mode now fails closed when the server-side check is unavailable. **2.1.321** fixes MCP OAuth requests sending secrets such as refresh tokens to another host after a server redirect, a read-only Bash command running outside the sandbox without a prompt, and deny rules not applying to the target of `cp`/`mv` into a directory. **2.1.325** fixes zstd response decoding, a Bash allow rule that could run a different program than it names, and compound commands running without asking; sandboxed Bash now prompts by default. **Upgrade to ≥ 2.1.325.** Details: [Coding agents](../../build/coding-agents/README.md).
+Sources: [Claude Code changelog](https://code.claude.com/docs/en/changelog#2-1-319) · [Claude Code CHANGELOG (v2.1.325 tag)](https://raw.githubusercontent.com/anthropics/claude-code/v2.1.325/CHANGELOG.md) · Added: 2026-11-18 · Updated: 2026-11-19
 
 ### IBM Granite 4.1 LLMON preview · 2026-11-12 🆕
 3B and 8B preview models post-trained on **LLMON (LLM Object Notation)** to enforce a structural separation between executable instructions and passive data. Claims are self-reported in an IBM preprint.

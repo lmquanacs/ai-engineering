@@ -3,9 +3,9 @@
 > A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, models, architecture, agentic patterns and libraries, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus AWS.
 
 <!-- BADGES:START -->
-![Last updated](https://img.shields.io/badge/last%20updated-2026--11--18-2563eb)
+![Last updated](https://img.shields.io/badge/last%20updated-2026--11--19-2563eb)
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
-![Editions](https://img.shields.io/badge/daily%20editions-1-9333ea)
+![Editions](https://img.shields.io/badge/daily%20editions-2-9333ea)
 <!-- BADGES:END -->
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
@@ -15,13 +15,13 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ## 📰 Today's digest
 
 <!-- TODAY:START -->
-### [18 Nov 2026 · first edition →](daily/2026/11/2026-11-18.md)
+### [19 Nov 2026 →](daily/2026/11/2026-11-19.md)
 
-- **Models:** Anthropic shipped **Claude Fable 5.2** (paid plans, API and Bedrock), and Google made **Gemini 4 Carbon** generally available. Kimi K3.1 Pro and Mistral Large 4 both arrived as open weights. → [LLM news](models/news/README.md)
-- **Architecture:** a new [architecture hub](architecture/README.md) with four reference architectures, the LLM gateway layer, a reliability checklist and decision records.
-- **What works:** controlled studies find multi-subagent "committees" mostly add cost; spec-first TDD and end-of-turn goal checks help. At Ramp, the in-house agent Inspect now writes about 3 in 4 merged PRs. → [Agentic workflows](architecture/agentic-workflows/README.md) · [Successful projects](learn/successful-projects/README.md)
-- **AWS:** Fable 5.2 is on Bedrock, AgentCore Runtime V2 expanded, Kiro bots are GA, and **re:Invent runs 30 Nov – 4 Dec**. → [AWS](platforms/aws/README.md)
-- **Action items:** **Claude Sonnet 4.5 retires on 30 Nov** · **Gemini 4 Argon doubles in price on 1 Dec** · upgrade Claude Code to ≥ 2.1.319. → [Coding agents](build/coding-agents/README.md) · [Cost](models/cost-and-serving/README.md)
+- **Security:** Microsoft's `agent-framework` 1.26.1/1.26.2 on PyPI shipped a credential stealer (pin 1.26.0 and rotate secrets), and the reference `mcp-server-git` fixes three code-execution paths. → [AI security](architecture/security/README.md)
+- **Models:** OpenAI **GPT-6.2 Astra** ($8/$40) and **GPT-6.2 Sol** are on the API, Codex and Bedrock, and background mode is 30–40% cheaper. → [LLM news](models/news/README.md) · [Cost](models/cost-and-serving/README.md)
+- **Tools:** upgrade Claude Code to ≥ 2.1.325; `codex exec` now needs `--trust` for repo config; the MCP TypeScript SDK has four CVEs, fixed in 1.32.0. → [Coding agents](build/coding-agents/README.md) · [MCP servers](build/mcp-servers/README.md)
+- **AWS:** new AgentCore runtimes default to V2; Kiro CLI 3.5 adds org sign-in for MCP. → [AWS](platforms/aws/README.md)
+- **Action items:** Claude Sonnet 4.5 retires on **30 Nov** · Gemini 4 Argon doubles on **1 Dec** · Pydantic AI ≥ 2.60 changes how tool retries are reported. → [Libraries](build/libraries/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)

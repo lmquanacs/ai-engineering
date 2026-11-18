@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-19_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -76,11 +76,28 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 ## 🏗️ Build your own
 
 - **Java/Kotlin:** Spring AI 2.0 includes MCP annotations in core (`@McpTool`, `@McpResource`, `@McpPrompt`) and the WebMVC/WebFlux transports. Start from `spring-ai-starter-mcp-server-webmvc`. ([Spring AI 2.0 GA](https://spring.io/blog/2026/06/12/spring-ai-2-0-0-GA-available-now/))
+- **Plain Java:** the official [MCP Java SDK](https://java.sdk.modelcontextprotocol.io/latest/) 2.2.0 (2026-11-13, Maven Central) implements the stateless 2026-07-28 spec and the older 2025-11-25 spec in one module.
 - **Python / TypeScript:** official SDKs at [modelcontextprotocol](https://github.com/modelcontextprotocol). FastMCP is popular in Python.
 - **Let the agent do it:** the `mcp-builder` skill from [anthropics/skills](https://github.com/anthropics/skills).
 
 ## 🔒 Security notes
 
+### MCP TypeScript SDK: four CVEs fixed in 1.32.0 / 2.3.0 · 2026-10-20 🆕
+Advisories published on 2026-10-20 cover the official TypeScript SDK:
+- **CVE-2026-111768** (CVSS 7.5): one request within the default 4 MiB limit can exhaust heap during tool-input validation and crash the server. No credentials needed. Fixed in `@modelcontextprotocol/sdk` 1.32.0 / `@modelcontextprotocol/server` 2.3.0.
+- **CVE-2026-111770** (CVSS 7.7): a shared stateless transport or shared `McpServer` instance can send one client's responses to another, because JSON-RPC ids collide. Fixed in `server` 2.3.0.
+- **CVE-2026-111771** (CVSS 6.8): bearer auth didn't check the token's audience, so tokens issued for other services were accepted. Fixed in `sdk` 1.32.0.
+- **CVE-2026-111769** (CVSS 6.5): HTTP client transports and OAuth requests followed cross-origin redirects, leaking custom headers and, on 307/308, request bodies with refresh tokens. Fixed in `sdk` 1.32.0.
+
+**Do this:** If you run a remote TypeScript MCP server, upgrade to `sdk` ≥ 1.32.0 or `server` ≥ 2.3.0. Then create a server and transport per request or session rather than sharing one.
+Sources: [GitLab advisory: CVE-2026-111768](https://advisories.gitlab.com/npm/@modelcontextprotocol/sdk/CVE-2026-111768/) · [CVE-2026-111770](https://advisories.gitlab.com/npm/@modelcontextprotocol/server/CVE-2026-111770/) · [CVE-2026-111771](https://advisories.gitlab.com/npm/@modelcontextprotocol/sdk/CVE-2026-111771/) · [CVE-2026-111769](https://advisories.gitlab.com/npm/@modelcontextprotocol/sdk/CVE-2026-111769/) · Added: 2026-11-19
+
+### mcp-go: OAuth token-replay flaw fixed in v1.2.1 · 2026-11-05 🆕
+**CVE-2026-123272** in `mark3labs/mcp-go` (≥ v0.48.0, < v1.2.1): `OAuthHandler.fetchServerMetadata` trusted the resource a malicious server declared in its well-known metadata. That server could get a token minted for a *different* MCP server and replay it there.
+**Do this:** Go MCP clients using mcp-go's OAuth handler should upgrade to v1.2.1.
+Source: [VulnCheck advisory](https://www.vulncheck.com/advisories/mcp-go-before-1.2.1-origin-validation-error-via-unvalidated-well-known-protected-resource-metadata) · CVSS 4.0 5.1 · Added: 2026-11-19
+
+**Background:**
 - More than 30 CVEs were filed against MCP servers in January–February 2026 alone. ([Toolradar](https://toolradar.com/blog/best-mcp-servers-2026))
 - Trend Micro found that 48% of more than 19,000 MCP server codebases recommend storing secrets in `.env` files or plaintext JSON. Prefer OAuth or scoped tokens. ([Amplitude summary](https://amplitude.com/compare/best-mcp-servers))
 - The official registry lists more than 30,000 servers but checks namespaces, not quality. Prefer vendor-official servers.

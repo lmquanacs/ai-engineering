@@ -1,6 +1,6 @@
 # Inference, cost & serving
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-19_
 
 > What models cost, how to pay less, and how to serve open models yourself. Prices are list prices in USD per 1M tokens unless stated, and they change often, so check the provider's page before you budget.
 
@@ -9,9 +9,10 @@ _Last updated: 2026-11-18_
 | Date | Change | Source |
 |---|---|---|
 | **2026-11-30** | Gemini 4 Carbon introductory pricing ends | [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/) |
-| **2026-11-30** | An OpenAI promotional "Sol" price ends (the pricing page is ambiguous about which ID it covers) | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
+| **2026-11-30** | OpenAI's promotional price for **GPT-5.6 Sol** ends (it does not cover GPT-6.x Sol) | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
 | **2026-12-01** | **Gemini 4 Argon doubles**: $2/$10 → **$4/$20** (cached $0.10 → $0.20) | [Google pricing](https://aistudio.google.com/docs/pricing) |
 | **2027-01-01** | **Gemini 3.8 Flash and 3.6 Flash double**: $0.75/$3.75 → **$1.50/$7.50**; context-cache storage $0.50 → $1.00 per MTok-hour | [Google pricing](https://aistudio.google.com/docs/pricing) |
+| **2027-03-01** | **GPT-6.2 Astra / Sol Ultrafast** goes from 3× to **6× Standard** (Standard rates unchanged) | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
 
 ## 💲 Price snapshot (list, standard tier, as of 2026-11-15)
 
@@ -21,7 +22,9 @@ _Last updated: 2026-11-18_
 | Claude Opus 5.5 | $4 | $0.20 | $20 | Batch −50% |
 | Claude Sonnet 5.5 | $2 | $0.10 | $10 | Batch −50% |
 | Claude Haiku 5.5 | $0.10 | $0.01 | $0.50 | Batch −50%; >100K-token prompts cost more |
+| GPT-6.2 Astra | $8 | $0.40 | $40 | Background 2h −30% / 8h −40% (beta); Ultrafast option costs 3× |
 | GPT-6 Astra | $10 | $1.00 | $50 | Lower tier at 50% |
+| GPT-6.2 Sol | $2 | $0.10 | $10 | Background 2h −30% / 8h −40% (beta); Ultrafast option costs 3× |
 | GPT-6.1 Sol | $2 | $0.10 | $10 | Lower tier at 50% |
 | GPT-6 Luna | $0.10 | $0.01 | $0.50 | — |
 | Gemini 4 Argon | $2 | $0.10 | $10 | Batch/Flex −50% · ⚠️ rises Dec 1 |
@@ -30,17 +33,22 @@ _Last updated: 2026-11-18_
 | DeepSeek-V4.1-Flash (`deepseek-flash`) | $0.30 / $0.15 off-peak | $0.006 | $1.20 / $0.60 off-peak | Off-peak (by UTC hour) −50% |
 | Mistral Large 4 | $0.70 | $0.07 | $2.10 | Batch −50% (the pricing page also shows $0.50/$1.50, so confirm for your ID) |
 
-Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15. Gemini 4 Carbon, Gemini 4 Hydrogen and GPT-6 Sol are not yet in the table.
+Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15; GPT-6.2 rows from [OpenAI pricing](https://developers.openai.com/api/docs/pricing) on 2026-11-19. Gemini 4 Carbon, Gemini 4 Hydrogen and GPT-6 Sol are not yet in the table.
 
 **More trackers:** [getdeploying.com/llms](https://getdeploying.com/llms) (199 models, hand-checked) · [benchlm.ai cost ledger](https://benchlm.ai/llm-pricing) (217 models, with value-for-money scores)
 
 ## 🪙 Cost levers, in order of effort
 
 1. **Prompt caching:** cached input is 1/10 to 1/40 of list price. Keep prefixes stable (see [Context engineering](../../architecture/context-and-memory/README.md)).
-2. **Batch / Flex / lower tiers:** −50% at most providers for work that isn't latency-sensitive (evals, backfills, nightly jobs).
+2. **Batch / Flex / lower tiers:** −50% at most providers for work that isn't latency-sensitive (evals, backfills, nightly jobs). OpenAI now also offers 2-hour (−30%) and 8-hour (−40%) background completion windows.
 3. **Right-size the model per step:** route classification and extraction to Haiku/Luna/Flash-class models, and keep frontier models for planning and hard reasoning.
 4. **Off-peak pricing:** DeepSeek halves its rates by UTC hour, so schedule batch work then.
 5. **Trim the harness:** heavyweight harnesses cost 3–5× more for under 2% accuracy. → [Agentic workflows](../../architecture/agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle)
+
+### OpenAI background completion windows · −30% / −40% · 2026-11-17 🆕
+In the Responses API (public beta), a background request can choose a two-hour or eight-hour completion window, and token rates drop 30% or 40% below Standard. It covers `gpt-6.2-astra`, `gpt-6.2-sol`, `gpt-6.1-terra` and `gpt-6-luna`.
+**Why it matters:** It is a middle ground between real-time and the Batch API. Agent sub-tasks, evals and enrichment jobs that can wait a few hours get a discount without restructuring into batch files.
+Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Background mode guide](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows) · Added: 2026-11-19
 
 ---
 

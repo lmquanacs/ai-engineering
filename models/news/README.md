@@ -1,6 +1,6 @@
 # LLM news: models, trends, techniques
 
-_Last updated: 2026-11-18 · This page keeps about 30 days; older items move to [archive/](archive/)_
+_Last updated: 2026-11-19 · This page keeps about 30 days; older items move to [archive/](archive/)_
 
 > Only what changes a builder's decision. Every model row carries its **API ID** and a primary source. Benchmark numbers are vendor claims unless marked otherwise.
 
@@ -9,16 +9,20 @@ _Last updated: 2026-11-18 · This page keeps about 30 days; older items move to 
 | Deadline | What | Do this |
 |---|---|---|
 | **2026-11-30** | Claude Sonnet 4.5 retirement | Move pinned `claude-sonnet-4-5*` IDs to `claude-sonnet-5-5` or `claude-haiku-5-5` and re-run your evals. ([source](https://developertoolkit.ai/en/resources/whats-new.md)) |
+| when you switch | GPT-6.2 Astra / Sol migration | `gpt-6.2-astra` and `gpt-6.2-sol` reject reasoning effort `none`, need the Responses API for tool calling, and change how reasoning is preserved when you edit a conversation prefix and how top-level `instructions` are handled. Read the migration quickstart before swapping IDs. ([changelog](https://developers.openai.com/api/docs/changelog) · [migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra#gpt-6.2-astra-migration-quickstart)) |
 | ongoing | Short model lifetimes | DeepSeek-V4-Flash went from beta (Jul 31) to retired (Sep 10), and Gemini 3.7 Flash was deprecated eight weeks after release. Pin dated IDs and watch deprecation trackers. ([source](https://nhimg.org/llm-release-tracker)) |
 
 ---
 
-## 🆕 New models (Sep → Nov 2026)
+## 🆕 New models (Oct → Nov 2026)
 
 Newest first. Status is as of release.
 
 | Date | Provider | Model | API ID | Status | Source |
 |---|---|---|---|---|---|
+| 2026-11-17 | OpenAI | **GPT-6.2 Astra** (hardest reasoning and coding); $8/$40 per 1M in/out, cheaper than GPT-6 Astra's $10/$50; 1.05M context, 128K max output | `gpt-6.2-astra` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) |
+| 2026-11-17 | OpenAI | **GPT-6.2 Sol** (everyday coding and agents); $2/$10 per 1M in/out, same as GPT-6.1 Sol; 1.05M context, 128K max output | `gpt-6.2-sol` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) |
+| 2026-11-16 | Alibaba | Qwen4-Max: 2.4T total / ~71B active, 1M context; ~35% fewer tokens than Qwen3.8-Max on Alibaba's Work360 benchmark (self-reported). Not open weights; smaller open Qwen4 models promised | — | API (QwenCloud) | [Alibaba Cloud](https://www.alibabacloud.com/press-room/alibaba-unveils-qwen4-max) |
 | 2026-11-12 | Google | Gemini 4 Hydrogen (fast tier, ~2.5× faster than Gemini 3.8 Flash per Google) | `gemini-4-hydrogen` | Released (Vertex) | [Vertex model versions](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions) |
 | 2026-11-10 → 12 | Google | Gemini 4 Carbon (top model), now GA; 60.4% CursorBench (high effort, self-reported) | `gemini-4-carbon` | GA; intro pricing until Nov 30 | [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/) |
 | 2026-11-09 | Anthropic | **Claude Fable 5.2**; $8/$40 per 1M in/out tokens (20% cheaper than 5.1) | `claude-fable-5-2` | GA (paid plans + API) | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) |
@@ -30,18 +34,17 @@ Newest first. Status is as of release.
 | 2026-11-05 | Tencent | Hy4: first Hy model with vision + computer use, 1M context; weights promised later | — | API (OpenRouter) | [Blog](https://hy.tencent.ai/research/hy4?langVersion=en) |
 | 2026-11-05 | OpenAI | GPT-6 Cyber: security model for the Daybreak program | `gpt-6-cyber` | Restricted | [OpenAI](https://openai.com/index/introducing-gpt-6-cyber/) |
 | 2026-10-26 | OpenAI | GPT-6.1 Terra | `gpt-6.1-terra` | Released | [Changelog](https://developers.openai.com/api/docs/changelog) |
-| 2026-10-15 | Meta | Muse Spark Open: open weights, 816B total / 42B active | — | Muse Model License | [Meta research](https://research.meta.ai/blog/muse-spark-open) |
-| 2026-10-13 | Google | Gemini 4 Argon | `gemini-4-argon` | GA | [Gemini changelog](https://ai.google.dev/gemini-api/docs/changelog) |
-| 2026-10-07 | Anthropic | Claude Haiku 5.5 | `claude-haiku-5-5` | GA | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) |
-| 2026-09-29 | OpenAI | GPT-6.1 Sol | `gpt-6.1-sol` | Released | [Changelog](https://developers.openai.com/api/docs/changelog) |
-| 2026-09-28 | Anthropic | Claude Sonnet 5.5 | `claude-sonnet-5-5` | GA | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) |
-| 2026-09-22 | Anthropic | Claude Opus 5.5 | `claude-opus-5-5` | GA | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) |
-| 2026-09-22 | OpenAI | GPT-6 Sol / GPT-6 Luna | `gpt-6-sol`, `gpt-6-luna` | Released | [Changelog](https://developers.openai.com/api/docs/changelog) |
-| 2026-09-21 | xAI | Grok 4.7 | `grok-4.7` | Released | [xAI release notes](https://docs.x.ai/docs/release-notes) |
 
-Trackers used: [nhimg LLM release tracker](https://nhimg.org/llm-release-tracker) · [ThursdAI November releases](https://thursdai.news/releases/2026-11)
+Older rows: [archive/](archive/). Trackers used: [nhimg LLM release tracker](https://nhimg.org/llm-release-tracker) · [nocode.mba November tracker](https://www.nocode.mba/ai-release-tracker/2026/11) · [ThursdAI November releases](https://thursdai.news/releases/2026-11)
 
 ---
+
+## 📰 Launch notes
+
+### GPT-6.2 Astra & Sol · OpenAI · 2026-11-17 🆕
+OpenAI's next point release: `gpt-6.2-astra` for demanding reasoning and coding, and `gpt-6.2-sol` for everyday coding and agent workflows. Astra drops to $8/$40 per 1M tokens (cached input $0.40), and Sol stays at $2/$10. Both have a 1.05M-token window (922K max input) and 128K max output.
+**Why it matters:** Astra-class work gets 20% cheaper. It is not a drop-in swap, though: reasoning effort `none` is rejected, tool calling needs the Responses API, and reasoning-preservation and `instructions` behaviour change. Re-run your evals and follow the migration quickstart. Also on Bedrock → [AWS](../../platforms/aws/README.md).
+Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Astra model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) · [Sol model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) · Added: 2026-11-19
 
 ## 📈 Trends
 

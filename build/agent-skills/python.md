@@ -1,10 +1,21 @@
 # Agent skills · 🐍 Python
 
-← [Back to Agent skills](README.md) · _Last updated: 2026-11-18_
+← [Back to Agent skills](README.md) · _Last updated: 2026-11-19_
 
 > Skills that make coding agents write, run and review Python the way a careful team would. Also see the [Python starter skill](starter-skills/python-service/SKILL.md), which you can copy into `.claude/skills/` and edit.
 
 ## ⭐ Start here
+
+### pydantic/skills · official Pydantic, Pydantic AI and Logfire skills 🆕
+Pydantic's own skill repo: `pydantic` (models, validators, unions), `building-pydantic-ai-agents` (tools, structured output, streaming, testing, multi-agent) and `logfire-instrumentation` (Python, JS/TS and Rust).
+**Why it matters:** Pydantic AI V2 moves fast (see [Libraries · Python](../libraries/python.md)), so a vendor-maintained skill is the most reliable way to stop agents writing V1-era code.
+```bash
+npx skills add pydantic/skills --skill building-pydantic-ai-agents
+# Claude Code plugin form:
+claude plugin marketplace add pydantic/skills
+claude plugin install pydantic@pydantic-skills
+```
+Source: [Pydantic: skills for Claude Code and other agents](https://pydantic.dev/articles/pydantic-ai-logfire-claude-code-skills.md) · [github.com/pydantic/skills](https://github.com/pydantic/skills) · `building-pydantic-ai-agents` ~6.3K installs on [skills.sh](https://skills.sh/pydantic/skills/building-pydantic-ai-agents) (2026-11-19) · Added: 2026-11-19
 
 ### Python skills leaderboard · claudeskills.info
 A ranked list of the 20 most-installed Python-specific skills, drawn from 104 qualifying skills. The top three are `python-executor` (sandboxed execution via inference.sh, ~34K installs), `python-design-patterns` and `async-python-patterns`.
@@ -40,4 +51,4 @@ Public Python skills are less mature than the TypeScript and Spring ones. A smal
 
 ## 🔭 Watching
 
-- Skills shipped by Python agent frameworks themselves (Pydantic AI, LangGraph). The daily job will add them when they are published.
+- Skills shipped by other Python agent frameworks (LangGraph). Pydantic's official skills are now listed above.

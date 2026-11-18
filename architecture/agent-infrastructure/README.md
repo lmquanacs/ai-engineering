@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-19_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -53,6 +53,13 @@ Source: [Modal](https://modal.com/resources/best-code-execution-sandboxes-tool-c
 ### Upstash Box · a coding agent in a box
 A TypeScript API that starts a sandbox with a coding-agent harness (for example Claude Code), a model and Git credentials in a few lines.
 Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best-sandbox-providers-for-ai-agents) · Added: 2026-11-18
+
+## 📰 Recent releases
+
+### Temporal Cloud on Azure · public preview · 2026-11-17 🆕
+Temporal Cloud now runs on Azure in public preview, with production workloads supported in **Central US and Australia East**. Access needs approval so Temporal can plan capacity.
+**Why it matters:** Azure-first teams, and teams with Australian data-residency needs, can run durable agent workflows on managed Temporal next to their other workloads instead of self-hosting.
+Source: [Temporal changelog](https://temporal.io/changelog/temporal-cloud-on-azure-is-in-public-preview) · Added: 2026-11-19
 
 ## 🪪 Identity & permissions for agents
 

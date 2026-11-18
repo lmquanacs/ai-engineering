@@ -2,7 +2,7 @@
 
 > Reusable `SKILL.md` instruction packs that coding agents load when they need them. This page covers cross-language development skills. Stack-specific pages: **[Python](python.md) · [TypeScript](typescript.md) · [Java/Kotlin + Spring Boot](jvm-spring-kotlin.md)** · **[Starter skills to copy](starter-skills/)**
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-19_
 
 ## What a skill is (30-second version)
 
@@ -84,3 +84,4 @@ Source: [claudemarketplaces.com ranking](https://claudemarketplaces.com/best/ski
 - Read the full `SKILL.md` and **audit every bundled script** before installing community skills. `anthropics/skills` and partner skills from Vercel, Trail of Bits and Remotion are reasonable defaults.
 - Prefer project-scoped installs (`.claude/skills/`) so a skill only loads where it is relevant.
 - Skills are context. Every always-on skill description costs tokens in every session, so prune the ones you don't use.
+- **Claude Code ≥ 2.1.325** asks before scheduled tasks and `/loop` run skills that declare `allowed-tools` or hooks. Plugin authors can pin a compatible range with `engines["claude-code"]` in `plugin.json` (2.1.323). ([CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/v2.1.325/CHANGELOG.md), 2026-11-19)

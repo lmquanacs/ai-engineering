@@ -7,5 +7,6 @@ Newest first. Each edition is written by the scheduled research agent at about 9
 
 ### November
 
+- [Thu 19 Nov 2026](2026/11/2026-11-19.md): GPT-6.2 Astra/Sol (API, Codex, Bedrock) · agent-framework PyPI compromise · mcp-server-git RCE fixes · Claude Code ≥ 2.1.325
 - [Wed 18 Nov 2026](2026/11/2026-11-18.md): first edition (baseline, mid-Oct → today)
 <!-- INDEX:END -->

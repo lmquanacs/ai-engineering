@@ -1,6 +1,6 @@
 # Evals & observability
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-19_
 
 > You can't improve an agent you can't see. This page covers tracing, evals, benchmarks and the standards underneath them.
 
@@ -32,8 +32,16 @@ Comparison sources: [benchlm.ai](https://www.benchlm.ai/blog/posts/best-llm-obse
 | **CursorBench** | Coding tasks inside Cursor | Vendor-run |
 | **FrontierCode** | Hard coding problems | Used by Cognition for SWE-2 Flash |
 | **Artificial Analysis Intelligence Index** | Aggregate across many evals | Third-party |
+| **FrontierHarness Eval** | Cost and pass rate of coding *harnesses* with the model held fixed | Runta; v1.1 covers open models only |
 
 ⚠️ Most launch numbers are **self-reported** and many depend on the harness. Treat them as hints and run your own evals on your own tasks.
+
+## 📰 Recent releases & results
+
+### FrontierHarness Eval v1.1 · harness × model leaderboard · 2026-11-17 🆕
+Runta, with Baseten serving the models, ran 22 harness configurations × 5 open models × 62 terminal tasks × 4 attempts: **27,280 runs and 83B tokens**. The model explained 92.8% of cost variance. With the model fixed, the priciest harness still cost about 1.8–5× the cheapest per task. The best-value harness changed with the model (Codex CLI was 1st on GLM-5.3 and 16th on Kimi-K3), spending more did not buy a higher pass rate, and **64.5% of spend went to runs that failed**. Steps per pass tracked cost; prompt size and tool count did not. Trials flagged for reward hacking (216) scored zero.
+**Why it matters:** If you switch models, re-benchmark your harness too, and report cost per *pass*, not per task. With most spend on failed runs, step caps and early aborts are worth testing. → [Agentic workflows](../agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle)
+Source: [Runta: introducing FrontierHarness Eval v1.1](https://runta.com/blog/introducing-frontierharness-eval-v1-1/) · [live leaderboard](https://frontierharness.org/live/) · Added: 2026-11-19
 
 ## ☕ JVM corner
 

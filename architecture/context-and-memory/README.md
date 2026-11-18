@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-19_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory, retrieval (embeddings, rerankers, parsing) and caching. Agent quality now depends more on this than on which model you pick.
 
@@ -38,6 +38,15 @@ Source: [ZenML LLMOps database](https://www.zenml.io/llmops-database/building-al
 ### Context Engineering in 2026: compaction, memory & skills (talk)
 A 100-slide practitioner deck (Towards AI, shown at AI Engineer). It argues that serious harnesses converged on the same habits: fresh sessions when switching tasks, narrow file scope, disconnecting unused tools, then compaction.
 Source: [Slides](https://docs.google.com/presentation/d/1BVqX1h2DPyIDCEWUSNXSVFIPTQgbhM_ik4JBVaQ2f3k/htmlpresent) · Added: 2026-11-18
+
+---
+
+## 🔬 Latest evidence
+
+### Trimming context can raise cost under prefix caching · arXiv 2611.22238 🆕
+A study of more than 20,000 coding-agent runs (open models; SWE-bench Verified, SWE-bench, Loc-Bench) tracked uncached input, cached input and output tokens separately. When cached input costs a tenth of uncached input, **removing old observations raised cost by 38–116%** and **adding retrieved code raised it by 33–42%**, with no measurable gain in resolve rate. Without a cache discount, the same removal saved 19–36%. Shorter prompts can also lead to more steps.
+**Why it matters:** Tool-result clearing and RAG injection both rewrite the prefix and throw away cache hits. Measure **cost per resolved task** with cache pricing switched on before you adopt a context-trimming trick, and prefer edits that append rather than rewrite. It also means concurrent experiments can share cached prefixes and skew cost comparisons.
+Source: [arXiv 2611.22238](https://arxiv.org/abs/2611.22238) · Added: 2026-11-19
 
 ---
 

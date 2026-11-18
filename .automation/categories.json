@@ -1,0 +1,213 @@
+{
+  "_doc": "Single source of truth for categories. Edit this file to add, move or retire a category, then run `python3 .automation/update_index.py`. cadence: 'daily' or 'weekly' (checked on Mondays, Australia/Brisbane). 'path' is the folder holding the category's README.md.",
+  "groups": [
+    {
+      "id": "build",
+      "emoji": "🛠️",
+      "title": "Build: tools you use every day",
+      "path": "build",
+      "intro": "Agent skills, MCP servers, libraries and coding agents: what you install and use while building.",
+      "categories": [
+        {
+          "id": "agent-skills",
+          "title": "Agent skills",
+          "path": "build/agent-skills",
+          "summary": "Popular SKILL.md skills with install commands, by stack: [Python](build/agent-skills/python.md) · [TypeScript](build/agent-skills/typescript.md) · [Java/Kotlin + Spring Boot](build/agent-skills/jvm-spring-kotlin.md) · [starter skills](build/agent-skills/starter-skills/)",
+          "best_for": "Making coding agents follow your team's conventions",
+          "cadence": "daily",
+          "scope": "Newly popular or rising skills for Python, TypeScript, Java/Kotlin + Spring Boot (incl. Gradle Kotlin DSL); official skills from vendors and frameworks."
+        },
+        {
+          "id": "mcp-servers",
+          "title": "MCP servers",
+          "path": "build/mcp-servers",
+          "summary": "MCP servers for software development, spec changes, tool-budget and security notes",
+          "best_for": "Wiring agents to your tools",
+          "cadence": "daily",
+          "scope": "New official or vendor servers, notable community servers, MCP spec and SDK changes, MCP CVEs."
+        },
+        {
+          "id": "libraries",
+          "title": "Libraries",
+          "path": "build/libraries",
+          "summary": "Agent and LLM libraries for [Python](build/libraries/python.md) · [TypeScript](build/libraries/typescript.md) · [JVM](build/libraries/jvm.md)",
+          "best_for": "Choosing a framework",
+          "cadence": "daily",
+          "scope": "Releases of Pydantic AI, LangGraph, AI SDK, Mastra, Spring AI, Embabel, Koog, LangChain4j, Strands, MCP SDKs; notable new libraries."
+        },
+        {
+          "id": "coding-agents",
+          "title": "Coding agents & IDEs",
+          "path": "build/coding-agents",
+          "summary": "Actionable releases of Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin, Kiro",
+          "best_for": "Keeping your daily tools current",
+          "cadence": "daily",
+          "scope": "Releases with security fixes, new workflow features, model retirements and pricing changes in coding agents and AI IDEs."
+        },
+        {
+          "id": "ai-native-languages",
+          "title": "AI-native languages",
+          "path": "build/ai-native-languages",
+          "summary": "Programming languages designed for LLMs and agents, plus the essays debating them",
+          "best_for": "Seeing where tooling is heading",
+          "cadence": "weekly",
+          "scope": "New languages or releases built for LLM and agent use; notable essays."
+        }
+      ]
+    },
+    {
+      "id": "models",
+      "emoji": "🧠",
+      "title": "Models: what to run and what it costs",
+      "path": "models",
+      "intro": "Which models exist, what they cost, how to serve them, and how to adapt them.",
+      "categories": [
+        {
+          "id": "news",
+          "title": "LLM news",
+          "path": "models/news",
+          "summary": "New models with API IDs, trends, new techniques, deprecations (about 30 days kept; older items in `archive/`)",
+          "best_for": "Picking and pinning models",
+          "cadence": "daily",
+          "scope": "New models (API IDs, status, pricing), deprecations and retirements, trends, new techniques."
+        },
+        {
+          "id": "cost-and-serving",
+          "title": "Inference, cost & serving",
+          "path": "models/cost-and-serving",
+          "summary": "Price snapshot, upcoming price changes, cost levers, vLLM and self-hosting",
+          "best_for": "Keeping the bill down",
+          "cadence": "daily",
+          "scope": "Price changes (keep the snapshot and 'price changes coming up' tables current), caching and batch discounts, vLLM/SGLang/llama.cpp/Ollama releases, self-hosting news."
+        },
+        {
+          "id": "fine-tuning",
+          "title": "Fine-tuning & post-training",
+          "path": "models/fine-tuning",
+          "summary": "LoRA/QLoRA, GRPO/RLVR, distillation; TRL, Unsloth, Axolotl",
+          "best_for": "Specialising open models",
+          "cadence": "daily",
+          "scope": "TRL/Unsloth/Axolotl/LLaMA-Factory/verl releases, new methods, open datasets."
+        }
+      ]
+    },
+    {
+      "id": "architecture",
+      "emoji": "🏗️",
+      "title": "Architecture & production",
+      "path": "architecture",
+      "hub": true,
+      "intro": "How the pieces fit together in production. Start at the [architecture hub](architecture/README.md) for reference architectures, the gateway layer, the reliability checklist and decision records.",
+      "categories": [
+        {
+          "id": "architecture-hub",
+          "title": "AI system architecture (hub)",
+          "path": "architecture",
+          "summary": "Reference architectures (RAG, agentic backend, coding-agent platform, Spring Boot + AI), LLM gateways, reliability, guardrail and eval placement, decision records",
+          "best_for": "Designing an AI system end to end",
+          "cadence": "weekly",
+          "scope": "Notable architecture write-ups, new reference architectures, gateway and reliability patterns, decision-relevant comparisons."
+        },
+        {
+          "id": "agentic-workflows",
+          "title": "Agentic workflows",
+          "path": "architecture/agentic-workflows",
+          "summary": "Orchestration patterns, harness engineering, evidence on what actually works",
+          "best_for": "Designing agent behaviour",
+          "cadence": "daily",
+          "scope": "New patterns, evidence (ablations, benchmarks), orchestration features in tools."
+        },
+        {
+          "id": "context-and-memory",
+          "title": "Context engineering & memory",
+          "path": "architecture/context-and-memory",
+          "summary": "Compaction, tool-result clearing, memory, caching; embeddings, rerankers, parsers",
+          "best_for": "Agents that stay sharp on long tasks",
+          "cadence": "daily",
+          "scope": "Compaction, memory and caching techniques and APIs; embedding, reranker and parser releases; retrieval patterns."
+        },
+        {
+          "id": "agent-infrastructure",
+          "title": "Agent infrastructure & runtimes",
+          "path": "architecture/agent-infrastructure",
+          "summary": "Sandboxes, durable execution, hosting, agent identity and permissions",
+          "best_for": "Running agents safely",
+          "cadence": "daily",
+          "scope": "Sandbox and runtime releases and pricing, durable execution for agents, agent hosting, agent identity and auth."
+        },
+        {
+          "id": "evals-and-observability",
+          "title": "Evals & observability",
+          "path": "architecture/evals-and-observability",
+          "summary": "Tracing, evals, benchmarks, OpenTelemetry GenAI",
+          "best_for": "Knowing whether it works",
+          "cadence": "daily",
+          "scope": "Tool releases, OTel GenAI convention changes, new benchmarks."
+        },
+        {
+          "id": "security",
+          "title": "AI security",
+          "path": "architecture/security",
+          "summary": "Prompt injection, MCP and skill supply chain, agent permissions",
+          "best_for": "Not getting owned",
+          "cadence": "daily",
+          "scope": "Prompt-injection research, agent/MCP/skill CVEs, security fixes in agent tools."
+        }
+      ]
+    },
+    {
+      "id": "platforms",
+      "emoji": "☁️",
+      "title": "Platforms",
+      "path": "platforms",
+      "intro": "Cloud-specific services for building and running AI. Add Azure or Google Cloud here when needed.",
+      "categories": [
+        {
+          "id": "aws",
+          "title": "AWS",
+          "path": "platforms/aws",
+          "summary": "Bedrock models, AgentCore, Strands Agents, Kiro, AWS MCP servers, re:Invent",
+          "best_for": "Building and running AI on AWS",
+          "cadence": "daily",
+          "scope": "Bedrock model availability (IDs, CRIS profiles, regions, pricing), AgentCore releases, Strands releases, Kiro changes and the Q Developer migration, AWS MCP servers, Spring AI on AWS. During re:Invent week (2026: 30 Nov – 4 Dec) add an 'AWS re:Invent' section to each digest."
+        }
+      ]
+    },
+    {
+      "id": "learn",
+      "emoji": "📚",
+      "title": "Learn from others",
+      "path": "learn",
+      "intro": "What shipped, what broke, and what's coming.",
+      "categories": [
+        {
+          "id": "successful-projects",
+          "title": "Successful AI projects",
+          "path": "learn/successful-projects",
+          "summary": "Shipped projects with measurable results (Ramp, Spotify, Coinbase, Stripe…) and open-source projects that took off",
+          "best_for": "Seeing what success looks like",
+          "cadence": "weekly",
+          "scope": "Named projects with a measured before/after result, a date and a public source; open-source AI projects with breakout traction. No projections."
+        },
+        {
+          "id": "case-studies",
+          "title": "Case studies & postmortems",
+          "path": "learn/case-studies",
+          "summary": "Lessons and failures from production, plus a weekly 'Learn this week' pick",
+          "best_for": "Learning from others' mistakes",
+          "cadence": "weekly",
+          "scope": "One to three new production write-ups with transferable lessons; rotate the 'Learn this week' pick."
+        },
+        {
+          "id": "research",
+          "title": "Research to watch",
+          "path": "learn/research",
+          "summary": "Papers and experiments likely to reach practice",
+          "best_for": "Staying ahead",
+          "cadence": "daily",
+          "scope": "Papers and experiments likely to reach practice within a year."
+        }
+      ]
+    }
+  ]
+}

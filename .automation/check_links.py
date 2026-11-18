@@ -48,7 +48,7 @@ def main() -> int:
     errors: list[str] = []
     cache: dict[Path, set[str]] = {}
     for md in sorted(ROOT.rglob("*.md")):
-        if ".git" in md.parts:
+        if ".git" in md.parts or "templates" in md.parts:
             continue
         in_fence = False
         for lineno, line in enumerate(md.read_text(encoding="utf-8").splitlines(), 1):

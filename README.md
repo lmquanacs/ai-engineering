@@ -21,7 +21,8 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 - **Agentic workflows:** New controlled studies find that multi-subagent "committees" barely moved scores but cost up to 8× more. Spec-first TDD loops and end-of-turn goal checks did help. → [Agentic workflows](03-agentic-workflows/README.md)
 - **MCP:** The **2026-07-28 stateless spec** is now the baseline. If you run a remote server, migrate it (Spring AI 2.0 supports `protocol=STATELESS`). → [MCP servers](04-mcp-servers/README.md)
 - **JVM:** Spring AI 2.0 (Boot 4), Embabel 1.0 and Koog 1.0 are all GA. Spring Boot 4.2 is due this month. → [Libraries · JVM](05-libraries/jvm.md)
-- **Action item:** **Claude Sonnet 4.5 retires on 30 Nov 2026**. Pin a newer model ID before then. → [Coding agents & IDEs](07-coding-agents-and-ides/README.md)
+- **Action items:** **Claude Sonnet 4.5 retires on 30 Nov 2026**, so pin a newer model ID. **Gemini 4 Argon doubles in price on 1 Dec.** → [Coding agents](07-coding-agents-and-ides/README.md) · [Cost](12-inference-cost-and-serving/README.md)
+- **New categories:** [context engineering](11-context-engineering-and-memory/README.md) · [inference & cost](12-inference-cost-and-serving/README.md) · [agent infrastructure](13-agent-infrastructure/README.md) · [case studies](14-case-studies/README.md) · [fine-tuning](15-fine-tuning-and-post-training/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)
@@ -42,8 +43,13 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 | 08 | [**Evals & observability**](08-evals-and-observability/README.md) | Tracing, evals, benchmarks, OpenTelemetry GenAI | Running agents in production |
 | 09 | [**AI security**](09-ai-security/README.md) | Prompt injection, MCP/skill supply chain, agent permissions | Not getting owned |
 | 10 | [**Research to watch**](10-research-to-watch/README.md) | Papers and experiments likely to reach practice | Staying ahead |
+| 11 | [**Context engineering & memory**](11-context-engineering-and-memory/README.md) | Compaction, tool-result clearing, memory, caching, embeddings/rerankers/parsers | Agents that stay sharp on long tasks |
+| 12 | [**Inference, cost & serving**](12-inference-cost-and-serving/README.md) | Price snapshot and upcoming price changes, cost levers, vLLM and self-hosting | Keeping the bill down |
+| 13 | [**Agent infrastructure & runtimes**](13-agent-infrastructure/README.md) | Sandboxes, durable execution, hosting, agent identity and permissions | Running agents safely in production |
+| 14 | [**Case studies & postmortems**](14-case-studies/README.md) · _weekly_ | How real teams shipped agents and what broke, plus a weekly "Learn this week" pick | Learning from others' mistakes |
+| 15 | [**Fine-tuning & post-training**](15-fine-tuning-and-post-training/README.md) | LoRA/QLoRA, GRPO/RLVR, distillation; TRL, Unsloth, Axolotl | Specialising open models |
 
-> Categories 07–10 go beyond the original brief. Ideas for more categories are welcome: [open an issue](../../issues/new/choose).
+> Categories 07–15 go beyond the original brief. 06 (AI-native languages) and 14 (case studies) are checked weekly on Mondays; everything else is checked daily. Ideas for more categories are welcome: [open an issue](../../issues/new/choose).
 
 ---
 

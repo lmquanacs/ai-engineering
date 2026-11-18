@@ -23,6 +23,13 @@ Use web search and fetch. Prefer **primary sources** (vendor changelogs, release
 | 08 Evals & observability | Tool releases, OTel GenAI convention changes, new benchmarks | Vendor blogs, OTel repo |
 | 09 AI security | Prompt-injection research, agent/MCP/skill CVEs, security fixes in agent tools | Changelogs, OWASP, security blogs, arXiv |
 | 10 Research to watch | Papers/experiments likely to reach practice within a year | arXiv, lab blogs |
+| 11 Context engineering & memory | Compaction/memory/caching techniques and APIs, embedding/reranker/parser releases, retrieval patterns | Anthropic/OpenAI/Google docs, Hugging Face, Cohere/Jina/NVIDIA blogs, MTEB/ViDoRe |
+| 12 Inference, cost & serving | **Price changes** (update the snapshot table and "price changes coming up"), caching/batch discount changes, vLLM/SGLang/llama.cpp/Ollama releases, self-hosting news | Provider pricing pages, pricing trackers, vLLM releases/blog |
+| 13 Agent infrastructure & runtimes | Sandbox/runtime releases and pricing, durable execution for agents, agent hosting, agent identity/auth | E2B, Daytona, Modal, Vercel, Cloudflare, Temporal, Trigger.dev blogs |
+| 14 Case studies & postmortems | **Weekly (Mondays):** 1–3 new production write-ups with transferable lessons; rotate the "Learn this week" pick. Other days, only exceptional postmortems. | Company engineering blogs, ZenML LLMOps database, conference talks |
+| 15 Fine-tuning & post-training | TRL/Unsloth/Axolotl/LLaMA-Factory/verl releases, new methods (GRPO/RLVR/distillation), open datasets | Hugging Face blog, GitHub releases, arXiv |
+
+**Cadence:** check 06 (AI-native languages) and 14 (case studies) on **Mondays** only, unless something major lands. Check all other categories daily.
 
 **Selection bar:** include an item only if a working engineer would change a decision because of it (adopt, upgrade, migrate, avoid, try). Aim for 0–5 items per category per day. "Nothing notable today" is a valid outcome; never pad.
 

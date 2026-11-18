@@ -44,6 +44,37 @@ Starting points for the daily agent. **Confirm every item at its primary source*
 - Koog: https://github.com/JetBrains/koog/releases
 - LangChain4j: https://github.com/langchain4j/langchain4j/releases
 
+## Context engineering & retrieval
+- Anthropic context management docs and engineering blog: https://www.anthropic.com/engineering
+- Hugging Face blog: https://huggingface.co/blog
+- Cohere changelog/blog: https://cohere.com/blog · Jina news: https://jina.ai/news
+- MTEB leaderboard: https://huggingface.co/spaces/mteb/leaderboard
+
+## Inference, pricing & serving
+- Anthropic pricing: https://platform.claude.com/docs/en/about-claude/pricing
+- OpenAI pricing: https://developers.openai.com/api/docs/pricing
+- Google pricing: https://aistudio.google.com/docs/pricing
+- xAI pricing: https://docs.x.ai/developers/pricing
+- DeepSeek pricing: https://api-docs.deepseek.com/quick_start/pricing
+- Pricing trackers (discovery): https://nhimg.org/llm-pricing-tracker · https://getdeploying.com/llms · https://benchlm.ai/llm-pricing
+- vLLM releases: https://github.com/vllm-project/vllm/releases · blog: https://vllm.ai/blog
+- llama.cpp releases: https://github.com/ggml-org/llama.cpp/releases · Ollama: https://github.com/ollama/ollama/releases
+
+## Agent infrastructure
+- E2B: https://e2b.dev/blog · Daytona: https://www.daytona.io/dotfiles · Modal: https://modal.com/blog
+- Temporal blog: https://temporal.io/blog · Trigger.dev changelog: https://trigger.dev/changelog
+- Cloudflare blog (agents/sandbox): https://blog.cloudflare.com
+
+## Case studies
+- ZenML LLMOps database: https://www.zenml.io/llmops-database
+- Engineering blogs: Anthropic, OpenAI, PagerDuty, Replit, Ramp, Shopify, Stripe, Atlassian
+
+## Fine-tuning & post-training
+- TRL releases: https://github.com/huggingface/trl/releases
+- Unsloth: https://github.com/unslothai/unsloth/releases
+- Axolotl: https://github.com/axolotl-ai-cloud/axolotl/releases
+- verl: https://github.com/volcengine/verl/releases
+
 ## Agentic patterns, research & security
 - Anthropic engineering/research: https://www.anthropic.com/research
 - Simon Willison: https://simonwillison.net

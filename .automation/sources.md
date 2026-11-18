@@ -65,6 +65,17 @@ Starting points for the daily agent. **Confirm every item at its primary source*
 - Temporal blog: https://temporal.io/blog · Trigger.dev changelog: https://trigger.dev/changelog
 - Cloudflare blog (agents/sandbox): https://blog.cloudflare.com
 
+## AWS
+- AgentCore release notes: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html
+- AWS What's New: https://aws.amazon.com/about-aws/whats-new/ (filter: Machine Learning / AI)
+- AWS ML blog (incl. monthly "ICYMI: what landed for AI builders"): https://aws.amazon.com/blogs/machine-learning/
+- AWS News Blog: https://aws.amazon.com/blogs/aws/
+- Bedrock model cards: https://docs.aws.amazon.com/bedrock/latest/userguide/
+- Kiro changelog: https://kiro.dev/changelog/ · Kiro blog: https://kiro.dev/blog/
+- Strands: https://strandsagents.com · https://github.com/strands-agents
+- AWS MCP: https://github.com/awslabs/mcp
+- re:Invent: https://reinvent.awsevents.com
+
 ## Case studies
 - ZenML LLMOps database: https://www.zenml.io/llmops-database
 - Engineering blogs: Anthropic, OpenAI, PagerDuty, Replit, Ramp, Shopify, Stripe, Atlassian

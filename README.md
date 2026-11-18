@@ -22,7 +22,8 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 - **MCP:** The **2026-07-28 stateless spec** is now the baseline. If you run a remote server, migrate it (Spring AI 2.0 supports `protocol=STATELESS`). → [MCP servers](04-mcp-servers/README.md)
 - **JVM:** Spring AI 2.0 (Boot 4), Embabel 1.0 and Koog 1.0 are all GA. Spring Boot 4.2 is due this month. → [Libraries · JVM](05-libraries/jvm.md)
 - **Action items:** **Claude Sonnet 4.5 retires on 30 Nov 2026**, so pin a newer model ID. **Gemini 4 Argon doubles in price on 1 Dec.** → [Coding agents](07-coding-agents-and-ides/README.md) · [Cost](12-inference-cost-and-serving/README.md)
-- **New categories:** [context engineering](11-context-engineering-and-memory/README.md) · [inference & cost](12-inference-cost-and-serving/README.md) · [agent infrastructure](13-agent-infrastructure/README.md) · [case studies](14-case-studies/README.md) · [fine-tuning](15-fine-tuning-and-post-training/README.md)
+- **AWS:** Claude Fable 5.2 is on Bedrock, AgentCore Runtime V2 got bigger sessions, and Kiro bots are GA. **re:Invent runs 30 Nov – 4 Dec.** → [AWS](16-aws/README.md)
+- **New categories:** [context engineering](11-context-engineering-and-memory/README.md) · [inference & cost](12-inference-cost-and-serving/README.md) · [agent infrastructure](13-agent-infrastructure/README.md) · [case studies](14-case-studies/README.md) · [fine-tuning](15-fine-tuning-and-post-training/README.md) · [AWS](16-aws/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)
@@ -48,8 +49,9 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 | 13 | [**Agent infrastructure & runtimes**](13-agent-infrastructure/README.md) | Sandboxes, durable execution, hosting, agent identity and permissions | Running agents safely in production |
 | 14 | [**Case studies & postmortems**](14-case-studies/README.md) · _weekly_ | How real teams shipped agents and what broke, plus a weekly "Learn this week" pick | Learning from others' mistakes |
 | 15 | [**Fine-tuning & post-training**](15-fine-tuning-and-post-training/README.md) | LoRA/QLoRA, GRPO/RLVR, distillation; TRL, Unsloth, Axolotl | Specialising open models |
+| 16 | [**AWS for AI engineering**](16-aws/README.md) | Bedrock models, AgentCore, Strands Agents, Kiro, AWS MCP servers, re:Invent | Building and running AI on AWS |
 
-> Categories 07–15 go beyond the original brief. 06 (AI-native languages) and 14 (case studies) are checked weekly on Mondays; everything else is checked daily. Ideas for more categories are welcome: [open an issue](../../issues/new/choose).
+> Categories 07–16 go beyond the original brief. 06 (AI-native languages) and 14 (case studies) are checked weekly on Mondays; everything else is checked daily. Ideas for more categories are welcome: [open an issue](../../issues/new/choose).
 
 ---
 

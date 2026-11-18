@@ -29,7 +29,11 @@ Use web search and fetch. Prefer **primary sources** (vendor changelogs, release
 | 14 Case studies & postmortems | **Weekly (Mondays):** 1–3 new production write-ups with transferable lessons; rotate the "Learn this week" pick. Other days, only exceptional postmortems. | Company engineering blogs, ZenML LLMOps database, conference talks |
 | 15 Fine-tuning & post-training | TRL/Unsloth/Axolotl/LLaMA-Factory/verl releases, new methods (GRPO/RLVR/distillation), open datasets | Hugging Face blog, GitHub releases, arXiv |
 
+| 16 AWS | Bedrock model availability (IDs, CRIS profiles, regions, pricing), AgentCore releases, Strands SDK releases, Kiro changes (and the Q Developer migration), AWS MCP servers, Spring AI ↔ AWS integrations | AgentCore release notes, AWS What's New, AWS ML blog (monthly "ICYMI"), AWS News Blog, Kiro changelog, Strands releases, awslabs/mcp |
+
 **Cadence:** check 06 (AI-native languages) and 14 (case studies) on **Mondays** only, unless something major lands. Check all other categories daily.
+
+**AWS re:Invent week (2026: 30 Nov – 4 Dec, Las Vegas; Brisbane runs on 1–5 Dec and the Monday after):** add a `## 🎰 AWS re:Invent` section near the top of each digest with the developer-relevant launches from the previous day's keynotes and announcements, and fold them into `16-aws/` and any other category they affect, such as new Bedrock models in 02 or AgentCore changes in 13. Skip marketing-only announcements. In other years, find the dates on AWS's event page and apply the same rule.
 
 **Selection bar:** include an item only if a working engineer would change a decision because of it (adopt, upgrade, migrate, avoid, try). Aim for 0–5 items per category per day. "Nothing notable today" is a valid outcome; never pad.
 

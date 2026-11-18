@@ -8,6 +8,7 @@
 | [**Mastra**](https://github.com/mastra-ai/mastra) (`@mastra/core`) | 1.78.0 (2026-10-15) | Full-stack agent framework: agents, memory, tools, workflows, evals and observability. Built on the AI SDK. Apache-2.0 (the `ee/` directory has an enterprise licence). | You want batteries included and a local dev playground |
 | [**LangGraph.js**](https://github.com/langchain-ai/langgraphjs) | 1.5.1 (2026-10-16) | State-graph orchestration with checkpoints | Same reasons as Python LangGraph, or a shared Py/TS team |
 | [**MCP TypeScript SDK**](https://github.com/modelcontextprotocol/typescript-sdk) | Tier 1, supports the 2026-07-28 spec | Official MCP SDK | Building MCP servers and clients in Node, Bun or edge runtimes |
+| [**Strands Agents (TS)**](https://github.com/strands-agents) (`@strands-agents/sdk`) | 1.21.0 (2026-10-14) | TypeScript version of AWS's Strands agent SDK | Bedrock/AgentCore deployments from TS → [AWS](../16-aws/README.md) |
 | **OpenAI Agents SDK (JS)** | — | OpenAI's agents SDK for TS | OpenAI-centric stacks |
 
 ## 🆕 Notable changes

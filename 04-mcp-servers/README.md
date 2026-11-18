@@ -71,6 +71,7 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 | draw.io · `jgraph/drawio-mcp` | Architecture diagrams as code; also ships a skill | `npx -y skills add jgraph/drawio-mcp --skill drawio` |
 | Firecrawl / Exa | Web search and scraping into clean markdown | remote |
 | Datadog (official) | Metrics, logs and traces from your agent | remote |
+| **AWS MCP Server** (managed, GA May 2026) + [awslabs/mcp](https://github.com/awslabs/mcp) | Operating your AWS account: APIs, CloudWatch, IAM, EKS, CDK, Cost Explorer | `pip install awslabs-mcp-proxy` · `uvx awslabs.cloudwatch-mcp-server@latest`. See [AWS](../16-aws/README.md#-aws-mcp-servers) |
 
 ## 🏗️ Build your own
 

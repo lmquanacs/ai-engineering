@@ -1,0 +1,28 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check relative links and anchors
+        run: python3 .automation/check_links.py
+      - name: Generated files are up to date
+        run: |
+          latest=$(ls daily/*/*/*.md | xargs -n1 basename | sed 's/\.md$//' | sort | tail -1)
+          python3 .automation/update_index.py --today "$latest"
+          if ! git diff --quiet; then
+            git diff --stat
+            echo "::warning::Generated files are out of date. Run 'python3 .automation/update_index.py' and commit the result."
+          fi

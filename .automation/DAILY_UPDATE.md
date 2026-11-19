@@ -49,6 +49,9 @@ Copy [`templates/digest.md`](templates/digest.md) to `daily/YYYY/MM/TODAY.md` an
 - **TL;DR**: 3–6 bullets, most important first, including action items.
 - One `##` section per **group** (🛠️ Build, 🧠 Models, 🏗️ Architecture & production, ☁️ Platforms, 📚 Learn), and a `###` per category **that has news**, each ending with a link to the category page. Omit empty categories, and end with a line such as "No notable updates: AI-native languages, Research".
 
+## 4b. Growth
+Follow [`GROWTH.md`](GROWTH.md): pick the hook, make the share card, handle new issues and PRs, and draft the share kit. Drafts go in the report; nothing is posted outside this repo.
+
 ## 5. Regenerate, validate, commit
 ```bash
 python3 .automation/update_index.py      # README category tables + badges, group pages, digest index, 🆕 expiry
@@ -64,7 +67,7 @@ git push origin main
 If the push is rejected because `main` moved: `git pull --rebase origin main`, resolve by keeping and deduplicating entries, then push once more. **Never force-push.**
 
 ## 6. Report
-A short summary: the digest path, items added per category, action items, and anything you could not verify.
+A short summary: the digest path, items added per category, action items, and anything you could not verify. Then the `## Growth` section described in [`GROWTH.md`](GROWTH.md).
 
 ---
 

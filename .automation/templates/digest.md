@@ -1,8 +1,11 @@
 # Daily digest · <Weekday> <D Mon YYYY>
 
+<!-- hook: the one fact most worth forwarding today, plus what to do (see GROWTH.md) -->
 <!-- summary: one-line summary shown in the digest index -->
 
 ← [All editions](../../README.md) · [Repo home](../../../README.md)
+
+![Today's card](YYYY-MM-DD.png)
 
 ## TL;DR
 1. …

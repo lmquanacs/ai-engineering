@@ -119,6 +119,8 @@ Source: primary link · Added: YYYY-MM-DD
 | [`.automation/update_index.py`](.automation/update_index.py) | Regenerates the category tables, group pages, digest index and badges, and expires 🆕 markers |
 | [`.automation/check_links.py`](.automation/check_links.py) | Fails if any relative link or anchor is broken |
 | [`feed.xml`](feed.xml) | Atom feed of the latest digests, written by `update_index.py` |
+| [`.automation/GROWTH.md`](.automation/GROWTH.md) | Daily share kit, share card and community loop for the scheduled agent (drafts only, never posts) |
+| [`.automation/make_card.py`](.automation/make_card.py) | Renders the 1200×630 share card for a digest |
 | [`.automation/weekly_release.py`](.automation/weekly_release.py) | Notes for the Monday GitHub release that rolls up the week's digests |
 | [`.automation/templates/`](.automation/templates/) | Templates for a new category page and for a daily digest |
 

@@ -10,6 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 [![Atom feed](https://img.shields.io/badge/feed-Atom-f26522)](https://raw.githubusercontent.com/lmquanacs/ai-engineering/main/feed.xml)
+[![Buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-support-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/lmquanacs8)
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
 
@@ -139,6 +140,10 @@ The daily agent is fast but not infallible, and people who use these tools every
 - **Propose a category**, such as Azure or Google Cloud under ☁️ Platforms.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for the entry format and the bar for inclusion, then [open an issue](../../issues/new/choose) or a pull request.
+
+## ☕ Support
+
+This guide is free and always will be. If it saves you time, you can [buy me a coffee](https://buymeacoffee.com/lmquanacs8) to help cover the research runs. Support never affects what gets listed or how it's ranked.
 
 ## 📄 License
 

@@ -58,7 +58,8 @@ def main() -> None:
         "---",
         f"⭐ Star the repo · 👀 **Watch → Custom → Releases** to get this roll-up weekly · "
         f"📡 [Atom feed](https://raw.githubusercontent.com/lmquanacs/ai-engineering/main/feed.xml) for every daily edition · "
-        f"[Contribute]({REPO_URL}/blob/main/CONTRIBUTING.md)",
+        f"[Contribute]({REPO_URL}/blob/main/CONTRIBUTING.md) · "
+        f"☕ [Buy me a coffee](https://buymeacoffee.com/lmquanacs8)",
     ]
     Path(args.out).write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"tag=week-{today.isoformat()}")

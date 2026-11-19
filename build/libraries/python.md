@@ -1,17 +1,26 @@
 # Libraries · 🐍 Python
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-19_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-20_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
-| [**Pydantic AI**](https://github.com/pydantic/pydantic-ai) | 2.70.0 (2026-11-17) | Type-safe agent framework from the Pydantic team. V2 has been stable since 2026-06-23 and uses a "capabilities-first" design. It supports MCP and uses OpenTelemetry tracing (Logfire). Requires Python 3.11+. MIT. | Default for new Python agents, especially if you already use Pydantic or FastAPI |
-| [**LangGraph**](https://github.com/langchain-ai/langgraph) | 1.2.22 (2026-11-14) | Graph/state-machine orchestration with durable checkpoints, from LangChain. Python and TS. MIT. | You need explicit control flow, human-in-the-loop interrupts and resumable long runs |
+| [**Pydantic AI**](https://github.com/pydantic/pydantic-ai) | 2.71.0 (2026-11-18) | Type-safe agent framework from the Pydantic team. V2 has been stable since 2026-06-23 and uses a "capabilities-first" design. It supports MCP and uses OpenTelemetry tracing (Logfire). Requires Python 3.11+. MIT. | Default for new Python agents, especially if you already use Pydantic or FastAPI |
+| [**LangGraph**](https://github.com/langchain-ai/langgraph) | 1.2.23 (2026-11-19) | Graph/state-machine orchestration with durable checkpoints, from LangChain. Python and TS. MIT. | You need explicit control flow, human-in-the-loop interrupts and resumable long runs |
 | [**MCP Python SDK**](https://github.com/modelcontextprotocol/python-sdk) | `mcp` 2.3.0 (2026-10-02); Tier 1, supports the 2026-07-28 spec | Official SDK for building MCP servers and clients | Exposing your Python tools to any agent |
 | [**Strands Agents**](https://github.com/strands-agents) (AWS) | 1.65.0 (2026-11-13) | AWS's open-source, model-driven agent harness SDK with behavioural middleware and sandboxing; deploys to Bedrock AgentCore or anywhere. Apache-2.0. | AWS/Bedrock-centric teams → [AWS](../../platforms/aws/README.md) |
 | **OpenAI Agents SDK** | — | OpenAI's lightweight agents and handoffs SDK | Mostly OpenAI models, with simple triage/handoff patterns |
 | **CrewAI** | — | Role-based multi-agent crews | Prototyping multi-role workflows (check the [evidence on committees](../../architecture/agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle) first) |
 
 ## 🆕 Notable changes
+
+### Pydantic AI 2.71.0: renames, `PermissionRule`, `ModelRouter` · 2026-11-18 🆕
+Compatibility changes: `PeerNetwork` is renamed `PeerConnection`; `StackOne`'s `api_key` is deprecated in favour of a new `auth` parameter; `DEPRECATED_ANTHROPIC_MODELS` is deprecated; pause/resume behaviour changed for deferred tools and `BackgroundTools`; the in-process `MCPToolsetClient` server is typed as a protocol rather than `FastMCP`. New: `ModelRouter`, `PermissionRule` (allow, ask or deny tool calls), harness capabilities such as `RequireVerification`, `Goal` and `WrapUpAtLimits`, secret masking with `Shell(secret_env=)`, and HTTP 408 now raises `ModelTimeoutError`.
+**Why it matters:** `PermissionRule` gives Python agents a declarative allow/ask/deny layer for tools. Check for the renamed and deprecated names before upgrading.
+Source: [Pydantic AI v2.71.0 release](https://github.com/pydantic/pydantic-ai/releases/tag/v2.71.0) · Added: 2026-11-20
+
+### LangGraph 1.2.23: `Send` tool calls get typed state · 2026-11-19 🆕
+Raises the `langgraph-prebuilt` minimum to 1.1.3, which makes tool calls dispatched with `Send` receive the same typed state as an edge. Not labelled breaking, but `ToolNode` code that read state in `Send` branches may see different values.
+Source: [langgraph PR #9742](https://github.com/langchain-ai/langgraph/pull/9742) · [PyPI](https://pypi.org/project/langgraph/) · Added: 2026-11-20
 
 ### Pydantic AI 2.60: tool retries no longer produce `RetryPromptPart` 🆕
 Since v2.60.0 (2026-10-22), a tool retry is recorded as a `ToolReturnPart` with `outcome='retried'`, and a retry that answers no tool call is a `RetryFeedbackPart`. `RetryPromptPart` is deprecated, and `result.usage()` on `RunUsage` is deprecated in favour of `result.usage`.
@@ -25,4 +34,4 @@ Source: [Developers Digest: Pydantic AI V2 in late 2026](https://www.developersd
 
 Comparison source: [Pydantic AI vs LangGraph, verified 2026-10-18](https://www.developersdigest.tech/agent-frameworks/compare/pydantic-ai-vs-langgraph)
 
-Version numbers confirmed on 2026-11-19 at [PyPI](https://pypi.org/) (release upload dates).
+Version numbers confirmed on 2026-11-20 at [PyPI](https://pypi.org/) (release upload dates).

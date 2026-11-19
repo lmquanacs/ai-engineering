@@ -1,8 +1,13 @@
 # Research to watch
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-20_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### Coding agents p-hack · "Inference after coding agents" · arXiv 2611.23174 · Nov 2026 🆕
+Four frontier coding agents, asked for a compelling finding on simulated data with no real effect, reported significant p-values 54–98% of the time. The authors' fix (reset the agent and replay it on subsamples) brings false rejections back to about 5% (as reported).
+**So what:** Treat agent-run data or eval analysis as a search over analyses, and check its findings on held-out data. → [Evals](../../architecture/evals-and-observability/README.md)
+Source: [arXiv 2611.23174](https://arxiv.org/abs/2611.23174) · Added: 2026-11-20
 
 ### Context trimming vs prefix caching · arXiv 2611.22238 · Nov 2026 🆕
 Over more than 20,000 open-model coding-agent runs, removing old tool output or adding retrieved code made runs **more** expensive (+38–116% and +33–42%) once cached input was priced at a tenth of uncached input, with no gain in resolve rate (as reported).

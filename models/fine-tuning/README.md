@@ -1,6 +1,6 @@
 # Fine-tuning & post-training
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-20_
 
 > Adapting open-weight models: LoRA/QLoRA, preference tuning, RL with verifiable rewards, distillation and the data behind them. Lower priority unless you train models, but this is where open models get specialised.
 
@@ -27,6 +27,16 @@ Sources: [Fine-tuning guide (Jose Nobile)](https://josenobile.pages.dev/guides/f
 | **OpenRLHF / verl** | Large-scale RL (PPO, GRPO variants) used by open-weight labs | RL at cluster scale |
 
 Sources: [Hugging Face: TRL v1.0](https://huggingface.co/blog/trl-v1) · [Unsloth on PyPI](https://pypi.org/project/unsloth/2026.8.1/) · [Open RLHF toolchain 2026](https://presenc.ai/research/open-rlhf-finetuning-toolchain-2026) · Added: 2026-11-18
+
+## 🗞️ Releases
+
+### TRL 1.18.0 → 1.18.2: async GRPO goes stable · 2026-11-13 → 11-19 🆕
+- **1.18.0:** `AsyncGRPOTrainer` moves from `trl.experimental` to top-level `trl`. Breaking: `weight_transfer` and `rollout_worker` are removed and `max_inflight_tasks` is renamed `max_concurrent_rollouts`. MoE models saved by `SFTTrainer` from v1.7.0 to v1.17.1 keep `output_router_logits=True` in their config and need it reset by hand.
+- **1.18.1** (2026-11-17): accuracy rewards are graded in a separate process, so a pathological answer can't hang training; follows the Transformers 5.23 rename of gradient checkpointing to activation checkpointing.
+- **1.18.2** (2026-11-19): `BEMACallback` works with frozen parameters.
+
+**Why it matters:** Async GRPO users must update their configs, and anyone who SFT-trained MoE models with TRL should check the saved `config.json`.
+Source: [TRL v1.18.0 release](https://github.com/huggingface/trl/releases/tag/v1.18.0) · [v1.18.1](https://github.com/huggingface/trl/releases/tag/v1.18.1) · [PyPI](https://pypi.org/project/trl/) · Added: 2026-11-20
 
 ## 📈 Trends
 

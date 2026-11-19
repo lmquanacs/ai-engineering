@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-20_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -55,6 +55,16 @@ A TypeScript API that starts a sandbox with a coding-agent harness (for example 
 Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best-sandbox-providers-for-ai-agents) · Added: 2026-11-18
 
 ## 📰 Recent releases
+
+### Daytona macOS Sandboxes · 2026-11-17 🆕
+Full macOS VMs on dedicated Apple silicon reserved for your organization. The base image ships macOS 26.6.2 with Xcode 26.6 and the iPhone simulator. Create one with `daytona sandbox create-macos --region macos-1 --image base-macos` or from the SDK; SSH uses short-lived tokens scoped to one sandbox, and computer-use (screenshots, input, accessibility tree) and filesystem snapshots are supported. Pricing and preview/GA status aren't stated.
+**Why it matters:** Agents that build iOS/macOS apps or drive macOS GUIs get a managed sandbox instead of a Mac farm.
+Source: [Daytona: macOS Sandboxes](https://www.daytona.io/dotfiles/macos-sandboxes) · Added: 2026-11-20
+
+### Vercel eve 1.0 GA + Sandbox Python SDK 1.0 · 2026-11-16 → 11-17 🆕
+**eve** is Vercel's open-source TypeScript agent framework: durable workflows that resume after a crash, approvals answerable in Slack, and Vercel Sandbox for code execution. It needs Node.js 24+ (`npx eve@latest init my-agent`); stable APIs follow semver. Vercel puts a 50-turn session on Vercel Workflows at 1.3¢ *(self-reported)*. Separately, **`vercel-sandbox` 1.0** for Python stabilises the API to match the TS SDK (context-manager cleanup, async on AnyIO, sync calls); **breaking:** command input and output are now bytes.
+**Why it matters:** A durable agent runtime and a stable Python sandbox client from one vendor. Python users upgrading from 0.x must handle bytes I/O.
+Sources: [Vercel: eve is GA](https://vercel.com/blog/eve-is-now-generally-available) · [Vercel changelog: Sandbox Python SDK 1.0](https://vercel.com/changelog/vercel-sandbox-python-sdk-1-0-is-now-available) · Added: 2026-11-20
 
 ### Temporal Cloud on Azure · public preview · 2026-11-17 🆕
 Temporal Cloud now runs on Azure in public preview, with production workloads supported in **Central US and Australia East**. Access needs approval so Temporal can plan capacity.

@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-20_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,11 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### MCP Python SDK CVEs and Claude Code sandbox hardening · Nov 2026 🆕
+The official MCP Python SDK has three advisories (schema `$ref` resolution leading to SSRF and file reads, a missing token-audience check, and credential headers sent on cross-origin redirects), fixed in `mcp` 1.30.0 / 2.2.0. Claude Code 2.1.326–2.1.329 continue last week's permission work: sandboxed commands write to fewer home folders, sign-in files are write-protected, and bypass mode now asks about some commands.
+**Why it matters:** Upgrade Python MCP clients that talk to third-party servers, and re-test unattended Claude Code jobs. Details: [MCP servers](../../build/mcp-servers/README.md#-security-notes) · [Coding agents](../../build/coding-agents/README.md)
+Added: 2026-11-20
 
 ### Reference Git MCP server: command-execution advisories · 2026-11-18 🆕
 The MCP project published a batch of advisories against `mcp-server-git`. In each one, attacker-controlled Git configuration in the repository the agent operates on can make the server run a program. Triggers include a config include created by a merged branch (`git_merge`, GHSA-9vjp-x34c-xg6v), a promisor setting during a lazy fetch (GHSA-87qg-cmw8-jc5m) and a submodule's own config on `git_diff`, `git_checkout` and `git_add` (GHSA-8wv7-r664-7594). All are fixed in `mcp-server-git` **2026.11.18** (repo release v2.5.0). The same release fixes an SSRF-guard gap in `server-everything` 2.3.1 (GHSA-38j4-j742-j7r3), and two earlier `mcp-server-git` advisories were fixed in v2.4.0 on 2026-11-11.

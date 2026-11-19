@@ -1,6 +1,6 @@
 # LLM news: models, trends, techniques
 
-_Last updated: 2026-11-19 · This page keeps about 30 days; older items move to [archive/](archive/)_
+_Last updated: 2026-11-20 · This page keeps about 30 days; older items move to [archive/](archive/)_
 
 > Only what changes a builder's decision. Every model row carries its **API ID** and a primary source. Benchmark numbers are vendor claims unless marked otherwise.
 
@@ -22,7 +22,7 @@ Newest first. Status is as of release.
 |---|---|---|---|---|---|
 | 2026-11-17 | OpenAI | **GPT-6.2 Astra** (hardest reasoning and coding); $8/$40 per 1M in/out, cheaper than GPT-6 Astra's $10/$50; 1.05M context, 128K max output | `gpt-6.2-astra` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) |
 | 2026-11-17 | OpenAI | **GPT-6.2 Sol** (everyday coding and agents); $2/$10 per 1M in/out, same as GPT-6.1 Sol; 1.05M context, 128K max output | `gpt-6.2-sol` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) |
-| 2026-11-16 | Alibaba | Qwen4-Max: 2.4T total / ~71B active, 1M context; ~35% fewer tokens than Qwen3.8-Max on Alibaba's Work360 benchmark (self-reported). Not open weights; smaller open Qwen4 models promised | — | API (QwenCloud) | [Alibaba Cloud](https://www.alibabacloud.com/press-room/alibaba-unveils-qwen4-max) |
+| 2026-11-16 | Alibaba | Qwen4-Max: 2.4T total / ~71B active, 1M context; ~35% fewer tokens than Qwen3.8-Max on Alibaba's Work360 benchmark (self-reported). Not open weights; smaller open Qwen4 models promised | `qwen4-max` | API (Model Studio); $1.50/$4.50 per 1M in/out (international), cache hit $0.075 | [Alibaba Cloud](https://www.alibabacloud.com/press-room/alibaba-unveils-qwen4-max) · [Model Studio pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |
 | 2026-11-12 | Google | Gemini 4 Hydrogen (fast tier, ~2.5× faster than Gemini 3.8 Flash per Google) | `gemini-4-hydrogen` | Released (Vertex) | [Vertex model versions](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-versions) |
 | 2026-11-10 → 12 | Google | Gemini 4 Carbon (top model), now GA; 60.4% CursorBench (high effort, self-reported) | `gemini-4-carbon` | GA; intro pricing until Nov 30 | [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/) |
 | 2026-11-09 | Anthropic | **Claude Fable 5.2**; $8/$40 per 1M in/out tokens (20% cheaper than 5.1) | `claude-fable-5-2` | GA (paid plans + API) | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) |
@@ -45,6 +45,11 @@ Older rows: [archive/](archive/). Trackers used: [nhimg LLM release tracker](htt
 OpenAI's next point release: `gpt-6.2-astra` for demanding reasoning and coding, and `gpt-6.2-sol` for everyday coding and agent workflows. Astra drops to $8/$40 per 1M tokens (cached input $0.40), and Sol stays at $2/$10. Both have a 1.05M-token window (922K max input) and 128K max output.
 **Why it matters:** Astra-class work gets 20% cheaper. It is not a drop-in swap, though: reasoning effort `none` is rejected, tool calling needs the Responses API, and reasoning-preservation and `instructions` behaviour change. Re-run your evals and follow the migration quickstart. Also on Bedrock → [AWS](../../platforms/aws/README.md).
 Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Astra model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) · [Sol model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) · Added: 2026-11-19
+
+### Claude API linked billing (beta) · Anthropic · 2026-11-17 🆕
+With beta header `user-profiles-billing-2026-10-01`, a `billing_policy` field on `/v1/messages` and `/v1/chat/completions` chooses who pays for a request: your app, or the end customer's own Claude organization. Customers can cap or unlink your app's spend in the Console. It only works for customers whose organization pays Anthropic directly for API usage.
+**Why it matters:** B2B apps can pass inference cost through to customers instead of re-billing it.
+Source: [Claude release notes](https://platform.claude.com/docs/en/release-notes/overview) · Added: 2026-11-20
 
 ## 📈 Trends
 

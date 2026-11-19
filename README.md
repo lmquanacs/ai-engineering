@@ -3,9 +3,9 @@
 > A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, models, architecture, agentic patterns and libraries, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus AWS.
 
 <!-- BADGES:START -->
-![Last updated](https://img.shields.io/badge/last%20updated-2026--11--19-2563eb)
+![Last updated](https://img.shields.io/badge/last%20updated-2026--11--20-2563eb)
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
-![Editions](https://img.shields.io/badge/daily%20editions-2-9333ea)
+![Editions](https://img.shields.io/badge/daily%20editions-3-9333ea)
 <!-- BADGES:END -->
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
@@ -15,13 +15,13 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ## 📰 Today's digest
 
 <!-- TODAY:START -->
-### [19 Nov 2026 →](daily/2026/11/2026-11-19.md)
+### [20 Nov 2026 →](daily/2026/11/2026-11-20.md)
 
-- **Security:** Microsoft's `agent-framework` 1.26.1/1.26.2 on PyPI shipped a credential stealer (pin 1.26.0 and rotate secrets), and the reference `mcp-server-git` fixes three code-execution paths. → [AI security](architecture/security/README.md)
-- **Models:** OpenAI **GPT-6.2 Astra** ($8/$40) and **GPT-6.2 Sol** are on the API, Codex and Bedrock, and background mode is 30–40% cheaper. → [LLM news](models/news/README.md) · [Cost](models/cost-and-serving/README.md)
-- **Tools:** upgrade Claude Code to ≥ 2.1.325; `codex exec` now needs `--trust` for repo config; the MCP TypeScript SDK has four CVEs, fixed in 1.32.0. → [Coding agents](build/coding-agents/README.md) · [MCP servers](build/mcp-servers/README.md)
-- **AWS:** new AgentCore runtimes default to V2; Kiro CLI 3.5 adds org sign-in for MCP. → [AWS](platforms/aws/README.md)
-- **Action items:** Claude Sonnet 4.5 retires on **30 Nov** · Gemini 4 Argon doubles on **1 Dec** · Pydantic AI ≥ 2.60 changes how tool retries are reported. → [Libraries](build/libraries/README.md)
+- **Tools:** Claude Code 2.1.326–2.1.329 tighten the sandbox and bypass mode, so re-test unattended jobs; Kiro IDE gets the Permission Request hook. → [Coding agents](build/coding-agents/README.md)
+- **Security:** the MCP Python SDK has three CVEs; run `mcp` ≥ 1.30.0 / 2.2.0. → [MCP servers](build/mcp-servers/README.md)
+- **Libraries:** Spring Boot 4.2.0 and Spring AI 2.1.0 are on Maven Central; Pydantic AI 2.71 adds `PermissionRule` and renames APIs. → [Libraries](build/libraries/README.md)
+- **AWS & models:** GPT-6.2 Bedrock IDs and prices, AgentCore Memory session summaries, and Qwen4-Max priced at $1.50/$4.50. → [AWS](platforms/aws/README.md) · [LLM news](models/news/README.md)
+- **Action items:** TRL 1.18 async-GRPO config changes · DeepSeek bills built-in search as tokens · Claude Sonnet 4.5 retires **30 Nov**. → [Fine-tuning](models/fine-tuning/README.md) · [Cost](models/cost-and-serving/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)

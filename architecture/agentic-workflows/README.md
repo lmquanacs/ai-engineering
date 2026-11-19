@@ -1,6 +1,6 @@
 # Agentic workflows: patterns and breakthroughs
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-20_
 
 > How to structure agent systems, and what the evidence says actually works. Patterns are stable; the "latest evidence" section changes fastest.
 
@@ -23,6 +23,11 @@ Production guardrails that apply to every pattern: an iteration cap, deadlock de
 ---
 
 ## 🔬 Latest evidence: what actually moves the needle
+
+### Agent teams cost 1.8–5.1× more for little gain · Vals AI, 2026-10-09 🆕
+On Vibe Code Bench (50 full-stack apps), Vals compared one agent against a lead with up to five subagents, using GPT 6 Sol and Claude Opus 5.5 at medium and max effort. Teams cost 1.8–5.1× as much; the only statistically significant team gain was Sol at medium effort (+7.3 points), while simply raising a single Sol agent to max effort gave +11.4 *(self-run, one run per setup)*.
+**Takeaway:** Try more effort on one agent before adding subagents.
+Source: [Vals AI: Do agent teams pay off?](https://www.vals.ai/blog/multi-agent-vibe-code-bench) · Added: 2026-11-20
 
 ### Best harness depends on the model · FrontierHarness Eval v1.1, 2026-11-17 🆕
 In 27,280 runs (22 harness configurations × 5 open models), the model explained most of the cost, but with the model fixed the harness still changed cost per task by about 1.8–5×. Rankings reshuffled between models, and 64.5% of spend went to failed runs. Steps per pass, not prompt size or tool count, tracked cost.

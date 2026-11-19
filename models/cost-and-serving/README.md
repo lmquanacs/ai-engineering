@@ -1,6 +1,6 @@
 # Inference, cost & serving
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-20_
 
 > What models cost, how to pay less, and how to serve open models yourself. Prices are list prices in USD per 1M tokens unless stated, and they change often, so check the provider's page before you budget.
 
@@ -31,9 +31,11 @@ _Last updated: 2026-11-19_
 | Gemini 3.8 Flash | $0.75 | $0.075 | $3.75 | Batch/Flex −50% · ⚠️ rises Jan 1 |
 | Grok 4.7 | $2 | $0.50 | $6 | Batch −20%; 200K+ prompts double |
 | DeepSeek-V4.1-Flash (`deepseek-flash`) | $0.30 / $0.15 off-peak | $0.006 | $1.20 / $0.60 off-peak | Off-peak (by UTC hour) −50% |
+| DeepSeek-V4-Pro (`deepseek-v4-pro`) | $1.32 / $0.66 off-peak | $0.044 / $0.022 | $3.96 / $1.98 off-peak | Off-peak −50% |
+| Qwen4-Max (`qwen4-max`, international) | $1.50 | $0.075 (cache hit) | $4.50 | Explicit cache writes cost extra |
 | Mistral Large 4 | $0.70 | $0.07 | $2.10 | Batch −50% (the pricing page also shows $0.50/$1.50, so confirm for your ID) |
 
-Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15; GPT-6.2 rows from [OpenAI pricing](https://developers.openai.com/api/docs/pricing) on 2026-11-19. Gemini 4 Carbon, Gemini 4 Hydrogen and GPT-6 Sol are not yet in the table.
+Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15; GPT-6.2 rows from [OpenAI pricing](https://developers.openai.com/api/docs/pricing) on 2026-11-19; DeepSeek-V4-Pro from [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) and Qwen4-Max from [Model Studio pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) on 2026-11-20. Gemini 4 Carbon, Gemini 4 Hydrogen and GPT-6 Sol are not yet in the table.
 
 **More trackers:** [getdeploying.com/llms](https://getdeploying.com/llms) (199 models, hand-checked) · [benchlm.ai cost ledger](https://benchlm.ai/llm-pricing) (217 models, with value-for-money scores)
 
@@ -52,7 +54,17 @@ Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog)
 
 ---
 
+### DeepSeek: built-in search and fetch now billed as tokens · 2026-11-18 🆕
+From 2026-11-18 12:00 Beijing time, server-side search and web-fetch calls made during a model call are no longer billed as separate tool calls; their results go into the context and are billed as input tokens. The standalone Search and Fetch APIs still cost $0.75 per 1,000 successful requests. Peak hours (full price) are 01:00–04:00 and 06:00–10:00 UTC on weekdays.
+**Why it matters:** Agents that lean on DeepSeek's built-in search now pay per token of fetched content, so long pages cost more. Re-estimate cost for tool-heavy runs.
+Source: [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) · Added: 2026-11-20
+
 ## 🖥️ Self-hosting & serving
+
+### vLLM v0.34.0 · 2026-11-16 🆕
+PyPI shows v0.34.0 uploaded on 2026-11-16. A copy of the release notes lists breaking changes, including removal of Model Runner V1, a larger default KV block size and a new `gpu_memory_utilization` default; we could not open the GitHub release to confirm them.
+**Why it matters:** This looks like an upgrade that changes memory behaviour. Read the GitHub release notes and test on staging before rolling it out.
+Source: [vLLM on PyPI](https://pypi.org/project/vllm/) · [GitHub release v0.34.0](https://github.com/vllm-project/vllm/releases/tag/v0.34.0) · Added: 2026-11-20
 
 ### vLLM v0.33.0 · 2026-11-01 🆕
 Faster speculative decoding on NVIDIA and AMD, a ROCm decode path, new model support, and a `/v1/decisions` endpoint. **Breaking changes:** official builds are now **CUDA 13.0 only** (no more 12.9 wheels or images) and move to PyTorch 2.14. The LM Format Enforcer structured-output backend is deprecated: opt-in in v0.34, removed in v0.35.

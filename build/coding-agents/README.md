@@ -1,6 +1,6 @@
 # Coding agents & IDEs
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-20_
 
 > Release notes that change how you work in Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin and Kiro. Only items worth acting on are included.
 
@@ -10,12 +10,23 @@ _Last updated: 2026-11-19_
 |---|---|---|
 | now | Claude Code ≥ 2.1.325 | Upgrade: 2.1.321–2.1.325 fix an MCP OAuth refresh-token leak on redirect, several sandbox and Bash permission bypasses, and zstd decoding. Sandboxed Bash now prompts by default; set `sandbox.autoAllowBashIfSandboxed: true` to keep the old behaviour |
 | now | Claude Code: unknown model IDs assume a 1M context (2.1.323) | If you route to a gateway or custom model with a smaller window, set `CLAUDE_CODE_DISABLE_1M_CONTEXT=1` or `CLAUDE_CODE_MAX_CONTEXT_TOKENS` |
+| now | Claude Code 2.1.326–2.1.329 tighten the sandbox and bypass mode | Re-test unattended and `-p` jobs: more Bash/PowerShell commands now ask (or are refused when no one can answer), even in bypass mode; sandboxed commands no longer write to some sensitive home folders (allow with `sandbox.filesystem.allowWrite`) |
+| next release | Claude Code auto mode: the billed classifier fallback is being removed (2.1.327 notice) | Actions it would have checked will be asked about or denied, so check auto-mode runs with telemetry off |
 | now | Codex CLI ≥ 0.169.0: `codex exec` ignores project config and MCP servers in untrusted folders | Add `--trust` to CI jobs that rely on repo-level Codex config or MCP servers |
 | **2026-11-26** | Kiro enterprise daily metrics move to 00:30 UTC | Shift any job that reads the daily metrics export |
 | by **2026-11-30** | Claude Sonnet 4.5 retires | Update `model` settings, `CLAUDE.md` and CI configs that pin it |
 | **Feb 2027** | Copilot in VS Code: the Local harness is removed | Move remaining workflows to the Copilot harness (already the default for new sessions) |
 
 ## 🗞️ Latest releases
+
+### Claude Code 2.1.326 → 2.1.329 · 2026-11-16 → 11-19 🆕
+- **2.1.326:** a large permission and sandbox hardening pass. Sandboxed commands on macOS, Linux and WSL no longer write to some sensitive home folders by default (`sandbox.filesystem.allowWrite` re-allows some); file tools refuse writes to sign-in files such as `.credentials.json`; more Bash and PowerShell commands ask first, some even in bypass mode, and are refused where no one can answer. Self-hosted runners without `gh` get a built-in `gh api` routed via Anthropic (`--use-anthropic-gh false` turns it off). Adds `OTEL_RESOURCE_INCLUDE_HOST`.
+- **2.1.327:** `claude mcp add-json <name> -` reads server JSON from stdin so tokens stay off the command line; `ExitWorktree` asks before removing a worktree that may hold unsaved work; `permissions.blockReadsOutsideWorkingDirectories` covers more Bash commands; project-scope `claude mcp add/remove` no longer deletes other keys in `.mcp.json`. Auto mode now warns that an upcoming release removes the billed classifier fallback.
+- **2.1.328:** auto mode for Claude Opus 4.6 and Sonnet 4.6 on Bedrock, Google Cloud, Microsoft Foundry and the Claude apps gateway. Self-hosted runners turn the built-in `gh api` **off** by default where settings guard GitHub tools by name.
+- **2.1.329:** the trust dialog now says where a folder's hooks are declared; warns when managed-settings hooks fail to load; fixes `~/.claude.json` sometimes being reset to defaults.
+
+**Why it matters:** CI, `-p` and scheduled runs that worked under 2.1.325 may now stop at a prompt or get refused. Run them once after upgrading and add explicit allow rules where needed.
+Source: [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · release dates from [npm](https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions) · Added: 2026-11-20
 
 ### Claude Code 2.1.317 → 2.1.325 · 2026-11-02 → 11-13 🆕
 - **2.1.325:** security fixes for zstd response decoding, a Bash allow rule that could run a different program than the one it names, compound commands that ran without asking, and subagents changing external artifacts without asking. **Behaviour change:** sandboxed Bash commands now go through the normal permission prompt (`sandbox.autoAllowBashIfSandboxed: true` restores the old behaviour). Scheduled tasks and `/loop` ask before running skills that declare `allowed-tools` or hooks, and `-p`/SDK runs only apply `.claude/settings.local.json` allow rules in trusted folders.
@@ -42,18 +53,20 @@ Source: [Codex changelog](https://learn.chatgpt.com/codex/changelog) · Added: 2
 - **Claude Fable 5.2** and **Gemini 4 Carbon** are available on Copilot Pro+, Max, Business and Enterprise. Fable 5.2's policy is **off by default** for Business and Enterprise, so an admin must enable it.
 - The Copilot app re-authenticates MCP servers in place when they require sign-in again, and GitHub Enterprise Server support is GA in the app (cloud sessions are not supported for GHES).
 - VS Code 1.146: the **Local harness is scheduled for removal in February 2027**; the Copilot harness is already the default for new sessions.
+- **Copilot CLI 1.0.113** (2026-11-17): admins can switch off the built-in Browser Use with the managed setting `features.browserUse`, which also applies to running sessions.
 
 **Why it matters:** Org admins need to flip a policy before developers can use Fable 5.2, and teams on the Local harness have a migration deadline.
-Source: [GitHub changelog: Copilot weekly releases, November 9](https://github.blog/changelog/2026-11-16-github-copilot-weekly-releases-november-9) · Added: 2026-11-19
+Source: [GitHub changelog: Copilot weekly releases, November 9](https://github.blog/changelog/2026-11-16-github-copilot-weekly-releases-november-9) · [Copilot CLI changelog](https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md) · Added: 2026-11-19 · Updated: 2026-11-20
 
-### Kiro: admin-enforced sandboxing and org sign-in for MCP · 2026-11-16 → 11-17 🆕
+### Kiro: admin-enforced sandboxing and org sign-in for MCP · 2026-11-16 → 11-18 🆕
 - **Local Sandbox Controls:** admins can require sandboxing for commands and local stdio MCP servers, and developers can't turn it off in client settings.
 - **CLI 3.5.0:** organisation sign-in for MCP servers, so one identity-provider login covers every server set to use it.
 - **CLI 3.4.0:** hooks can rewrite tool inputs and answer permission prompts; a `deny` from any hook overrides an `allow`.
+- **IDE 1.4.236** (2026-11-18): a Permission Request hook answers approval prompts from a script, prompts show the final arguments after Pre Tool Use hooks rewrite them, org sign-in comes to HTTP MCP servers in the IDE, and powers and skills install from public GitLab URLs (self-hosted GitLab hosts go in `kiroAgent.powers.trustedGitLabHosts`).
 - Enterprise admins can stream LLM requests and tool calls as OpenTelemetry events (exports exclude prompts, responses and code). Daily metrics move to 00:30 UTC on 2026-11-26.
 
 **Why it matters:** Platform teams can now enforce a sandbox and central MCP auth for Kiro rather than relying on each developer's settings.
-Source: [Kiro changelog](https://kiro.dev/changelog/index) · Added: 2026-11-19
+Source: [Kiro changelog](https://kiro.dev/changelog/index) · [IDE 1.4.236](https://kiro.dev/changelog/ide/1-4-236/) · Added: 2026-11-19 · Updated: 2026-11-20
 
 ### Cursor: voice chat + live app hosting · week of 2026-11-02 🆕
 - **Realtime voice** with coding agents in the Agents Window, IDE, web and iOS; zero data retention in Privacy Mode.

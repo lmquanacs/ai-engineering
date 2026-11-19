@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-20_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory, retrieval (embeddings, rerankers, parsing) and caching. Agent quality now depends more on this than on which model you pick.
 
@@ -42,6 +42,11 @@ Source: [Slides](https://docs.google.com/presentation/d/1BVqX1h2DPyIDCEWUSNXSVFI
 ---
 
 ## 🔬 Latest evidence
+
+### GPT-6.2 changes what is cacheable and when reasoning is kept · OpenAI · 2026-11-17 🆕
+OpenAI's migration guide says GPT-6.2 places top-level `instructions` after `input`, so reusable instructions must move into a leading `developer` message to be cached. Reasoning items are dropped when an earlier part of the conversation is edited (developer messages or tool-call history), or when the model, user or org changes, which costs quality and tokens. Teams coming from GPT-5.5 or earlier replace `prompt_cache_retention` with `prompt_cache_options.ttl`.
+**Why it matters:** This is a second reason, after the cache-pricing study below, to append to history rather than rewrite it. Audit code that edits or compacts earlier turns before switching to GPT-6.2.
+Source: [OpenAI migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra#gpt-6.2-astra-migration-quickstart) · [API changelog](https://developers.openai.com/api/docs/changelog) · Added: 2026-11-20
 
 ### Trimming context can raise cost under prefix caching · arXiv 2611.22238 🆕
 A study of more than 20,000 coding-agent runs (open models; SWE-bench Verified, SWE-bench, Loc-Bench) tracked uncached input, cached input and output tokens separately. When cached input costs a tenth of uncached input, **removing old observations raised cost by 38–116%** and **adding retrieved code raised it by 33–42%**, with no measurable gain in resolve rate. Without a cache discount, the same removal saved 19–36%. Shorter prompts can also lead to more steps.

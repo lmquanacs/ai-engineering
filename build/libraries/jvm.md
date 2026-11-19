@@ -1,10 +1,10 @@
 # Libraries · ☕ JVM (Java / Kotlin / Spring Boot)
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-19_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-20_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
-| [**Spring AI**](https://github.com/spring-projects/spring-ai) | 2.0.2 (2026-10-22); 2.1.0-RC2 (2026-11-05) | Spring-native LLM framework: ChatClient, advisors, tool calling, RAG, memory, observability, MCP client/server. **2.0 requires Spring Boot 4.** | Any Spring Boot service adding AI |
+| [**Spring AI**](https://github.com/spring-projects/spring-ai) | **2.1.0 (2026-11-19)**; 2.0.2 (2026-10-22) | Spring-native LLM framework: ChatClient, advisors, tool calling, RAG, memory, observability, MCP client/server. **2.0 requires Spring Boot 4.** | Any Spring Boot service adding AI |
 | [**Embabel**](https://github.com/embabel/embabel-agent) | 1.5.4 (2026-10-28) | Goal-oriented agent framework by Rod Johnson (creator of Spring). Uses **GOAP planning** (A* search) over typed Java/Kotlin domain objects and runs on top of Spring AI. | Multistep agents where you want deterministic, type-safe, replannable flows |
 | [**Koog**](https://github.com/JetBrains/koog) | 1.3.0 (2026-09-23) | JetBrains' Kotlin agent framework with a type-safe DSL. Kotlin Multiplatform (JVM, Android, iOS, JS, Wasm), A2A support, persistence, plus a Java builder API. | Kotlin-first teams, or agents that must run on mobile and server alike |
 | [**LangChain4j**](https://github.com/langchain4j/langchain4j) | 1.24.0 (2026-11-18) | Framework-agnostic Java LLM library with integrations for Spring Boot, Quarkus and Micronaut, plus a `langchain4j-agentic` module | Non-Spring stacks (Quarkus/Micronaut) or the widest provider coverage |
@@ -14,6 +14,11 @@
 | **Quarkus LangChain4j** | — | Red Hat/IBM-maintained Quarkus extension; GraalVM native, Dev UI | Quarkus services |
 
 ## 🆕 Notable changes
+
+### Spring Boot 4.2.0 and Spring AI 2.1.0 GA · 2026-11-19 🆕
+Both reached Maven Central on 2026-11-19 (UTC): `spring-boot` 4.2.0 and `spring-ai-model` / `spring-ai-bom` 2.1.0. At the time of writing there was no spring.io announcement or published release notes, so the Boot version Spring AI 2.1 requires and the final 4.2 feature list (AMQP 1.0, Kotlin 2.4 baseline) are not yet confirmed.
+**Why it matters:** This is the GA both RC2 lines were heading for. Move off the RCs, but wait for the 2.1 upgrade notes before upgrading production services.
+Sources: [Maven Central: spring-boot](https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/maven-metadata.xml) · [Maven Central: spring-ai-model](https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-model/maven-metadata.xml) · Added: 2026-11-20
 
 ### Spring AI 2.0: a rebuilt foundation on Boot 4 🆕
 GA on 2026-06-12. It needs Spring Boot 4.0/4.1 and Spring Framework 7. MCP annotations (`@McpTool`, `@McpResource`, `@McpPrompt`) and the WebMVC/WebFlux MCP transports moved into core, and tool calling became composable. Teams staying on Boot 3.x keep receiving patches on the 1.1.x line.
@@ -26,7 +31,7 @@ The 2.1.0-M1 notes say new agentic support will ship in **November 2026** as a s
 Source: [Spring AI 2.1.0-M1](https://spring.io/blog/2026/09/25/spring-ai-2-1-0-M1-available-now/) · Added: 2026-11-18
 
 ### Spring Boot 4.1 → 4.2 🆕
-Boot 4.1 (2026-06-10) added gRPC auto-configuration, HTTP-client SSRF mitigation, OpenTelemetry environment-variable support and a **Kotlin 2.3** baseline. **Boot 4.2 is expected in November 2026** with the AMQP 1.0 module, and Kotlin 2.4 is expected as its baseline. As of 2026-11-19 the latest on Maven Central is **4.2.0-RC2** (2026-11-05), with 4.1.2 (2026-10-22) the latest GA; Spring AI 2.1.0-RC2 shipped the same day.
+Boot 4.1 (2026-06-10) added gRPC auto-configuration, HTTP-client SSRF mitigation, OpenTelemetry environment-variable support and a **Kotlin 2.3** baseline. **Boot 4.2 is expected in November 2026** with the AMQP 1.0 module, and Kotlin 2.4 is expected as its baseline. **4.2.0 GA** reached Maven Central on 2026-11-19 (see above).
 Sources: [Maven Central: spring-boot](https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/maven-metadata.xml) · [InfoQ: Spring Boot 4.1](https://infoq.com/news/2026/06/spring-boot-4-1) · [Spring I/O slides (Kotlin baselines)](https://2026.springio.net/slides/idiomatic-kotlin-applications-with-spring-boot-4-springio16.pdf) · Added: 2026-11-18
 
 ## 🧭 How they fit together

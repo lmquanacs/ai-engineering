@@ -26,6 +26,13 @@ _Last updated: 2026-11-20_
 
 <!-- newest first: retrieval patterns with evidence, vector DB releases, RAG eval methods -->
 
+### OpenSearch 3.10: per-query hybrid fusion, template-based agentic search · 2026-11-17 🆕
+The `hybrid` query gains a fusion mode: normalisation and combination are set in the query body instead of a search pipeline, fused hybrid queries can nest inside `bool` or `dis_max`, and a `weights` parameter sets subquery weights per request (min-max, z-score, L2 and RRF remain). `half_float` vectors add 2-bit and 4-bit scalar quantisation. Experimental: search templates for agentic search, where the LLM fills in a registered template rather than writing the whole query, and an Intel SVS engine that OpenSearch reports at 2.6× Faiss HNSW-fp16 throughput at 0.95 recall *(self-reported)*.
+**Why it matters:** Hybrid weights become a per-request knob you can tune and A/B, and template-based agentic search bounds what an LLM-written query can do.
+Source: [OpenSearch blog: Explore OpenSearch 3.10](https://opensearch.org/blog/explore-opensearch-3-10/) · Added: 2026-11-20
+
+Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01).
+
 ---
 
 ## 🔎 Retrieval models (embeddings, rerankers, parsers)
@@ -33,12 +40,14 @@ _Last updated: 2026-11-20_
 ### NVIDIA Nemotron 3.5 Embed / Rerank / Parse · 2026-10-21 🆕
 Five open, commercially usable retrieval models: Embed (8B and 1B, plus a 1B NVFP4 variant), an 8B reranker and a 631M document parser. NVIDIA reports first place among dense retrievers on ViDoRe v3.1 (61.17 nDCG@10) and top reranker scores as of Oct 20 *(self-reported)*. Available on Hugging Face and as NIM.
 **Why it matters:** These are strong open models for multimodal retrieval over PDFs, charts and tables, and NVIDIA pitches better retrieval as a way to cut agent token spend.
-Sources: [Let's Data Science](https://letsdatascience.com/news/nvidia-expands-open-nemotron-35-models-for-enterprise-retrie-f464c19f) · [Unite.AI](https://unite.ai/nvidia-debuts-open-nemotron-3-5-models-for-embedding-reranking-parsing) · Added: 2026-11-18
+Licence: OpenMDW-1.1.
+Sources: [NVIDIA on Hugging Face](https://huggingface.co/blog/nvidia/nemotron-retriever-world-class-agentic-retrieval) · [Nemotron-3.5-Embed-8B model card](https://huggingface.co/nvidia/Nemotron-3.5-Embed-8B-BF16) · [Nemotron-3.5-Parse model card](https://huggingface.co/nvidia/Nemotron-3.5-Parse) · Added: 2026-11-18 · Updated: 2026-11-20
 
-### Cohere Embed 5 + Rerank 5 (Context Focus) · Oct–Nov 2026 🆕
+### Cohere Embed 5 + Rerank 5 (Context Focus) · Sep–Nov 2026 🆕
 Rerank 5 adds an optional **Context Focus** mode that returns the relevant text spans along with document scores. Both models have been on OpenRouter since 2026-11-04, so existing OpenRouter keys work.
 **Why it matters:** Returning spans means you pass less text to the generator, which saves context and cost.
-Source: [Neoteo](https://www.neoteo.com/en/cohere-brings-embed-5-and-rerank-5-to-openrouter) · Added: 2026-11-18
+Embed 5 (Pro and Fast) launched 2026-09-30 and Rerank 5 (Pro and Fast, with calibrated relevance scores) on 2026-10-21.
+Sources: [Cohere changelog: Embed 5](https://docs.cohere.com/v2/changelog/embed-v5) · [Rerank 5](https://docs.cohere.com/v2/changelog/rerank-v5) · [On OpenRouter](https://docs.cohere.com/v2/changelog/embed-rerank-v5-openrouter) · Added: 2026-11-18 · Updated: 2026-11-20
 
 ### jina-reranker-v3.5 · 2026-08-03
 A 0.6B listwise reranker. Jina reports it matches 4B models on BEIR and leads compact models on multilingual MIRACL *(self-reported)*. The weights are **non-commercial**; commercial use goes through Jina's API or Elastic.

@@ -28,9 +28,19 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 
 ## 🚨 Recent items
 
-### MCP Python SDK CVEs and Claude Code sandbox hardening · Nov 2026 🆕
-The official MCP Python SDK has three advisories (schema `$ref` resolution leading to SSRF and file reads, a missing token-audience check, and credential headers sent on cross-origin redirects), fixed in `mcp` 1.30.0 / 2.2.0. Claude Code 2.1.326–2.1.329 continue last week's permission work: sandboxed commands write to fewer home folders, sign-in files are write-protected, and bypass mode now asks about some commands.
-**Why it matters:** Upgrade Python MCP clients that talk to third-party servers, and re-test unattended Claude Code jobs. Details: [MCP servers](../../build/mcp-servers/README.md#-security-notes) · [Coding agents](../../build/coding-agents/README.md)
+### MCP Python SDK: three CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 🆕
+Advisories against the official Python SDK (`mcp` on PyPI):
+- **CVE-2026-116686** (GHSA-rwrf-2pqf-9j8j, CVSS 6.5): when a client validates a server-declared `outputSchema`, `$ref` URLs (http, https or file) are resolved, allowing blind outbound requests, local file reads and stalling every session in the process. Affects ≥ 1.10.0 < 1.30.0 and ≥ 2.0.0 < 2.2.0.
+- **CVE-2026-116684** (CVSS 3.1 6.8): `TokenVerifier` did not check `aud`, so tokens issued for other services were accepted. Same ranges.
+- **CVE-2026-116685** (CVSS 5.9): cross-origin redirects forwarded credential headers, and on 307/308 the request body. Affects ≥ 1.8.0.
+
+The fixed versions were on PyPI from 2026-09-07; the advisories came later.
+**Why it matters:** Clients that connect to untrusted MCP servers are the most exposed. Upgrade to `mcp` ≥ 1.30.0 or ≥ 2.2.0.
+Sources: [GHSA-rwrf-2pqf-9j8j](https://github.com/modelcontextprotocol/python-sdk/security/advisories/GHSA-rwrf-2pqf-9j8j) · [OpenCVE: CVE-2026-116686](https://app.opencve.io/cve/CVE-2026-116686) · [Mend: CVE-2026-116684](https://www.mend.io/vulnerability-database/CVE-2026-116684/) · Added: 2026-11-20
+
+### Claude Code 2.1.326 → 2.1.329 sandbox hardening · Nov 2026 🆕
+Sandboxed commands write to fewer home folders, sign-in files are write-protected, and bypass mode now asks about some commands.
+**Why it matters:** Re-test unattended jobs. Details → [Coding agents](../../build/coding-agents/README.md)
 Added: 2026-11-20
 
 ### Reference Git MCP server: command-execution advisories · 2026-11-18 🆕

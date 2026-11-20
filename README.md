@@ -18,7 +18,7 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ### [20 Nov 2026 →](daily/2026/11/2026-11-20.md)
 
 - **Tools:** Claude Code 2.1.326–2.1.329 tighten the sandbox and bypass mode, so re-test unattended jobs; Kiro IDE gets the Permission Request hook. → [Coding agents](build/coding-agents/README.md)
-- **Security:** the MCP Python SDK has three CVEs; run `mcp` ≥ 1.30.0 / 2.2.0. → [MCP servers](build/mcp-servers/README.md)
+- **APIs & security:** Claude API now returns 400 for edited-prefix thinking blocks and the old computer-use tool; the MCP Python SDK has three CVEs (`mcp` ≥ 1.30.0 / 2.2.0). → [LLM APIs](build/llm-apis/README.md) · [AI security](architecture/security/README.md)
 - **Libraries:** Spring Boot 4.2.0 and Spring AI 2.1.0 are on Maven Central; Pydantic AI 2.71 adds `PermissionRule` and renames APIs. → [Libraries](build/libraries/README.md)
 - **AWS & models:** GPT-6.2 Bedrock IDs and prices, AgentCore Memory session summaries, and Qwen4-Max priced at $1.50/$4.50. → [AWS](platforms/aws/README.md) · [LLM news](models/news/README.md)
 - **Action items:** TRL 1.18 async-GRPO config changes · DeepSeek bills built-in search as tokens · Claude Sonnet 4.5 retires **30 Nov**. → [Fine-tuning](models/fine-tuning/README.md) · [Cost](models/cost-and-serving/README.md)

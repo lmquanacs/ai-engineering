@@ -85,14 +85,9 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 ## 🔒 Security notes
 
 ### MCP Python SDK: three CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 🆕
-Advisories against the official Python SDK (`mcp` on PyPI):
-- **CVE-2026-116686** (GHSA-rwrf-2pqf-9j8j, CVSS 6.5): when a client validates a server-declared `outputSchema`, `$ref` URLs (http, https or file) are resolved, which allows blind outbound requests, local file reads and stalling every session in the process. Affects ≥ 1.10.0 < 1.30.0 and ≥ 2.0.0 < 2.2.0.
-- **CVE-2026-116684** (CVSS 3.1 6.8): `TokenVerifier` did not check `aud`, so tokens issued for other services were accepted. Same ranges.
-- **CVE-2026-116685** (CVSS 5.9): cross-origin redirects forwarded credential headers, and on 307/308 the request body. Affects ≥ 1.8.0.
-
-The fixed versions were already on PyPI (2026-09-07); the advisories came later.
-**Do this:** Python MCP clients and servers should run `mcp` ≥ 1.30.0 (1.x) or ≥ 2.2.0 (2.x). Clients that connect to untrusted servers are the most exposed.
-Sources: [GHSA-rwrf-2pqf-9j8j](https://github.com/modelcontextprotocol/python-sdk/security/advisories/GHSA-rwrf-2pqf-9j8j) · [OpenCVE: CVE-2026-116686](https://app.opencve.io/cve/CVE-2026-116686) · [Mend: CVE-2026-116684](https://www.mend.io/vulnerability-database/CVE-2026-116684/) · Added: 2026-11-20
+CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-audience check) and CVE-2026-116685 (credentials sent on cross-origin redirects).
+**Do this:** run `mcp` ≥ 1.30.0 (1.x) or ≥ 2.2.0 (2.x). Details → [AI security](../../architecture/security/README.md#-recent-items)
+Added: 2026-11-20
 
 ### MCP TypeScript SDK: four CVEs fixed in 1.32.0 / 2.3.0 · 2026-10-20 🆕
 Advisories published on 2026-10-20 cover the official TypeScript SDK:

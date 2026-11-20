@@ -87,6 +87,15 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
 
+### Add an MCP server without putting its token on the command line 🆕
+`claude mcp add-json <name> -` (2.1.327+) reads the server's JSON config from stdin, so a token piped in from a secrets manager or file never lands in shell history or `ps` output. It only works from your shell, not inside a Claude Code session.
+**Why it matters:** `claude mcp add ... --header "Authorization: Bearer ..."` leaves the secret in history.
+Source: [Claude Code changelog 2.1.327](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · [MCP docs](https://code.claude.com/docs/en/mcp) · Added: 2026-11-20
+
+### Make unattended runs survive the stricter sandbox 🆕
+Since 2.1.326, more Bash and PowerShell commands ask first, and in `-p` or scheduled runs with no one to answer they are refused. After upgrading, run the job once interactively, then add the exact commands it needs as allow rules in `.claude/settings.json`. If a sandboxed command needs to write to a home folder, add that path to `sandbox.filesystem.allowWrite` rather than turning the sandbox off.
+Source: [Claude Code changelog 2.1.326](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · [Settings](https://code.claude.com/docs/en/settings) · Added: 2026-11-20
+
 ## 📚 Reference
 
 - [Claude Code docs](https://code.claude.com/docs/en/overview) · [Best practices](https://code.claude.com/docs/en/best-practices) · [Common workflows](https://code.claude.com/docs/en/common-workflows) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Costs](https://code.claude.com/docs/en/costs) · [Checkpointing](https://code.claude.com/docs/en/checkpointing) · [GitHub Actions](https://code.claude.com/docs/en/github-actions)

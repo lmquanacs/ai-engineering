@@ -46,11 +46,6 @@ OpenAI's next point release: `gpt-6.2-astra` for demanding reasoning and coding,
 **Why it matters:** Astra-class work gets 20% cheaper. It is not a drop-in swap, though: reasoning effort `none` is rejected, tool calling needs the Responses API, and reasoning-preservation and `instructions` behaviour change. Re-run your evals and follow the migration quickstart. Also on Bedrock → [AWS](../../platforms/aws/README.md).
 Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Astra model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) · [Sol model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) · Added: 2026-11-19
 
-### Claude API linked billing (beta) · Anthropic · 2026-11-17 🆕
-With beta header `user-profiles-billing-2026-10-01`, a `billing_policy` field on `/v1/messages` and `/v1/chat/completions` chooses who pays for a request: your app, or the end customer's own Claude organization. Customers can cap or unlink your app's spend in the Console. It only works for customers whose organization pays Anthropic directly for API usage.
-**Why it matters:** B2B apps can pass inference cost through to customers instead of re-billing it.
-Source: [Claude release notes](https://platform.claude.com/docs/en/release-notes/overview) · Added: 2026-11-20
-
 ## 📈 Trends
 
 ### The harness matters as much as the model

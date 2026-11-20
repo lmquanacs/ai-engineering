@@ -25,6 +25,35 @@ _Last updated: 2026-11-20_
 
 <!-- newest first: new API features, breaking changes, migration guides -->
 
+### OpenAI: GPT-6.2 Responses API changes + background completion windows · 2026-11-17 🆕
+- **GPT-6.2 migration:** tool calling with `gpt-6.2-astra` / `gpt-6.2-sol` requires the Responses API, reasoning effort `none` is rejected, and the handling of top-level `instructions` and of reasoning after prefix edits changes (caching details → [Context engineering](../../architecture/context-and-memory/README.md#-latest-evidence)).
+- **Background completion windows** (public beta): on `v1/responses`, set `background: true`, `background_options.completion_window` to `"2h"` or `"8h"` and `service_tier: "default"`, without streaming. Collect results from the `response.completed` webhook or by polling. Supported on `gpt-6.2-astra`, `gpt-6.2-sol`, `gpt-6.1-terra` and `gpt-6-luna`. The window is a target, not a guarantee. (Discounts → [Inference & cost](../../models/cost-and-serving/README.md).)
+
+**Why it matters:** Chat Completions tool-calling code won't carry over to GPT-6.2, and background windows are a simpler alternative to the Batch API for evals and backfills.
+Sources: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra#gpt-6.2-astra-migration-quickstart) · [Background mode guide](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows) · Added: 2026-11-20
+
+### Anthropic: linked billing (beta) · 2026-11-17 🆕
+With beta header `user-profiles-billing-2026-10-01`, a `billing_policy` field on `/v1/messages` and `/v1/chat/completions` decides who pays for a request: your app, or the end customer's own Claude organization. Customers can cap or unlink your app's spend in the Console. Only customers whose organization pays Anthropic directly for API usage can be linked.
+**Why it matters:** B2B apps can pass inference cost through to customers instead of re-billing it.
+Source: [Claude release notes](https://platform.claude.com/docs/en/release-notes/overview) · Added: 2026-11-20
+
+### DeepSeek: built-in web search, URL reading and file input · 2026-11-13 🆕
+For `deepseek-flash`, in the Messages, Responses and Chat Completions formats: a built-in `deepseek_web_search` tool that answers with citations (also with thinking on), a `deepseek_read_url` tool for links in user messages, and file input that parses PDFs, Office files and images into context. Standalone Search/Fetch, OCR, ASR and TTS APIs shipped at the same time.
+**Why it matters:** DeepSeek now runs search and document handling server-side, like Anthropic and OpenAI. Billing for these changed on 2026-11-18 → [Inference & cost](../../models/cost-and-serving/README.md).
+Sources: [DeepSeek API updates](https://api-docs.deepseek.com/updates) · [Web tools guide](https://api-docs.deepseek.com/guides/web_tools) · Added: 2026-11-20
+
+### Anthropic: thinking-block prefix check now enforced · 2026-11-09 🆕
+If you edit `system`, `tools` or an earlier message and then send back a thinking block from a later turn, the request now returns **400** for all accounts. The `prefix_mismatch_behavior` parameter chooses between the error and having the API drop the failing blocks; the response's `input_transformations` lists what was dropped or let through.
+**Why it matters:** Agent loops that trim or rewrite history while preserving thinking can start failing. Decide which behaviour you want and set it explicitly.
+Source: [Claude docs: preserved thinking, enforcement](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking#enforcement) · Added: 2026-11-20
+
+### Anthropic: computer use moves to `computer_toolset_20260801` · 2026-11-09 🆕
+Requests that declare the older `computer_20251124` tool now return 400 on every platform except Amazon Bedrock. The docs include a migration section.
+**Why it matters:** Computer-use integrations stop working until migrated. → [Voice & multimodal](../voice-and-multimodal/README.md)
+Source: [Claude docs: migrate from computer_20251124](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#migrate-from-computer-20251124) · Added: 2026-11-20
+
+Library check (PyPI, 2026-11-20): no new releases of Instructor (1.17.0), Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window.
+
 ## 📚 Reference
 
 <!-- older or background entries -->

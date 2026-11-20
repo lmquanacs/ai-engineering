@@ -1,6 +1,6 @@
 # 🧰 AI Engineering Utilities
 
-> A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, models, architecture, agentic patterns and libraries, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus AWS.
+> A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, model APIs, RAG, architecture, agentic patterns, libraries and the AI engineer career, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus AWS.
 
 <!-- BADGES:START -->
 ![Last updated](https://img.shields.io/badge/last%20updated-2026--11--20-2563eb)
@@ -33,14 +33,16 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 <!-- CATEGORIES:START -->
 ### 🛠️ Build: tools you use every day
 
-Agent skills, MCP servers, libraries and coding agents: what you install and use while building.
+Agent skills, MCP servers, libraries, model APIs and coding agents: what you install and call while building.
 
 | Category | What you'll find | Best for | Checked |
 |---|---|---|---|
 | [**Agent skills**](build/agent-skills/README.md) | Popular SKILL.md skills with install commands, by stack: [Python](build/agent-skills/python.md) · [TypeScript](build/agent-skills/typescript.md) · [Java/Kotlin + Spring Boot](build/agent-skills/jvm-spring-kotlin.md) · [starter skills](build/agent-skills/starter-skills/) | Making coding agents follow your team's conventions | daily |
 | [**MCP servers**](build/mcp-servers/README.md) | MCP servers for software development, spec changes, tool-budget and security notes | Wiring agents to your tools | daily |
 | [**Libraries**](build/libraries/README.md) | Agent and LLM libraries for [Python](build/libraries/python.md) · [TypeScript](build/libraries/typescript.md) · [JVM](build/libraries/jvm.md) | Choosing a framework | daily |
+| [**LLM APIs & structured output**](build/llm-apis/README.md) | Provider API features you code against: structured outputs, tool calling, streaming, batch, files, Responses/Messages API changes | Calling models reliably from code | daily |
 | [**Coding agents & IDEs**](build/coding-agents/README.md) | Actionable releases of Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin, Kiro | Keeping your daily tools current | daily |
+| [**Voice & multimodal**](build/voice-and-multimodal/README.md) | Realtime voice agents, speech-to-text and text-to-speech, vision and document understanding, computer use | Building beyond text chat | weekly (Mon) |
 | [**AI-native languages**](build/ai-native-languages/README.md) | Programming languages designed for LLMs and agents, plus the essays debating them | Seeing where tooling is heading | weekly (Mon) |
 
 ### 🧠 Models: what to run and what it costs
@@ -61,10 +63,11 @@ How the pieces fit together in production. Start at the [architecture hub](archi
 |---|---|---|---|
 | [**AI system architecture (hub)**](architecture/README.md) | Reference architectures (RAG, agentic backend, coding-agent platform, Spring Boot + AI), LLM gateways, reliability, guardrail and eval placement, decision records | Designing an AI system end to end | weekly (Mon) |
 | [**Agentic workflows**](architecture/agentic-workflows/README.md) | Orchestration patterns, harness engineering, evidence on what actually works | Designing agent behaviour | daily |
-| [**Context engineering & memory**](architecture/context-and-memory/README.md) | Compaction, tool-result clearing, memory, caching; embeddings, rerankers, parsers | Agents that stay sharp on long tasks | daily |
+| [**RAG & retrieval**](architecture/rag-and-retrieval/README.md) | Chunking, hybrid search, reranking, agentic retrieval, GraphRAG; embedding, reranker and parser models; vector databases | Grounding answers in your own data | daily |
+| [**Context engineering & memory**](architecture/context-and-memory/README.md) | Compaction, tool-result clearing, agent memory, prompt caching and instruction files | Agents that stay sharp on long tasks | daily |
 | [**Agent infrastructure & runtimes**](architecture/agent-infrastructure/README.md) | Sandboxes, durable execution, hosting, agent identity and permissions | Running agents safely | daily |
 | [**Evals & observability**](architecture/evals-and-observability/README.md) | Tracing, evals, benchmarks, OpenTelemetry GenAI | Knowing whether it works | daily |
-| [**AI security**](architecture/security/README.md) | Prompt injection, MCP and skill supply chain, agent permissions | Not getting owned | daily |
+| [**AI security**](architecture/security/README.md) | Prompt injection, guardrails, MCP and skill supply chain, agent permissions, data leakage | Not getting owned, and not leaking data | daily |
 
 ### ☁️ Platforms
 
@@ -76,13 +79,14 @@ Cloud-specific services for building and running AI. Add Azure or Google Cloud h
 
 ### 📚 Learn from others
 
-What shipped, what broke, and what's coming.
+What shipped, what broke, what's coming, and how to grow as an AI engineer.
 
 | Category | What you'll find | Best for | Checked |
 |---|---|---|---|
 | [**Successful AI projects**](learn/successful-projects/README.md) | Shipped projects with measurable results (Ramp, Spotify, Coinbase, Stripe…) and open-source projects that took off | Seeing what success looks like | weekly (Mon) |
 | [**Case studies & postmortems**](learn/case-studies/README.md) | Lessons and failures from production, plus a weekly 'Learn this week' pick | Learning from others' mistakes | weekly (Mon) |
 | [**Research to watch**](learn/research/README.md) | Papers and experiments likely to reach practice | Staying ahead | daily |
+| [**AI engineer career & skills**](learn/career/README.md) | What the role expects, a skills map, interview topics, and the best courses, books and talks | Growing into (or hiring for) the role | weekly (Mon) |
 <!-- CATEGORIES:END -->
 
 > Have an idea for a category, or spotted a correction? [Open an issue](../../issues/new/choose).

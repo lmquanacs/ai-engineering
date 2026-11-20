@@ -29,9 +29,11 @@ flowchart TB
 | Layer | Deep dive in this repo |
 |---|---|
 | Orchestration patterns | [Agentic workflows](agentic-workflows/README.md) |
-| Context, memory, retrieval, caching | [Context engineering](context-and-memory/README.md) |
+| Retrieval (embeddings, search, reranking) | [RAG & retrieval](rag-and-retrieval/README.md) |
+| Context, memory, caching | [Context engineering](context-and-memory/README.md) |
 | Tools via MCP | [MCP servers](../build/mcp-servers/README.md) |
 | Sandboxes, durable execution, hosting | [Agent infrastructure](agent-infrastructure/README.md) |
+| Provider APIs, structured output, tool calling | [LLM APIs](../build/llm-apis/README.md) |
 | Model choice, cost, self-hosting | [LLM news](../models/news/README.md) · [Inference & cost](../models/cost-and-serving/README.md) |
 | Guardrails, permissions, injection | [AI security](security/README.md) |
 | Tracing and evals | [Evals & observability](evals-and-observability/README.md) |
@@ -58,7 +60,7 @@ flowchart LR
 ```
 
 **Key decisions:** filter by user permissions *at retrieval time*, never after generation. A cheap embedding model plus a strong reranker usually beats one large embedding model. Run a grounding check before answering, such as Bedrock Guardrails contextual grounding or an LLM judge. Re-index incrementally on change events, not with nightly full rebuilds.
-→ Models and patterns: [Context engineering](context-and-memory/README.md#-retrieval-models-embeddings-rerankers-parsers)
+→ Models and patterns: [RAG & retrieval](rag-and-retrieval/README.md)
 
 ### B · Agentic backend service (tool-using agent behind an API)
 

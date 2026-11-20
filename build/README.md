@@ -4,12 +4,14 @@
 
 ← [Repo home](../README.md)
 
-Agent skills, MCP servers, libraries and coding agents: what you install and use while building.
+Agent skills, MCP servers, libraries, model APIs and coding agents: what you install and call while building.
 
 | Category | What you'll find | Best for | Checked |
 |---|---|---|---|
 | [**Agent skills**](agent-skills/README.md) | Popular SKILL.md skills with install commands, by stack: [Python](agent-skills/python.md) · [TypeScript](agent-skills/typescript.md) · [Java/Kotlin + Spring Boot](agent-skills/jvm-spring-kotlin.md) · [starter skills](agent-skills/starter-skills/) | Making coding agents follow your team's conventions | daily |
 | [**MCP servers**](mcp-servers/README.md) | MCP servers for software development, spec changes, tool-budget and security notes | Wiring agents to your tools | daily |
 | [**Libraries**](libraries/README.md) | Agent and LLM libraries for [Python](libraries/python.md) · [TypeScript](libraries/typescript.md) · [JVM](libraries/jvm.md) | Choosing a framework | daily |
+| [**LLM APIs & structured output**](llm-apis/README.md) | Provider API features you code against: structured outputs, tool calling, streaming, batch, files, Responses/Messages API changes | Calling models reliably from code | daily |
 | [**Coding agents & IDEs**](coding-agents/README.md) | Actionable releases of Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin, Kiro | Keeping your daily tools current | daily |
+| [**Voice & multimodal**](voice-and-multimodal/README.md) | Realtime voice agents, speech-to-text and text-to-speech, vision and document understanding, computer use | Building beyond text chat | weekly (Mon) |
 | [**AI-native languages**](ai-native-languages/README.md) | Programming languages designed for LLMs and agents, plus the essays debating them | Seeing where tooling is heading | weekly (Mon) |

@@ -44,11 +44,21 @@ Starting points for the daily agent. **Confirm every item at its primary source*
 - Koog: https://github.com/JetBrains/koog/releases
 - LangChain4j: https://github.com/langchain4j/langchain4j/releases
 
-## Context engineering & retrieval
+## LLM APIs & structured output
+- Use the provider changelogs above (Anthropic, OpenAI, Google, Mistral, xAI, DeepSeek) for API features and breaking changes
+- Instructor: https://github.com/567-labs/instructor/releases · Outlines: https://github.com/dottxt-ai/outlines/releases · BAML: https://github.com/BoundaryML/baml/releases
+
+## Voice & multimodal
+- Pipecat: https://github.com/pipecat-ai/pipecat/releases
+- LiveKit Agents: https://github.com/livekit/agents/releases
+- Deepgram changelog: https://developers.deepgram.com/changelog · ElevenLabs changelog: https://elevenlabs.io/docs/changelog
+
+## Context engineering & RAG / retrieval
 - Anthropic context management docs and engineering blog: https://www.anthropic.com/engineering
 - Hugging Face blog: https://huggingface.co/blog
 - Cohere changelog/blog: https://cohere.com/blog · Jina news: https://jina.ai/news
 - MTEB leaderboard: https://huggingface.co/spaces/mteb/leaderboard
+- Vector DBs: pgvector https://github.com/pgvector/pgvector/releases · Qdrant https://github.com/qdrant/qdrant/releases · Weaviate https://github.com/weaviate/weaviate/releases · Milvus https://github.com/milvus-io/milvus/releases
 
 ## Inference, pricing & serving
 - Anthropic pricing: https://platform.claude.com/docs/en/about-claude/pricing
@@ -93,3 +103,9 @@ Starting points for the daily agent. **Confirm every item at its primary source*
 - InfoQ AI/Java news: https://www.infoq.com
 - arXiv cs.SE / cs.CL / cs.CR (recent)
 - OWASP GenAI: https://genai.owasp.org
+- Guardrails: NeMo Guardrails https://github.com/NVIDIA/NeMo-Guardrails/releases · Guardrails AI https://github.com/guardrails-ai/guardrails/releases
+
+## Career & skills
+- AI Engineer conference talks: https://www.youtube.com/@aiDotEngineer
+- Latent Space (role and hiring essays): https://latent.space
+- Chip Huyen's blog: https://huyenchip.com/blog/

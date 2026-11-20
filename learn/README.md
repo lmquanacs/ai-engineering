@@ -4,10 +4,11 @@
 
 ← [Repo home](../README.md)
 
-What shipped, what broke, and what's coming.
+What shipped, what broke, what's coming, and how to grow as an AI engineer.
 
 | Category | What you'll find | Best for | Checked |
 |---|---|---|---|
 | [**Successful AI projects**](successful-projects/README.md) | Shipped projects with measurable results (Ramp, Spotify, Coinbase, Stripe…) and open-source projects that took off | Seeing what success looks like | weekly (Mon) |
 | [**Case studies & postmortems**](case-studies/README.md) | Lessons and failures from production, plus a weekly 'Learn this week' pick | Learning from others' mistakes | weekly (Mon) |
 | [**Research to watch**](research/README.md) | Papers and experiments likely to reach practice | Staying ahead | daily |
+| [**AI engineer career & skills**](career/README.md) | What the role expects, a skills map, interview topics, and the best courses, books and talks | Growing into (or hiring for) the role | weekly (Mon) |

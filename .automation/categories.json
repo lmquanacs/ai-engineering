@@ -1,12 +1,12 @@
 {
-  "_doc": "Single source of truth for categories. Edit this file to add, move or retire a category, then run `python3 .automation/update_index.py`. cadence: 'daily' or 'weekly' (checked on Mondays, Australia/Brisbane). 'path' is the folder holding the category's README.md.",
+  "_doc": "Single source of truth for categories. Edit this file to add, move or retire a category, then run `python3 .automation/update_index.py`. cadence: 'daily' or 'weekly' (checked on Mondays, Australia/Brisbane). 'path' is the folder holding the category's README.md. 'scope' is what to research; optional 'out_of_scope' names topics that belong to another category (by id), so items land in one place only.",
   "groups": [
     {
       "id": "build",
       "emoji": "🛠️",
       "title": "Build: tools you use every day",
       "path": "build",
-      "intro": "Agent skills, MCP servers, libraries and coding agents: what you install and use while building.",
+      "intro": "Agent skills, MCP servers, libraries, model APIs and coding agents: what you install and call while building.",
       "categories": [
         {
           "id": "agent-skills",
@@ -24,7 +24,8 @@
           "summary": "MCP servers for software development, spec changes, tool-budget and security notes",
           "best_for": "Wiring agents to your tools",
           "cadence": "daily",
-          "scope": "New official or vendor servers, notable community servers, MCP spec and SDK changes, MCP CVEs."
+          "scope": "New official or vendor servers, notable community servers, MCP spec and SDK changes; note MCP CVEs briefly with an upgrade line.",
+          "out_of_scope": "Full write-ups of MCP vulnerabilities and attacks (security); AWS MCP servers (aws)."
         },
         {
           "id": "libraries",
@@ -33,7 +34,18 @@
           "summary": "Agent and LLM libraries for [Python](build/libraries/python.md) · [TypeScript](build/libraries/typescript.md) · [JVM](build/libraries/jvm.md)",
           "best_for": "Choosing a framework",
           "cadence": "daily",
-          "scope": "Releases of Pydantic AI, LangGraph, AI SDK, Mastra, Spring AI, Embabel, Koog, LangChain4j, Strands, MCP SDKs; notable new libraries."
+          "scope": "Releases of Pydantic AI, LangGraph, AI SDK, Mastra, Spring AI, Embabel, Koog, LangChain4j, Strands, MCP SDKs; notable new libraries.",
+          "out_of_scope": "Provider SDK feature changes (llm-apis); fine-tuning libraries (fine-tuning)."
+        },
+        {
+          "id": "llm-apis",
+          "title": "LLM APIs & structured output",
+          "path": "build/llm-apis",
+          "summary": "Provider API features you code against: structured outputs, tool calling, streaming, batch, files, Responses/Messages API changes",
+          "best_for": "Calling models reliably from code",
+          "cadence": "daily",
+          "scope": "New or changed API features at Anthropic, OpenAI, Google, Mistral, xAI and DeepSeek (structured outputs/JSON schema, tool and function calling, streaming, batch, files, citations, built-in tools); breaking changes and migration guides; schema-validation libraries (Instructor, Outlines, BAML, Zod/Pydantic integrations).",
+          "out_of_scope": "New models and retirements (news); prices (cost-and-serving); prompt-caching and compaction APIs (context-and-memory)."
         },
         {
           "id": "coding-agents",
@@ -42,7 +54,18 @@
           "summary": "Actionable releases of Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin, Kiro",
           "best_for": "Keeping your daily tools current",
           "cadence": "daily",
-          "scope": "Releases with security fixes, new workflow features, model retirements and pricing changes in coding agents and AI IDEs."
+          "scope": "Releases with security fixes, new workflow features, model retirements and pricing changes in coding agents and AI IDEs.",
+          "out_of_scope": "Kiro's AWS integration and Q Developer migration (aws); skills for agents (agent-skills)."
+        },
+        {
+          "id": "voice-and-multimodal",
+          "title": "Voice & multimodal",
+          "path": "build/voice-and-multimodal",
+          "summary": "Realtime voice agents, speech-to-text and text-to-speech, vision and document understanding, computer use",
+          "best_for": "Building beyond text chat",
+          "cadence": "weekly",
+          "scope": "Realtime/speech-to-speech APIs, STT/TTS model and pricing changes, voice-agent frameworks (Pipecat, LiveKit Agents), latency benchmarks, vision and document-understanding capabilities, computer-use and browser-agent releases.",
+          "out_of_scope": "Multimodal retrieval models (rag-and-retrieval); general model launches (news)."
         },
         {
           "id": "ai-native-languages",
@@ -118,13 +141,24 @@
           "scope": "New patterns, evidence (ablations, benchmarks), orchestration features in tools."
         },
         {
+          "id": "rag-and-retrieval",
+          "title": "RAG & retrieval",
+          "path": "architecture/rag-and-retrieval",
+          "summary": "Chunking, hybrid search, reranking, agentic retrieval, GraphRAG; embedding, reranker and parser models; vector databases",
+          "best_for": "Grounding answers in your own data",
+          "cadence": "daily",
+          "scope": "Embedding, reranker and document-parser releases (with MTEB/BEIR/ViDoRe results labelled self-reported); vector database and search-engine releases (pgvector, Qdrant, Weaviate, Milvus, OpenSearch, Elasticsearch, Turbopuffer); retrieval patterns with evidence (hybrid search, contextual retrieval, late chunking, agentic search, GraphRAG); RAG evaluation methods.",
+          "out_of_scope": "Compaction, memory and caching (context-and-memory); Bedrock Knowledge Bases (aws)."
+        },
+        {
           "id": "context-and-memory",
           "title": "Context engineering & memory",
           "path": "architecture/context-and-memory",
-          "summary": "Compaction, tool-result clearing, memory, caching; embeddings, rerankers, parsers",
+          "summary": "Compaction, tool-result clearing, agent memory, prompt caching and instruction files",
           "best_for": "Agents that stay sharp on long tasks",
           "cadence": "daily",
-          "scope": "Compaction, memory and caching techniques and APIs; embedding, reranker and parser releases; retrieval patterns."
+          "scope": "Compaction, memory and caching techniques and APIs; context-window behaviour; instruction-file conventions (AGENTS.md, CLAUDE.md); evidence on context strategies.",
+          "out_of_scope": "Embedding, reranker and parser models and retrieval patterns (rag-and-retrieval)."
         },
         {
           "id": "agent-infrastructure",
@@ -142,16 +176,17 @@
           "summary": "Tracing, evals, benchmarks, OpenTelemetry GenAI",
           "best_for": "Knowing whether it works",
           "cadence": "daily",
-          "scope": "Tool releases, OTel GenAI convention changes, new benchmarks."
+          "scope": "Tool releases, OTel GenAI convention changes, new benchmarks, LLM-as-judge methods with evidence, eval-driven development practices.",
+          "out_of_scope": "RAG-specific evaluation (rag-and-retrieval)."
         },
         {
           "id": "security",
           "title": "AI security",
           "path": "architecture/security",
-          "summary": "Prompt injection, MCP and skill supply chain, agent permissions",
-          "best_for": "Not getting owned",
+          "summary": "Prompt injection, guardrails, MCP and skill supply chain, agent permissions, data leakage",
+          "best_for": "Not getting owned, and not leaking data",
           "cadence": "daily",
-          "scope": "Prompt-injection research, agent/MCP/skill CVEs, security fixes in agent tools."
+          "scope": "Prompt-injection research and defences, guardrail frameworks and moderation models (e.g. NeMo Guardrails, Llama Guard), agent/MCP/skill CVEs, security fixes in agent tools, PII and data-leakage controls, OWASP GenAI updates."
         }
       ]
     },
@@ -169,7 +204,8 @@
           "summary": "Bedrock models, AgentCore, Strands Agents, Kiro, AWS MCP servers, re:Invent",
           "best_for": "Building and running AI on AWS",
           "cadence": "daily",
-          "scope": "Bedrock model availability (IDs, CRIS profiles, regions, pricing), AgentCore releases, Strands releases, Kiro changes and the Q Developer migration, AWS MCP servers, Spring AI on AWS. During re:Invent week (2026: 30 Nov – 4 Dec) add an 'AWS re:Invent' section to each digest."
+          "scope": "Bedrock model availability (IDs, CRIS profiles, regions, pricing), AgentCore releases, Strands releases, Kiro changes and the Q Developer migration, AWS MCP servers, Spring AI on AWS. During re:Invent week (2026: 30 Nov – 4 Dec) add an 'AWS re:Invent' section to each digest.",
+          "out_of_scope": "Non-AWS releases of Strands or Spring AI that don't touch AWS (libraries)."
         }
       ]
     },
@@ -178,7 +214,7 @@
       "emoji": "📚",
       "title": "Learn from others",
       "path": "learn",
-      "intro": "What shipped, what broke, and what's coming.",
+      "intro": "What shipped, what broke, what's coming, and how to grow as an AI engineer.",
       "categories": [
         {
           "id": "successful-projects",
@@ -206,6 +242,16 @@
           "best_for": "Staying ahead",
           "cadence": "daily",
           "scope": "Papers and experiments likely to reach practice within a year."
+        },
+        {
+          "id": "career",
+          "title": "AI engineer career & skills",
+          "path": "learn/career",
+          "summary": "What the role expects, a skills map, interview topics, and the best courses, books and talks",
+          "best_for": "Growing into (or hiring for) the role",
+          "cadence": "weekly",
+          "scope": "Notable writing on the AI engineer role and how it is changing; hiring and interview trends with a named source; free or high-quality courses, books and conference talks (AI Engineer World's Fair, re:Invent, Google I/O); keep the skills map current.",
+          "out_of_scope": "Salary figures without a named, dated survey; generic career advice not specific to AI engineering."
         }
       ]
     }

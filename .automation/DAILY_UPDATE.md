@@ -2,7 +2,7 @@
 
 This file is the **source of truth** for the scheduled research agent that updates this repository every day at about 09:00 Australia/Brisbane (UTC+10, no DST). Humans can follow it too.
 
-**What's in scope, and how often**, comes from [`categories.json`](categories.json): each category's `path`, `scope` and `cadence`. Never hard-code the category list anywhere else.
+**What's in scope, and how often**, comes from [`categories.json`](categories.json): each category's `path`, `scope`, `cadence` and optional `out_of_scope`. Never hard-code the category list anywhere else.
 
 ## 0. Setup
 1. Work on `main` in `lmquanacs/ai-engineering`.
@@ -13,6 +13,7 @@ This file is the **source of truth** for the scheduled research agent that updat
 ## 1. Research
 - For every category with `"cadence": "daily"`, and on **Mondays** also every `"weekly"` category, research its `scope` using web search and fetch. A weekly category may be updated on another day only for something exceptional.
 - Prefer **primary sources** (vendor changelogs, release notes, pricing pages, official blogs, AWS What's New, GitHub releases, papers). Use aggregators only to *discover* items, then confirm them at the source. `sources.md` lists starting points.
+- **One home per item:** if a category's `out_of_scope` names another category for a topic, write the entry there and at most cross-link to it.
 - **Selection bar:** include an item only if a working engineer would change a decision because of it (adopt, upgrade, migrate, avoid, try). Aim for 0–5 items per category. "Nothing notable" is a valid outcome; never pad.
 - **Special weeks:** during AWS re:Invent (2026: 30 Nov – 4 Dec; Brisbane editions 1–5 Dec plus the following Monday), add a `## 🎰 AWS re:Invent` section right after the TL;DR with the developer-relevant launches, and fold them into the affected categories. In other years, find the dates on AWS's event page.
 
@@ -69,6 +70,6 @@ A short summary: the digest path, items added per category, action items, and an
 ---
 
 ## Changing the structure (humans or agents, when asked)
-- **Add a category:** add an entry under the right group in `categories.json` (`id`, `title`, `path`, `summary`, `best_for`, `cadence`, `scope`), create `<path>/README.md` from [`templates/category.md`](templates/category.md), add sources to `sources.md`, then run the two scripts above. Nothing else needs editing; the scheduled task reads this playbook and the registry.
+- **Add a category:** add an entry under the right group in `categories.json` (`id`, `title`, `path`, `summary`, `best_for`, `cadence`, `scope`, optionally `out_of_scope`), create `<path>/README.md` from [`templates/category.md`](templates/category.md), add sources to `sources.md`, then run the two scripts above. Nothing else needs editing; the scheduled task reads this playbook and the registry.
 - **Add a group** (for example Azure or Google Cloud under ☁️ Platforms): add it to `groups` in `categories.json`. Its group index page is generated.
 - **Move or rename a category:** `git mv` the folder, update `path` in `categories.json`, fix links (`check_links.py` lists them), then regenerate.

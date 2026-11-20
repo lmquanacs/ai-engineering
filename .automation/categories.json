@@ -55,7 +55,17 @@
           "best_for": "Keeping your daily tools current",
           "cadence": "daily",
           "scope": "Releases with security fixes, new workflow features, model retirements and pricing changes in coding agents and AI IDEs.",
-          "out_of_scope": "Kiro's AWS integration and Q Developer migration (aws); skills for agents (agent-skills)."
+          "out_of_scope": "Kiro's AWS integration and Q Developer migration (aws); skills for agents (agent-skills); Claude Code how-to tips and workflows (claude-code)."
+        },
+        {
+          "id": "claude-code",
+          "title": "Claude Code mastery",
+          "path": "build/claude-code",
+          "summary": "Daily tip, key shortcuts, CLAUDE.md, skills, hooks, subagents, headless runs and parallel worktrees: how to use Claude Code well",
+          "best_for": "Mastering Claude Code",
+          "cadence": "daily",
+          "scope": "Every day: rotate the 'Tip of the day' (move the previous one to 'Latest tips') and add 0-3 tips or workflows from the official docs, the Anthropic engineering blog, and practitioners with a reproducible example. Turn notable new features into how-to tips with the exact command or config from the docs.",
+          "out_of_scope": "Release-by-release changelog and upgrade warnings (coding-agents); skill and MCP server catalogues (agent-skills, mcp-servers)."
         },
         {
           "id": "voice-and-multimodal",

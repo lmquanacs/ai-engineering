@@ -41,6 +41,7 @@ Rules:
 - **LLM news** (`models/news`): keep about 30 days in the "New models" table; move older rows to `models/news/archive/YYYY-MM.md`.
 - **Action-item and price-change tables** (LLM news, cost & serving, coding agents, AWS): remove rows whose date has passed and add new ones.
 - A page with more than about 25 entries: move the least relevant into a `## Reference` section at the bottom, or into `archive.md` in that folder.
+- **Every day:** in `build/claude-code`, move yesterday's "Tip of the day" into "Latest tips" and write a new one (a different building block from the last few days).
 - **Mondays:** re-check the "Start here" picks and refresh star, install and price snapshots for them; rotate "Learn this week" in `learn/case-studies`.
 - **First run of a month:** add a short "Last month in review" section to that day's digest.
 

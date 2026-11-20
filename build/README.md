@@ -13,5 +13,6 @@ Agent skills, MCP servers, libraries, model APIs and coding agents: what you ins
 | [**Libraries**](libraries/README.md) | Agent and LLM libraries for [Python](libraries/python.md) · [TypeScript](libraries/typescript.md) · [JVM](libraries/jvm.md) | Choosing a framework | daily |
 | [**LLM APIs & structured output**](llm-apis/README.md) | Provider API features you code against: structured outputs, tool calling, streaming, batch, files, Responses/Messages API changes | Calling models reliably from code | daily |
 | [**Coding agents & IDEs**](coding-agents/README.md) | Actionable releases of Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin, Kiro | Keeping your daily tools current | daily |
+| [**Claude Code mastery**](claude-code/README.md) | Daily tip, key shortcuts, CLAUDE.md, skills, hooks, subagents, headless runs and parallel worktrees: how to use Claude Code well | Mastering Claude Code | daily |
 | [**Voice & multimodal**](voice-and-multimodal/README.md) | Realtime voice agents, speech-to-text and text-to-speech, vision and document understanding, computer use | Building beyond text chat | weekly (Mon) |
 | [**AI-native languages**](ai-native-languages/README.md) | Programming languages designed for LLMs and agents, plus the essays debating them | Seeing where tooling is heading | weekly (Mon) |

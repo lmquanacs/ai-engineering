@@ -10,7 +10,7 @@ Each row links to the part of this repo that keeps it current.
 
 | Skill area | What "good" looks like | Where to keep up |
 |---|---|---|
-| **Software engineering first** | Production code, APIs, testing, CI, cost awareness: AI features are still software | [Libraries](../../build/libraries/README.md) · [Coding agents](../../build/coding-agents/README.md) |
+| **Software engineering first** | Production code, APIs, testing, CI, cost awareness: AI features are still software | [Libraries](../../build/libraries/README.md) · [Coding agents](../../build/coding-agents/README.md) · [Claude Code mastery](../../build/claude-code/README.md) |
 | **Calling models well** | Structured outputs, tool calling, streaming, picking and pinning models | [LLM APIs](../../build/llm-apis/README.md) · [LLM news](../../models/news/README.md) |
 | **Context & retrieval** | Deciding what the model sees; RAG that you can measure | [Context engineering](../../architecture/context-and-memory/README.md) · [RAG & retrieval](../../architecture/rag-and-retrieval/README.md) |
 | **Agents** | Orchestration patterns, tools via MCP, knowing when *not* to use an agent | [Agentic workflows](../../architecture/agentic-workflows/README.md) · [MCP servers](../../build/mcp-servers/README.md) |

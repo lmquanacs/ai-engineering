@@ -22,6 +22,12 @@ Starting points for the daily agent. **Confirm every item at its primary source*
 - Devin release notes: https://docs.devin.ai/release-notes/overview
 - Weekly digest (discovery): https://releases.sh/collections/coding-agents
 
+## Claude Code mastery
+- Docs (append `.md` for plain text): https://code.claude.com/docs/en/best-practices · https://code.claude.com/docs/en/common-workflows · https://code.claude.com/docs/en/interactive-mode
+- Changelog, to turn new features into tips: https://code.claude.com/docs/en/changelog
+- Anthropic engineering blog: https://www.anthropic.com/engineering
+- Claude Code repo (issues and discussions): https://github.com/anthropics/claude-code
+
 ## Agent skills
 - skills.sh registry: https://skills.sh
 - Claude Marketplaces "best" lists (90-day install copies): https://claudemarketplaces.com/best/skills/ai-agents (and other categories)

@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory and caching. Retrieval lives in [RAG & retrieval](../rag-and-retrieval/README.md). Agent quality now depends more on this than on which model you pick.
 
@@ -42,6 +42,21 @@ Source: [Slides](https://docs.google.com/presentation/d/1BVqX1h2DPyIDCEWUSNXSVFI
 ---
 
 ## 🔬 Latest evidence
+
+### Compaction is still lossy, often by corrupting task state · CompAct-Bench · arXiv 2611.25673 · 2026-11-19 🆕
+The benchmark compacts context at points inside successful BrowseComp, SWE-bench and internal trajectories, then checks whether the agent can still finish. Claude- and GPT-family compactors did best, but accuracy still fell under aggressive compaction, and many failures came from distorted state, such as open issues summarised as settled.
+**Why it matters:** Test compaction prompts on resume-and-finish tasks, not summary quality, and make them list open issues and settled results explicitly.
+Source: [arXiv 2611.25673](https://arxiv.org/abs/2611.25673) · Added: 2026-11-21
+
+### A plain log plus grep as agent memory · GrepMem · arXiv 2611.25123 · 2026-11-18 🆕
+The agent keeps its full history in an append-only text log and recalls it with a regex-search tool: no embeddings, index or extraction model. With an RL-trained Qwen3.5-9B, the authors report 95–97% on ContextBench against at most 21% for lossy baselines *(self-reported)*.
+**Why it matters:** A strong, simple baseline to beat before you build a vector memory store.
+Source: [arXiv 2611.25123](https://arxiv.org/abs/2611.25123) · Added: 2026-11-21
+
+### How much memory to inject depends on the model · IBM · arXiv 2611.26361 · 2026-11-19 🆕
+IBM distils lessons from an agent's own trajectories into guidelines (shipped in the open-source `altk-evolve`). On AppWorld, strong models kept improving as more guidelines were added, while gpt-oss-120b did better with a selected subset (55.4%) than with all 199 (51.2%) *(self-reported)*.
+**Why it matters:** Tune memory budgets per model; "inject everything" can hurt smaller ones.
+Source: [arXiv 2611.26361](https://arxiv.org/abs/2611.26361) · Added: 2026-11-21
 
 ### GPT-6.2 changes what is cacheable and when reasoning is kept · OpenAI · 2026-11-17 🆕
 OpenAI's migration guide says GPT-6.2 places top-level `instructions` after `input`, so reusable instructions must move into a leading `developer` message to be cached. Reasoning items are dropped when an earlier part of the conversation is edited (developer messages or tool-call history), or when the model, user or org changes, which costs quality and tokens. Teams coming from GPT-5.5 or earlier replace `prompt_cache_retention` with `prompt_cache_options.ttl`.

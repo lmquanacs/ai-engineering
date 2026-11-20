@@ -1,6 +1,6 @@
 # Inference, cost & serving
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > What models cost, how to pay less, and how to serve open models yourself. Prices are list prices in USD per 1M tokens unless stated, and they change often, so check the provider's page before you budget.
 
@@ -12,6 +12,7 @@ _Last updated: 2026-11-20_
 | **2026-11-30** | OpenAI's promotional price for **GPT-5.6 Sol** ends (it does not cover GPT-6.x Sol) | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
 | **2026-12-01** | **Gemini 4 Argon doubles**: $2/$10 → **$4/$20** (cached $0.10 → $0.20) | [Google pricing](https://aistudio.google.com/docs/pricing) |
 | **2027-01-01** | **Gemini 3.8 Flash and 3.6 Flash double**: $0.75/$3.75 → **$1.50/$7.50**; context-cache storage $0.50 → $1.00 per MTok-hour | [Google pricing](https://aistudio.google.com/docs/pricing) |
+| **2027-01-11** | OpenAI ends fast/priority `service_tier` for **GPT-5.2, GPT-5.4, GPT-5.4 mini** with EU data residency (Standard only) | [OpenAI deprecations](https://developers.openai.com/api/docs/deprecations) |
 | **2027-03-01** | **GPT-6.2 Astra / Sol Ultrafast** goes from 3× to **6× Standard** (Standard rates unchanged) | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
 
 ## 💲 Price snapshot (list, standard tier, as of 2026-11-15)

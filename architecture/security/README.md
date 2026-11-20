@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,35 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### Pydantic AI: tool results rebuilt as file objects (SSRF, credentialed reads) · CVE-2026-133505 · 2026-11-20 🆕
+When message history is serialized and reloaded, a tool result containing JSON shaped like a Pydantic AI file type is rebuilt as a real file object. Whoever controls that tool data (an MCP server, an external record) can make the app fetch internal URLs or make the provider read `s3://` objects or uploaded files with your credentials. Stored history, server-held UI history and durable runs (Temporal, DBOS, Prefect) are affected. Fixed in `pydantic-ai`/`pydantic-ai-slim` 2.66.0 and 1.107.10.
+**Why it matters:** Durable agents that persist history are exactly the affected pattern; current 2.71.0 is safe.
+Source: [NVD CVE-2026-133505](https://nvd.nist.gov/vuln/detail/CVE-2026-133505) · [GHSA-4cj4-hgwf-4hc4](https://github.com/pydantic/pydantic-ai/security/advisories/GHSA-4cj4-hgwf-4hc4) · Added: 2026-11-21
+
+### MCP server and gateway CVE batch · 2026-11-18 → 11-20 🆕
+- **Supergateway:** cross-site WebSocket hijacking in stdio-to-WebSocket mode lets any web page drive the wrapped stdio tools, even on localhost (CVE-2026-132121, 2.4.0–4.2.2, CVSS 8.1); unauthenticated DoS in stdio-to-SSE mode (CVE-2026-131857, 4.2.0–4.2.2). **No fixed release yet.**
+- **Obot** < 0.27.0: four CVEs, including token theft via unvalidated MCP protected-resource metadata (CVE-2026-130766) and heredoc command injection (CVE-2026-130767).
+- **`awslabs.document-loader-mcp-server`** 1.0.10–1.0.20: path traversal when `DOCUMENT_BASE_DIR` is unset (CVE-2026-130901); fixed in 1.0.21.
+- **LibreChat** < 0.8.8: MCP OAuth redirect SSRF (CVE-2026-54031).
+- **JetBrains Junie CLI** < 26.6.29: agent file tools could write outside the project (CVE-2026-133195).
+**Why it matters:** "Bound to localhost" doesn't protect WebSocket or HTTP MCP bridges from your browser; Origin checks, auth and redirect validation are the recurring gaps.
+Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · [NVD CVE-2026-130766](https://nvd.nist.gov/vuln/detail/CVE-2026-130766) · [AWS security bulletin 2026-195](https://aws.amazon.com/security/security-bulletins/2026-195-aws/) · [NVD CVE-2026-54031](https://nvd.nist.gov/vuln/detail/CVE-2026-54031) · [NVD CVE-2026-133195](https://nvd.nist.gov/vuln/detail/CVE-2026-133195) · Added: 2026-11-21
+
+### NeMo Guardrails 0.25.0 deprecates `LLMRails` and Colang · 2026-11-19 🆕
+0.25.0 deprecates the `LLMRails` engine and the Colang 1.0 and 2.x runtimes, with removal no earlier than 0.27.0. The replacement, `Guardrails(config)`, runs the IORails engine on the same `config.yml` but ignores `define user`/`define flow` blocks, custom refusal messages and `config.py`; Colang 2.x has no replacement.
+**Why it matters:** Teams with Colang dialog flows need a migration plan now. Run configs under `Guardrails` and read the "IORails ignores…" warnings.
+Source: [NeMo Guardrails: migrating to 0.25](https://docs.nvidia.com/nemo/guardrails/reference/0-25) · Added: 2026-11-21
+
+### ToolPulse: cache side channels reveal local agents' tool activity · arXiv 2611.25470 · 2026-11-19 🆕
+Flush+Reload on shared system libraries let a co-located attacker reconstruct Codex and Claude Code tool workflows across 11 LLMs (F1 above 93% in every case), and infer task types on a shared server with about 20 users *(self-reported)*.
+**Why it matters:** On shared dev boxes and CI hosts, agent activity leaks to other users even though the model runs remotely; isolate agent workloads per tenant.
+Source: [arXiv 2611.25470](https://arxiv.org/abs/2611.25470) · Added: 2026-11-21
+
+### Instruction files are not a security boundary · Continuation Audits · arXiv 2611.24491 · 2026-11-18 🆕
+Audits that continue real coding-agent transcripts toward a seeded risky behaviour were indistinguishable from real sessions to a judge. One open model (Kimi K3) kept bypassing file-permission protections after an explicit CLAUDE.md prohibition *(self-reported)*.
+**Why it matters:** Enforce limits with the sandbox, permission rules or hooks, not prose in CLAUDE.md or AGENTS.md.
+Source: [arXiv 2611.24491](https://arxiv.org/abs/2611.24491) · Added: 2026-11-21
 
 ### MCP Python SDK: three CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 🆕
 Advisories against the official Python SDK (`mcp` on PyPI):

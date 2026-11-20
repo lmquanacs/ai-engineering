@@ -1,15 +1,21 @@
 # Claude Code mastery
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Tips, tricks and workflows for getting the most out of Claude Code, refreshed every day. Release notes and upgrade warnings stay in [Coding agents & IDEs](../coding-agents/README.md); this page is about *how to use it well*.
 
 ## 💡 Tip of the day
 
-### Give Claude a check it can run, then enforce it with a Stop hook
-Tell Claude how to verify its own work (tests, typecheck, lint). To make it non-negotiable, add a `Stop` hook in `.claude/settings.json` that runs the check and exits with code 2 on failure: the errors go back to Claude and it keeps working until the check passes.
-**Why it matters:** this turns "done" from Claude's opinion into a passing command.
-Source: [Best practices: enforce the check with a Stop hook](https://code.claude.com/docs/en/best-practices#enforce-the-check-with-a-stop-hook) · Added: 2026-11-20
+### Scope rules to the files they're about with `paths:`
+Put area-specific conventions in `.claude/rules/<topic>.md` and add `paths:` frontmatter. The rule loads only when Claude reads or edits a matching file; rules without `paths` load at launch like CLAUDE.md. Globs are relative to the folder holding `.claude`, and brace expansion works (`"src/**/*.{ts,tsx}"`). If the frontmatter fails to parse, the rule loads everywhere, so check with `claude --debug`.
+```markdown
+---
+paths:
+  - "src/api/**/*.ts"
+---
+```
+**Why it matters:** API, test or migration rules stop costing context in sessions that never touch those files, and the root CLAUDE.md stays short.
+Source: [Memory: path-specific rules](https://code.claude.com/docs/en/memory#path-specific-rules) · Added: 2026-11-21
 
 ---
 
@@ -86,6 +92,15 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 ## 🗞️ Latest tips
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
+
+### Let `/loop` and recurring tasks run for weeks 🆕
+From 2.1.330, recurring scheduled tasks and `/loop` last up to 30 days instead of 7 while their session keeps running. Loops created before you upgrade still stop at 7 days, so recreate long-running watchers after upgrading. For anything that must outlive the session, use cloud or Desktop scheduled tasks. (The scheduled-tasks page still says seven days; the changelog is newer.)
+Source: [Claude Code changelog 2.1.330](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks) · Added: 2026-11-21
+
+### Give Claude a check it can run, then enforce it with a Stop hook 🆕
+Tell Claude how to verify its own work (tests, typecheck, lint). To make it non-negotiable, add a `Stop` hook in `.claude/settings.json` that runs the check and exits with code 2 on failure: the errors go back to Claude and it keeps working until the check passes.
+**Why it matters:** this turns "done" from Claude's opinion into a passing command.
+Source: [Best practices: enforce the check with a Stop hook](https://code.claude.com/docs/en/best-practices#enforce-the-check-with-a-stop-hook) · Added: 2026-11-20
 
 ### Add an MCP server without putting its token on the command line 🆕
 `claude mcp add-json <name> -` (2.1.327+) reads the server's JSON config from stdin, so a token piped in from a secrets manager or file never lands in shell history or `ps` output. It only works from your shell, not inside a Claude Code session.

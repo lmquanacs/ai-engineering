@@ -1,6 +1,6 @@
 # Fine-tuning & post-training
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Adapting open-weight models: LoRA/QLoRA, preference tuning, RL with verifiable rewards, distillation and the data behind them. Lower priority unless you train models, but this is where open models get specialised.
 
@@ -29,6 +29,16 @@ Sources: [Fine-tuning guide (Jose Nobile)](https://josenobile.pages.dev/guides/f
 Sources: [Hugging Face: TRL v1.0](https://huggingface.co/blog/trl-v1) · [Unsloth on PyPI](https://pypi.org/project/unsloth/2026.8.1/) · [Open RLHF toolchain 2026](https://presenc.ai/research/open-rlhf-finetuning-toolchain-2026) · Added: 2026-11-18
 
 ## 🗞️ Releases
+
+### Hugging Face "harness adapters": RL a LoRA inside the harness you ship · 2026-11-20 🆕
+Hugging Face trained one LoRA for Qwen3.8-27B per agent harness (pi, Hermes Agent, OpenCode), running RL inside the unmodified harness with TRL's `AsyncGRPOTrainer`, OpenEnv and Harbor-format tasks. With pi on Terminal-Bench 2.1, pass@1 rose from 39% to 55% while average tokens per task fell from 2.9K to 1.5K, and the three adapters merged into one "super adapter" that works under all three *(self-reported)*. Adapters, tasks and trajectories are on the Hub.
+**Why it matters:** An open, reproducible recipe for tuning a frozen base model to the exact harness and task mix you run, with cheaper runs as a side effect.
+Source: [HF blog: harness adapters](https://huggingface.co/blog/harness-adapters-at-scale) · Added: 2026-11-21
+
+### Unsloth: AMD NPU support, video-model LoRA, faster QLoRA · 2026-11-19 🆕
+Models converted to Q4NX can now run on AMD Ryzen AI NPUs. The release adds LoRA training for LTX-2.5 and MOSS-Image, makes diffusion LoRA up to 42% faster per step (now on T4 too), and QLoRA up to 25% faster *(self-reported)*.
+**Why it matters:** Existing QLoRA jobs get a free speed-up on upgrade, and local video/image fine-tuning gets cheaper.
+Source: [Unsloth changelog](https://unsloth.ai/docs/new/changelog) · Added: 2026-11-21
 
 ### TRL 1.18.0 → 1.18.2: async GRPO goes stable · 2026-11-13 → 11-19 🆕
 - **1.18.0:** `AsyncGRPOTrainer` moves from `trl.experimental` to top-level `trl`. Breaking: `weight_transfer` and `rollout_worker` are removed and `max_inflight_tasks` is renamed `max_concurrent_rollouts`. MoE models saved by `SFTTrainer` from v1.7.0 to v1.17.1 keep `output_router_logits=True` in their config and need it reset by hand.

@@ -1,6 +1,6 @@
 # AWS for AI engineering
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Everything on AWS that matters to AI engineers: Bedrock models, AgentCore (the agent runtime platform), Strands Agents, Kiro, AWS MCP servers, and how they connect to Spring, Python and TypeScript apps. **re:Invent 2026 runs 30 Nov – 4 Dec**, so expect a large wave of launches.
 
@@ -50,6 +50,9 @@ A managed platform for running agents in production: **Runtime** (serverless age
 
 | Date | What shipped | Why it matters |
 |---|---|---|
+| 2026-11-19 | **Runtime Instances:** nested virtualization (KVM) lets agents run their own VMs, such as an Android emulator, inside a session; a separate opt-in lets agents on Instances run with elevated privileges (off by default; read the security considerations first) | Mobile-app testing and VM-based sandboxes inside managed agent sessions |
+| 2026-11-19 | **Agentic payments:** agents can find and buy selected AWS Marketplace products and pay per request in USD over x402 through AgentCore payments, billed to the AWS account; discovery via the Gateway Marketplace connector (`connectorId: "aws-marketplace"`) | Agents can buy paid tools and data under spending limits; set limits and approved sellers before enabling |
+| Nov 2026 | **Governance:** Organizations resource control policies cover AgentCore; Gateway `bedrock-agentcore:InboundJwtClaim/*` condition keys filter `InvokeGateway` by `iss`, `sub`, `aud`, `scope`, `client_id`. **Runtime V2:** `s3BucketMount` mounts your S3 bucket (use `{runtimeSessionId}` in the prefix for per-session folders). **Agent Registry:** stores skill packages (`.zip` with `SKILL.md`), synced from S3 or GitHub, with keyword, semantic or hybrid search | Org-wide limits, per-caller JWT rules and versioned shared skills |
 | 2026-11-17 | **Memory:** automatic **full session summaries** for every memory using the summary strategy (existing sessions included), stored as long-term records you can filter by type; short-term event retention up to **10 years** (was 1 year) | Long-lived assistants keep history without your own archive store |
 | Nov 2026 | **Evaluations:** managed dataset-evaluation batch jobs and Insights via the `Builtin.FailureAnalysis` evaluator (enable the Insight Store first). **Gateway:** `domainOverride` for JWT gateways behind a proxy. **Identity:** OAuth 2.0 discovery URLs for non-OIDC authorization servers (2026-11-13) | Batch regression evals and failure clustering without your own pipeline |
 | Nov 2026 | **Web search:** the first 5,000 queries per month are free for each account, shared across an organization (not GovCloud). A new `InvokeWebSearch` API lets apps search without a gateway, in six Regions | Cheap grounding for agents with no third-party search key |
@@ -64,7 +67,7 @@ A managed platform for running agents in production: **Runtime** (serverless age
 | Sep 2026 | Evaluations support **TypeScript** frameworks as well as Python | Eval TS agents natively |
 | Aug 2026 | **Amazon Agent Registry GA** (auto-detection, CMK encryption) | A catalogue of every agent in the organisation |
 
-Sources: [AgentCore release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html) · [What's New: Memory full session summaries](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-full-session-summaries/) · [What's New: 10-year retention](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-10-year-retention/) · [What's New: OAuth 2.0 discovery](https://aws.amazon.com/about-aws/whats-new/2026/11/bedrock-agentcore-oauth2-discovery/) · [What's New: next-generation runtime is the default](https://aws.amazon.com/about-aws/whats-new/2026/11/new-agentcore-runtime-default/) · [Unite.AI on Runtime V2 expansion](https://www.unite.ai/?p=516062) · [AWS ML blog, October recap](https://aws.amazon.com/blogs/machine-learning/icymi-what-landed-for-ai-builders-in-october-2026/) · Added: 2026-11-18
+Sources: [AgentCore release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html) · [What's New: Marketplace agentic payments](https://aws.amazon.com/about-aws/whats-new/2026/11/marketplace-agentic-payments-agentcore/) · [What's New: Memory full session summaries](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-full-session-summaries/) · [What's New: 10-year retention](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-10-year-retention/) · [What's New: OAuth 2.0 discovery](https://aws.amazon.com/about-aws/whats-new/2026/11/bedrock-agentcore-oauth2-discovery/) · [What's New: next-generation runtime is the default](https://aws.amazon.com/about-aws/whats-new/2026/11/new-agentcore-runtime-default/) · [Unite.AI on Runtime V2 expansion](https://www.unite.ai/?p=516062) · [AWS ML blog, October recap](https://aws.amazon.com/blogs/machine-learning/icymi-what-landed-for-ai-builders-in-october-2026/) · Added: 2026-11-18
 
 **JVM note:** Spring AI has an **AgentCore SDK** for deploying Spring AI agents to AgentCore Runtime (1.0 in April 2026). ([This Week in Spring, 28 Apr 2026](https://spring.io/blog/2026/04/28/this-week-in-spring-april-28-2026))
 
@@ -90,6 +93,11 @@ Source: [The New Stack](https://thenewstack.io/aws-strands-labs-launch/) · Adde
 
 ## 🛠️ Kiro (AWS's agentic IDE, replacing Q Developer)
 
+### Kiro cloud sessions can reach your VPC; Kiro for VS Code · 2026-11-19 → 11-20 🆕
+Admins can connect Kiro cloud sessions to private resources in an Amazon VPC (Enterprise plan with IAM Identity Center profiles in `us-east-1`; the profile must use Controls). Also new: IDE 1.5.11 with Remote SSH and Dev Containers, and Kiro for VS Code 1.5.0 (details in [Coding agents](../../build/coding-agents/README.md)).
+**Why it matters:** Cloud agents can work against private databases and services without exposing them publicly.
+Source: [Kiro changelog](https://kiro.dev/changelog/) · Added: 2026-11-21
+
 ### Kiro IDE 1.4.236: permission hook and GitLab installs · 2026-11-18 🆕
 The IDE gets the CLI's Permission Request hook (answer approval prompts from a script), shows final arguments after Pre Tool Use hooks rewrite them, and supports one organization IdP sign-in across HTTP MCP servers. Powers and skills can be installed from public GitLab URLs; self-hosted GitLab hosts must be listed in `kiroAgent.powers.trustedGitLabHosts`.
 **Why it matters:** IDE and CLI users can now share one hook-based policy and one MCP sign-in.
@@ -109,6 +117,13 @@ November brought Kiro CLI 3.0.0–3.1.0. October added a **local command sandbox
 **Why it matters:** Turn on the sandbox for any repo you don't fully trust.
 Sources: [Kiro changelog](https://kiro.dev/changelog/dev-server-and-spec-workflows/) · [AWS Japan SA deck, Oct](https://speakerdeck.com/inariku/kiro-update-2026-10-en) · [Nov deck](https://speakerdeck.com/inariku/kiro-update-2026-11-en) · Added: 2026-11-18
 
+## 🖥️ Self-hosted models on AWS
+
+### SageMaker AI inference routers: cross-Region failover for your own endpoints · 2026-11-18 🆕
+An inference router is a Regional resource you call instead of an endpoint; it sends each request to a healthy endpoint or inference component for the same model, in another Region or account, preferring local destinations and shifting traffic when they throttle or return 5xx. The response header `X-Amzn-SageMaker-Invoked-Routing-Reason` says where it went. Limits: no response streaming, 60 s per real-time request (use `InvokeInferenceRouterAsync` for longer), 5 routers per account per Region; calls use the `sagemaker-inference-router-runtime` client. No extra charge.
+**Why it matters:** Bedrock-style cross-Region failover for self-hosted LLMs; only add destinations where your data may go.
+Source: [SageMaker docs: inference router](https://docs.aws.amazon.com/sagemaker/latest/dg/inference-router.html) · Added: 2026-11-21
+
 ---
 
 ## 🔌 AWS MCP servers
@@ -125,6 +140,13 @@ uvx awslabs.iam-mcp-server@latest
 ```
 **Guardrail:** give the MCP role read-only IAM permissions first, and use the MCP condition keys to block mutating calls that an agent starts.
 Sources: [MCP Directory: AWS MCP Server guide](https://mcp.directory/blog/aws-mcp-server-complete-guide-2026) · [dev.to: CloudWatch + IAM via MCP](https://dev.to/jangwook_kim_e31e7291ad98/aws-mcp-server-ga-practical-guide-connecting-cloudwatch-iam-to-your-ai-coding-agent-3d79) · [Developers Digest](https://www.developersdigest.tech/mcp-servers/aws-mcp-server) · Added: 2026-11-18
+
+### Amazon Cognito: client ID metadata documents (CIMD) for MCP clients · 2026-11-19 🆕
+A client can use an HTTPS URL as its client ID and publish a JSON metadata document there; Cognito validates it at sign-in, and CIMD policies map URL patterns to your app clients, limiting scopes and grant types to what both allow. Needs the Essentials or Plus plan.
+**Why it matters:** An MCP server behind Cognito can accept AI assistants by allow-listing their metadata URL instead of registering an app client per assistant.
+Source: [AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/cognito-client-id-metadata-documents/) · Added: 2026-11-21
+
+**Security:** `awslabs.document-loader-mcp-server` 1.0.10–1.0.20 has a path traversal when `DOCUMENT_BASE_DIR` is unset (CVE-2026-130901); upgrade to 1.0.21 or later. ([AWS bulletin 2026-195](https://aws.amazon.com/security/security-bulletins/2026-195-aws/))
 
 ---
 

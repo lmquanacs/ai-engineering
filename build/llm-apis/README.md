@@ -1,6 +1,6 @@
 # LLM APIs & structured output
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > The provider API features you write code against: structured outputs, tool calling, streaming, batch and files, and the breaking changes between versions. Model launches live in [LLM news](../../models/news/README.md); prices in [Inference & cost](../../models/cost-and-serving/README.md).
 
@@ -24,6 +24,16 @@ _Last updated: 2026-11-20_
 ## 🗞️ Latest
 
 <!-- newest first: new API features, breaking changes, migration guides -->
+
+### Google: tool retrieval for the Gemini Interactions API (preview) · 2026-11-19 🆕
+Mark function or `mcp_server` tools with `defer_loading: true` and add a `{"type": "tool_search"}` tool: the model sees only each deferred tool's name and description and loads the full schema when it needs it, within the same request (`execution: "client"` lets your app run the lookup). Works with Gemini 3.6 and later, including Gemini 4. No separate fee: enabling it adds a small fixed block of input tokens, and each loaded schema is billed as input for the rest of the conversation.
+**Why it matters:** Agents with large tool or MCP catalogues stop paying for every schema on every turn; it's the same deferred-loading pattern Anthropic and OpenAI already offer.
+Source: [Google blog: Gemini API tool retrieval](https://blog.google/innovation-and-ai/technology/developers-tools/gemini-api-tool-retrieval/) · Added: 2026-11-21
+
+### Google: logprobs requests to Gemini 4 now fail with 400 (user-reported) · 2026-11-20 🆕
+Developers report that since about 02:00 UTC on 2026-11-20, requests asking for logprobs on `gemini-4-hydrogen`, `-argon`, `-carbon` and `-neon` return 400. There is no changelog entry, and the forum reply saying logprobs are unsupported is not from a confirmed Google account.
+**Why it matters:** Confidence scoring and judge pipelines that read Gemini logprobs will break; the [Decisions API](../../models/news/README.md#-new-techniques) is Google's probability-returning alternative.
+Source: [Google AI Developers Forum thread](https://discuss.ai.google.dev/t/logprobs-turned-off-without-notice-for-gemini-4-hydrogen-argon-carbon-and-neon/203009) (not a vendor announcement) · Added: 2026-11-21
 
 ### OpenAI: GPT-6.2 Responses API changes + background completion windows · 2026-11-17 🆕
 - **GPT-6.2 migration:** tool calling with `gpt-6.2-astra` / `gpt-6.2-sol` requires the Responses API, reasoning effort `none` is rejected, and the handling of top-level `instructions` and of reasoning after prefix edits changes (caching details → [Context engineering](../../architecture/context-and-memory/README.md#-latest-evidence)).

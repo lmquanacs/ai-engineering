@@ -1,6 +1,6 @@
 # Agentic workflows: patterns and breakthroughs
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > How to structure agent systems, and what the evidence says actually works. Patterns are stable; the "latest evidence" section changes fastest.
 
@@ -23,6 +23,11 @@ Production guardrails that apply to every pattern: an iteration cap, deadlock de
 ---
 
 ## 🔬 Latest evidence: what actually moves the needle
+
+### Evolve the harness before the weights · arXiv 2611.25380 · 2026-11-19 🆕
+The authors optimise the system prompt, tool schemas, skill library and planning scaffold with GEPA while the model stays frozen, on SWE-bench Verified, OfficeBench and Terminal-Bench with a Claude Code-style agent. Weight updates gave the biggest single gains, harness evolution recovered most of them for a small fraction of the compute, and both together did best. Hugging Face's same-week [harness adapters](../../models/fine-tuning/README.md#-releases) point the same way from the training side *(both self-reported)*.
+**Why it matters:** If you can't fine-tune, optimising prompts and tool schemas inside your own harness is the cheap way to get most of the gain.
+Source: [arXiv 2611.25380](https://arxiv.org/abs/2611.25380) · Added: 2026-11-21
 
 ### Agent teams cost 1.8–5.1× more for little gain · Vals AI, 2026-10-09 🆕
 On Vibe Code Bench (50 full-stack apps), Vals compared one agent against a lead with up to five subagents, using GPT 6 Sol and Claude Opus 5.5 at medium and max effort. Teams cost 1.8–5.1× as much; the only statistically significant team gain was Sol at medium effort (+7.3 points), while simply raising a single Sol agent to max effort gave +11.4 *(self-run, one run per setup)*.

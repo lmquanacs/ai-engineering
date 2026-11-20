@@ -3,9 +3,9 @@
 > A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, model APIs, RAG, architecture, agentic patterns, libraries and the AI engineer career, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus AWS.
 
 <!-- BADGES:START -->
-![Last updated](https://img.shields.io/badge/last%20updated-2026--11--20-2563eb)
+![Last updated](https://img.shields.io/badge/last%20updated-2026--11--21-2563eb)
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
-![Editions](https://img.shields.io/badge/daily%20editions-3-9333ea)
+![Editions](https://img.shields.io/badge/daily%20editions-4-9333ea)
 <!-- BADGES:END -->
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
@@ -15,13 +15,13 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ## 📰 Today's digest
 
 <!-- TODAY:START -->
-### [20 Nov 2026 →](daily/2026/11/2026-11-20.md)
+### [21 Nov 2026 →](daily/2026/11/2026-11-21.md)
 
-- **Tools:** Claude Code 2.1.326–2.1.329 tighten the sandbox and bypass mode, so re-test unattended jobs; Kiro IDE gets the Permission Request hook. → [Coding agents](build/coding-agents/README.md)
-- **APIs & security:** Claude API now returns 400 for edited-prefix thinking blocks and the old computer-use tool; the MCP Python SDK has three CVEs (`mcp` ≥ 1.30.0 / 2.2.0). → [LLM APIs](build/llm-apis/README.md) · [AI security](architecture/security/README.md)
-- **Libraries:** Spring Boot 4.2.0 and Spring AI 2.1.0 are on Maven Central; Pydantic AI 2.71 adds `PermissionRule` and renames APIs. → [Libraries](build/libraries/README.md)
-- **AWS & models:** GPT-6.2 Bedrock IDs and prices, AgentCore Memory session summaries, and Qwen4-Max priced at $1.50/$4.50. → [AWS](platforms/aws/README.md) · [LLM news](models/news/README.md)
-- **Action items:** TRL 1.18 async-GRPO config changes · DeepSeek bills built-in search as tokens · Claude Sonnet 4.5 retires **30 Nov**. → [Fine-tuning](models/fine-tuning/README.md) · [Cost](models/cost-and-serving/README.md)
+- **Security:** Spring AI 2.1.0 / 2.0.3 fix 13 CVEs; Pydantic AI CVE-2026-133505 (run ≥ 2.66.0); Supergateway's MCP WebSocket mode can be hijacked from a browser, with no fix yet. → [AI security](architecture/security/README.md) · [Libraries](build/libraries/README.md)
+- **Tools:** Claude Code 2.1.330 narrows `deniedMcpServers` name matching and runs loops for 30 days; Codex 0.171 defaults to GPT-6.2 Sol; Kiro ships Remote SSH and a VS Code extension. → [Coding agents](build/coding-agents/README.md)
+- **AWS:** AgentCore nested virtualization and agentic Marketplace payments; SageMaker cross-Region inference routers; Cognito CIMD for MCP clients. → [AWS](platforms/aws/README.md)
+- **Context & evals:** compaction still loses task state; a plain log plus grep beats lossy memory; coding agents' reports overstate success. → [Context engineering](architecture/context-and-memory/README.md) · [Evals](architecture/evals-and-observability/README.md)
+- **Action items:** Opus 4.8 fast mode removed **30 Nov** · Copilot model retirements **14 / 18 Dec** · NeMo Guardrails 0.25 deprecates Colang. → [LLM news](models/news/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)

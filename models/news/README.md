@@ -8,7 +8,10 @@ _Last updated: 2026-11-20 · This page keeps about 30 days; older items move to 
 
 | Deadline | What | Do this |
 |---|---|---|
-| **2026-11-30** | Claude Sonnet 4.5 retirement | Move pinned `claude-sonnet-4-5*` IDs to `claude-sonnet-5-5` or `claude-haiku-5-5` and re-run your evals. ([source](https://developertoolkit.ai/en/resources/whats-new.md)) |
+| **2026-11-30** | Claude Sonnet 4.5 retirement | Move pinned `claude-sonnet-4-5*` IDs to `claude-sonnet-5-5` or `claude-haiku-5-5` and re-run your evals. ([release notes](https://platform.claude.com/docs/en/release-notes/overview)) |
+| **2026-11-30** | Claude Opus 4.8 fast mode removed | Requests to `claude-opus-4-8` with `speed: "fast"` will error; use Claude Opus 5.5 for fast mode. ([release notes](https://platform.claude.com/docs/en/release-notes/overview)) |
+| **2027-01-11** | OpenAI EU data residency: fast and priority tiers end for GPT-5.2, GPT-5.4 and GPT-5.4 mini | Switch to the default `service_tier` or move to GPT-6.2. ([OpenAI deprecations](https://developers.openai.com/api/docs/deprecations)) |
+| done 2026-11-19 | xAI `grok-build-0.1` end of life | Remove any pinned references. ([xAI release notes](https://docs.x.ai/developers/release-notes)) |
 | when you switch | GPT-6.2 Astra / Sol migration | `gpt-6.2-astra` and `gpt-6.2-sol` reject reasoning effort `none`, need the Responses API for tool calling, and change how reasoning is preserved when you edit a conversation prefix and how top-level `instructions` are handled. Read the migration quickstart before swapping IDs. ([changelog](https://developers.openai.com/api/docs/changelog) · [migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra#gpt-6.2-astra-migration-quickstart)) |
 | ongoing | Short model lifetimes | DeepSeek-V4-Flash went from beta (Jul 31) to retired (Sep 10), and Gemini 3.7 Flash was deprecated eight weeks after release. Pin dated IDs and watch deprecation trackers. ([source](https://nhimg.org/llm-release-tracker)) |
 

@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -55,6 +55,16 @@ A TypeScript API that starts a sandbox with a coding-agent harness (for example 
 Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best-sandbox-providers-for-ai-agents) · Added: 2026-11-18
 
 ## 📰 Recent releases
+
+### External sandboxes for local coding agents · Prime Radiant · 2026-11-16 🆕
+The agent (Claude Code, Codex or Pi) stays on your machine but sends every command to a separate Linux sandbox over a localhost API. Three implementations share one protocol (v86/WebAssembly, Apple Containers, Microsoft Quicksand/QEMU), each with mounted folders only, no network by default, an allow-list proxy, and credential substitution so the agent never sees real API keys.
+**Why it matters:** A practical way to run less-trusted or local models without handing them your laptop; keys injected at the proxy are out of reach of prompt injection.
+Source: [Prime Radiant blog](https://blog.primeradiant.com/external-sandboxes-for-coding-agents/) · [Simon Willison](https://simonwillison.net/2026/Nov/17/external-sandboxes-for-coding-agents/) · Added: 2026-11-21
+
+### Per-session runtimes run out of sessions, not CPU · arXiv 2611.26480 · 2026-11-19 🆕
+Measured on Bedrock AgentCore: agents waited a median 2.7 s per model reply and computed for an estimated 5–40 ms, yet each conversation holds its own VM, which stayed reserved about 15 minutes after a 33-second conversation unless the client closed it *(as reported)*.
+**Why it matters:** Close sessions explicitly when a conversation ends, and size quotas by concurrent conversations. More in [Research](../../learn/research/README.md).
+Source: [arXiv 2611.26480](https://arxiv.org/abs/2611.26480) · Added: 2026-11-21
 
 ### Daytona macOS Sandboxes · 2026-11-17 🆕
 Full macOS VMs on dedicated Apple silicon reserved for your organization. The base image ships macOS 26.6.2 with Xcode 26.6 and the iPhone simulator. Create one with `daytona sandbox create-macos --region macos-1 --image base-macos` or from the SDK; SSH uses short-lived tokens scoped to one sandbox, and computer-use (screenshots, input, accessibility tree) and filesystem snapshots are supported. Pricing and preview/GA status aren't stated.

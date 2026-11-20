@@ -1,10 +1,10 @@
 # Libraries · ☕ JVM (Java / Kotlin / Spring Boot)
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-20_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-21_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
-| [**Spring AI**](https://github.com/spring-projects/spring-ai) | **2.1.0 (2026-11-19)**; 2.0.2 (2026-10-22) | Spring-native LLM framework: ChatClient, advisors, tool calling, RAG, memory, observability, MCP client/server. **2.0 requires Spring Boot 4.** | Any Spring Boot service adding AI |
+| [**Spring AI**](https://github.com/spring-projects/spring-ai) | **2.1.0 (2026-11-19; announced 11-20)**; 2.0.3 for 2.0.x | Spring-native LLM framework: ChatClient, advisors, tool calling, RAG, memory, observability, MCP client/server. **2.0 requires Spring Boot 4; 2.1 is built on Boot 4.2.** | Any Spring Boot service adding AI |
 | [**Embabel**](https://github.com/embabel/embabel-agent) | 1.5.4 (2026-10-28) | Goal-oriented agent framework by Rod Johnson (creator of Spring). Uses **GOAP planning** (A* search) over typed Java/Kotlin domain objects and runs on top of Spring AI. | Multistep agents where you want deterministic, type-safe, replannable flows |
 | [**Koog**](https://github.com/JetBrains/koog) | 1.3.0 (2026-09-23) | JetBrains' Kotlin agent framework with a type-safe DSL. Kotlin Multiplatform (JVM, Android, iOS, JS, Wasm), A2A support, persistence, plus a Java builder API. | Kotlin-first teams, or agents that must run on mobile and server alike |
 | [**LangChain4j**](https://github.com/langchain4j/langchain4j) | 1.24.0 (2026-11-18) | Framework-agnostic Java LLM library with integrations for Spring Boot, Quarkus and Micronaut, plus a `langchain4j-agentic` module | Non-Spring stacks (Quarkus/Micronaut) or the widest provider coverage |
@@ -15,23 +15,28 @@
 
 ## 🆕 Notable changes
 
-### Spring Boot 4.2.0 and Spring AI 2.1.0 GA · 2026-11-19 🆕
-Both reached Maven Central on 2026-11-19 (UTC): `spring-boot` 4.2.0 and `spring-ai-model` / `spring-ai-bom` 2.1.0. At the time of writing there was no spring.io announcement or published release notes, so the Boot version Spring AI 2.1 requires and the final 4.2 feature list (AMQP 1.0, Kotlin 2.4 baseline) are not yet confirmed.
-**Why it matters:** This is the GA both RC2 lines were heading for. Move off the RCs, but wait for the 2.1 upgrade notes before upgrading production services.
-Sources: [Maven Central: spring-boot](https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/maven-metadata.xml) · [Maven Central: spring-ai-model](https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-model/maven-metadata.xml) · Added: 2026-11-20
+### Spring AI 2.1.0 and 2.0.3: Session API, tool approval, 13 CVE fixes · 2026-11-20 🆕
+Spring AI 2.1 is built on Spring Boot 4.2, so upgrade the two together. It adds a Session API (event-log memory with turn-aware compaction) that replaces ChatMemory (now deprecated, removal planned for 3.0), tools marked `requiresConfirmation = true` that pause for human approval, per-turn tool-call limits (defaults 40 per tool and 150 in total, under `spring.ai.tools.limits.*`), a typed `DecisionModel` API, OpenAI Responses API support, `VectorStore.upsert()`, and client and server support for MCP 2026-07-28. It fixes 13 CVEs, one Critical (cross-user disclosure in the Redis semantic cache); 2.0.3 carries the same fixes for 2.0.x.
+**Why it matters:** The 2.1 milestones and RCs lack the CVE fixes, so move to 2.1.0 (or 2.0.3) now. Check three behaviour changes: `SemanticCacheAdvisor` needs a `SemanticCacheScopeResolver` bean, Tika extraction is capped at 10,000,000 characters by default, and long agent loops can now hit `ToolCallLimitExceededException`.
+Sources: [Spring AI 2.1.0 GA and 2.0.3](https://spring.io/blog/2026/11/20/spring-ai-2-1-0-GA-available-now) · [Upgrading to 2.1](https://docs.spring.io/spring-ai/reference/2.1-SNAPSHOT/upgrading/spring-ai-2-1.html) · Added: 2026-11-21
+
+### Spring Boot 4.2.0: AMQP 1.0, `RestTemplate` deprecated · 2026-11-19 🆕
+Highlights: AMQP 1.0 support (generic and RabbitMQ-specific), opt-in OpenTelemetry semantic conventions, SSL bundles for LDAP, registry-backed Buildpacks caches with Ubuntu 26.04 as the default base image, and faster executable-jar startup. `RestTemplate`/`TestRestTemplate` support is deprecated in favour of `RestClient`/`RestTestClient`, as is Apache Pulsar support. Patches 4.1.3 and 4.0.10 shipped on 2026-11-20.
+**Why it matters:** Spring AI 2.1 needs it, and the `RestTemplate` deprecation is worth planning for now.
+Sources: [Spring Boot 4.2.0 available now](https://spring.io/blog/2026/11/19/spring-boot-4-2-0-available-now) · [Spring Boot 4.2 release notes](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.2-Release-Notes) · Added: 2026-11-21
 
 ### Spring AI 2.0: a rebuilt foundation on Boot 4 🆕
 GA on 2026-06-12. It needs Spring Boot 4.0/4.1 and Spring Framework 7. MCP annotations (`@McpTool`, `@McpResource`, `@McpPrompt`) and the WebMVC/WebFlux MCP transports moved into core, and tool calling became composable. Teams staying on Boot 3.x keep receiving patches on the 1.1.x line.
 **Why it matters:** The upgrade path is Boot 4 first, then Spring AI 2.0.
 Sources: [Spring AI 2.0.0 GA](https://spring.io/blog/2026/06/12/spring-ai-2-0-0-GA-available-now/) · [Visual Studio Magazine](https://visualstudiomagazine.com/articles/2026/06/29/spring-ai-2-0-goes-ga-giving-java-developers-a-more-mature-ai-app-stack.aspx) · Added: 2026-11-18
 
-### Spring AI Agents: planned for November 2026 🆕
-The 2.1.0-M1 notes say new agentic support will ship in **November 2026** as a separate Spring Projects Experimental project, with a plan to merge it into **Spring AI 3.0** in mid-2027.
+### Spring AI Agents: planned for early December 2026 🆕
+The 2.1.0 GA post (2026-11-20) moves the date to **early December**: Spring AI Agent will ship under Spring Projects Experimental, built on Spring AI 2.1. The 2.1.0-M1 notes had said **November 2026** as a separate Spring Projects Experimental project, with a plan to merge it into **Spring AI 3.0** in mid-2027.
 **Why it matters:** Watch this for a Spring-native way to orchestrate agent CLIs such as Claude Code and Codex. The daily job will flag the release.
-Source: [Spring AI 2.1.0-M1](https://spring.io/blog/2026/09/25/spring-ai-2-1-0-M1-available-now/) · Added: 2026-11-18
+Sources: [Spring AI 2.1.0 GA](https://spring.io/blog/2026/11/20/spring-ai-2-1-0-GA-available-now) · [Spring AI 2.1.0-M1](https://spring.io/blog/2026/09/25/spring-ai-2-1-0-M1-available-now/) · Added: 2026-11-18
 
 ### Spring Boot 4.1 → 4.2 🆕
-Boot 4.1 (2026-06-10) added gRPC auto-configuration, HTTP-client SSRF mitigation, OpenTelemetry environment-variable support and a **Kotlin 2.3** baseline. **Boot 4.2 is expected in November 2026** with the AMQP 1.0 module, and Kotlin 2.4 is expected as its baseline. **4.2.0 GA** reached Maven Central on 2026-11-19 (see above).
+Boot 4.1 (2026-06-10) added gRPC auto-configuration, HTTP-client SSRF mitigation, OpenTelemetry environment-variable support and a **Kotlin 2.3** baseline. **Boot 4.2 is expected in November 2026** with the AMQP 1.0 module, and Kotlin 2.4 is expected as its baseline. **4.2.0 GA** shipped on 2026-11-19 (see above).
 Sources: [Maven Central: spring-boot](https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/maven-metadata.xml) · [InfoQ: Spring Boot 4.1](https://infoq.com/news/2026/06/spring-boot-4-1) · [Spring I/O slides (Kotlin baselines)](https://2026.springio.net/slides/idiomatic-kotlin-applications-with-spring-boot-4-springio16.pdf) · Added: 2026-11-18
 
 ## 🧭 How they fit together

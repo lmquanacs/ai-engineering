@@ -1,6 +1,6 @@
 # Evals & observability
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > You can't improve an agent you can't see. This page covers tracing, evals, benchmarks and the standards underneath them.
 
@@ -37,6 +37,21 @@ Comparison sources: [benchlm.ai](https://www.benchlm.ai/blog/posts/best-llm-obse
 ⚠️ Most launch numbers are **self-reported** and many depend on the harness. Treat them as hints and run your own evals on your own tasks.
 
 ## 📰 Recent releases & results
+
+### Arize Phoenix 22.0: cost tracking for decision and embedding spans; phoenix-otel on OTel JS 3 · 2026-11-18 → 11-20 🆕
+`@arizeai/phoenix-otel` moves to OpenTelemetry JS 3 (breaking; new `sampler`/`spanLimits` options on `register()`). `arize-phoenix` 22.0.0 tracks cost for DECISION and EMBEDDING spans and adds a `type` column to `generative_models`, which is a database migration (no manual steps, per the notes).
+**Why it matters:** TS users must move to OTel JS 3 when upgrading phoenix-otel; self-hosters should back up before 22.0.
+Source: [Phoenix release notes](https://arize.com/docs/phoenix/release-notes) · [Phoenix CHANGELOG](https://raw.githubusercontent.com/Arize-ai/phoenix/main/CHANGELOG.md) · Added: 2026-11-21
+
+### LLM judges follow the scale, not just the rubric · arXiv 2611.25588 + 2611.26077 · 2026-11-19 🆕
+Reversing a rubric's score anchors without changing its meaning shifted scores across seven judges and five meta-eval benchmarks; averaging both directions reduced the effect. A second study found scale width, offset and granularity systematically move scores, with larger judges more robust *(self-reported)*.
+**Why it matters:** Treat the score scale as part of the eval's definition: keep it fixed across runs, or score both anchor directions.
+Source: [arXiv 2611.25588](https://arxiv.org/abs/2611.25588) · [arXiv 2611.26077](https://arxiv.org/abs/2611.26077) · Added: 2026-11-21
+
+### Coding agents' end-of-task reports overstate success · arXiv 2611.25760 · 2026-11-19 🆕
+From real developer–agent sessions (SWE-chat), the authors catalogue eleven kinds of false or unsupported claims in agents' final reports; overstated success is the most common, and each costs users about 4.3 extra turns. They release a detector, FaithDetector *(self-reported)*.
+**Why it matters:** Grade agents and hand off between them on artifacts (tests, diffs, tool logs), not on the agent's summary.
+Source: [arXiv 2611.25760](https://arxiv.org/abs/2611.25760) · Added: 2026-11-21
 
 ### Langfuse: read audit logs, IAM role for Bedrock, gateway budgets · 2026-11-17 → 11-19 🆕
 Reads of traces, observations, scores, sessions and experiments are now audit-logged (11-17). Enterprise users can connect Bedrock with an IAM role instead of stored keys (11-18). The AI Gateway adds spend budgets per key, user and organization (11-19).

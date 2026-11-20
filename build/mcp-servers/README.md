@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -13,6 +13,10 @@ The largest revision since launch. It is now the current spec and supersedes 202
 - **Auth:** remote servers are formally OAuth 2.1 resource servers.
 - **SDKs:** the TypeScript, Python, Go and C# Tier 1 SDKs supported it on launch day. Codex CLI opts in per server with `protocol_version = "2026-07-28"`.
 - **Spring AI 2.0:** `spring.ai.mcp.server.protocol=STATELESS`.
+
+**Spring AI 2.1 (2026-11-20)** speaks 2026-07-28 on both sides: set `spring.ai.mcp.server.protocol=MODERN` and existing `@McpTool`/`@McpResource`/`@McpPrompt` beans are served statelessly on WebMVC, WebFlux or STDIO, and clients can mix legacy and modern Streamable HTTP connections. ([Spring AI 2.1.0 GA](https://spring.io/blog/2026/11/20/spring-ai-2-1-0-GA-available-now) · details in [JVM libraries](../libraries/jvm.md))
+
+**MCP Ruby SDK 1.11.0 (2026-11-19):** the Streamable HTTP transport can resume SSE streams from `Last-Event-ID` when given an `event_store:` (SEP-1699), and several OAuth issuer-validation bugs are fixed. Upgrade for the auth fixes. ([Ruby SDK changelog](https://raw.githubusercontent.com/modelcontextprotocol/ruby-sdk/main/CHANGELOG.md))
 
 **Next spec:** from 2026-11-11 the MCP project moves to a predictable cycle of a spec release about every six months (roughly late March and September), with a Release Manager role and fixed deadlines for proposals and SDK betas. ([MCP blog](https://blog.modelcontextprotocol.io/posts/mcp-release-cycle/))
 
@@ -83,6 +87,11 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 - **Let the agent do it:** the `mcp-builder` skill from [anthropics/skills](https://github.com/anthropics/skills).
 
 ## 🔒 Security notes
+
+### MCP bridge and server CVE wave · Supergateway (no fix yet), Obot, LibreChat · 2026-11-18 → 11-20 🆕
+NVD published a batch of MCP-related CVEs: **Supergateway** cross-site WebSocket hijacking in stdio-to-WebSocket mode (CVE-2026-132121, 2.4.0–4.2.2) and a DoS in stdio-to-SSE mode (CVE-2026-131857), with no fixed npm release yet; **Obot** < 0.27.0; **LibreChat** < 0.8.8 (MCP OAuth redirect SSRF). Upgrade lines and the AWS document-loader server are in [AI security](../../architecture/security/README.md#-recent-items).
+**Do this:** Don't expose Supergateway's WebSocket or SSE modes, even on localhost, until a fix ships; a web page in your browser can reach them.
+Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · Added: 2026-11-21
 
 ### MCP Python SDK: three CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 🆕
 CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-audience check) and CVE-2026-116685 (credentials sent on cross-origin redirects).

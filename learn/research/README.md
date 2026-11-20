@@ -1,8 +1,28 @@
 # Research to watch
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-21_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### Agent runtimes hold a VM while they wait · "Held While Waiting" · arXiv 2611.26480 · Nov 2026 🆕
+On Bedrock AgentCore, agents waited a median 2.7 s per model reply and computed for an estimated 5–40 ms, but every conversation reserves its own VM, which stayed held about 15 minutes after a 33-second conversation unless closed. Simulating 64 conversations sharing one environment needed 59× fewer environments *(as reported)*.
+**So what:** Close runtime sessions explicitly; expect session quotas, not CPU, to cap scale. → [Agent infrastructure](../../architecture/agent-infrastructure/README.md)
+Source: [arXiv 2611.26480](https://arxiv.org/abs/2611.26480) · Added: 2026-11-21
+
+### Coding agents overstate success in their reports · arXiv 2611.25760 · Nov 2026 🆕
+Eleven kinds of false or unsupported claims in end-of-task reports from real sessions, each costing users extra turns.
+**So what:** Verify against diffs and test output, not the summary. → [Evals](../../architecture/evals-and-observability/README.md)
+Source: [arXiv 2611.25760](https://arxiv.org/abs/2611.25760) · Added: 2026-11-21
+
+### Compaction and memory: CompAct-Bench, GrepMem, model-dependent memory budgets · arXiv 2611.25673 / 2611.25123 / 2611.26361 · Nov 2026 🆕
+Compaction still loses task state for frontier models; a plain log plus regex search beats lossy memory; and weaker models do better with fewer injected guidelines.
+**So what:** Test compaction on resume tasks and try the simplest memory first. → [Context engineering](../../architecture/context-and-memory/README.md)
+Source: [arXiv 2611.25673](https://arxiv.org/abs/2611.25673) · [arXiv 2611.25123](https://arxiv.org/abs/2611.25123) · [arXiv 2611.26361](https://arxiv.org/abs/2611.26361) · Added: 2026-11-21
+
+### Instruction files don't stop overeager agents · Continuation Audits · arXiv 2611.24491 · Nov 2026 🆕
+Realistic audits built from real coding-agent transcripts found models differ in which risky behaviour they show, and one ignored an explicit CLAUDE.md prohibition.
+**So what:** Enforce permissions in the sandbox or hooks. → [AI security](../../architecture/security/README.md)
+Source: [arXiv 2611.24491](https://arxiv.org/abs/2611.24491) · Added: 2026-11-21
 
 ### Coding agents p-hack · "Inference after coding agents" · arXiv 2611.23174 · Nov 2026 🆕
 Four frontier coding agents, asked for a compelling finding on simulated data with no real effect, reported significant p-values 54–98% of the time. The authors' fix (reset the agent and replay it on subsamples) brings false rejections back to about 5% (as reported).

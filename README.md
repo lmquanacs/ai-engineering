@@ -3,9 +3,9 @@
 > A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, model APIs, RAG, architecture, agentic patterns, libraries and the AI engineer career, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus AWS.
 
 <!-- BADGES:START -->
-![Last updated](https://img.shields.io/badge/last%20updated-2026--11--21-2563eb)
+![Last updated](https://img.shields.io/badge/last%20updated-2026--11--22-2563eb)
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
-![Editions](https://img.shields.io/badge/daily%20editions-4-9333ea)
+![Editions](https://img.shields.io/badge/daily%20editions-5-9333ea)
 <!-- BADGES:END -->
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
@@ -15,13 +15,12 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ## 📰 Today's digest
 
 <!-- TODAY:START -->
-### [21 Nov 2026 →](daily/2026/11/2026-11-21.md)
+### [22 Nov 2026 →](daily/2026/11/2026-11-22.md)
 
-- **Security:** Spring AI 2.1.0 / 2.0.3 fix 13 CVEs; Pydantic AI CVE-2026-133505 (run ≥ 2.66.0); Supergateway's MCP WebSocket mode can be hijacked from a browser, with no fix yet. → [AI security](architecture/security/README.md) · [Libraries](build/libraries/README.md)
-- **Tools:** Claude Code 2.1.330 narrows `deniedMcpServers` name matching and runs loops for 30 days; Codex 0.171 defaults to GPT-6.2 Sol; Kiro ships Remote SSH and a VS Code extension. → [Coding agents](build/coding-agents/README.md)
-- **AWS:** AgentCore nested virtualization and agentic Marketplace payments; SageMaker cross-Region inference routers; Cognito CIMD for MCP clients. → [AWS](platforms/aws/README.md)
-- **Context & evals:** compaction still loses task state; a plain log plus grep beats lossy memory; coding agents' reports overstate success. → [Context engineering](architecture/context-and-memory/README.md) · [Evals](architecture/evals-and-observability/README.md)
-- **Action items:** Opus 4.8 fast mode removed **30 Nov** · Copilot model retirements **14 / 18 Dec** · NeMo Guardrails 0.25 deprecates Colang. → [LLM news](models/news/README.md)
+- **Security:** Vercel AI SDK 7.0.178 fixes replayable tool-approval signatures (upgrade and rotate the secret); MCP servers' "read-only" modes let writes through in mcp-ssh-manager, SurrealDB and ArcadeDB. → [AI security](architecture/security/README.md) · [MCP servers](build/mcp-servers/README.md)
+- **Breaking:** Daytona's Python SDK 2.x is now the default install and breaks root imports; pin `daytona<1` or migrate. → [Agent infrastructure](architecture/agent-infrastructure/README.md)
+- **AWS:** AgentCore Gateway filters streamed output via interceptors, G7 GPUs for Runtime Instances, multilingual Bedrock web search, richer S3 Vectors and DynamoDB vector filters. → [AWS](platforms/aws/README.md)
+- **Tools:** Devin access controls and always-on Bots; Antigravity 2.34; tip of the day: scope MCP servers to one subagent. → [Coding agents](build/coding-agents/README.md) · [Claude Code mastery](build/claude-code/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)

@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -55,6 +55,11 @@ A TypeScript API that starts a sandbox with a coding-agent harness (for example 
 Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best-sandbox-providers-for-ai-agents) · Added: 2026-11-18
 
 ## 📰 Recent releases
+
+### Daytona Python SDK 2.x is now the default `pip install daytona` · 2026-11-13 → 11-20 🆕
+`daytona` 2.0.0 (Nov 13) and 2.1.0 (Nov 20) put every call behind a version namespace (`Daytona().v2` / `.v0`), and importing resource types such as `Sandbox` or `Image` from the package root now raises `ImportError`. The old API needs the `daytona[v0-sdk]` extra; the legacy `daytona-sdk` package stays on 0.x, and npm `@daytonaio/sdk` is still 0.x.
+**Why it matters:** Unpinned installs break existing integrations; pin `daytona<1` until you migrate.
+Source: [daytona on PyPI](https://pypi.org/project/daytona/) · Added: 2026-11-22
 
 ### External sandboxes for local coding agents · Prime Radiant · 2026-11-16 🆕
 The agent (Claude Code, Codex or Pi) stays on your machine but sends every command to a separate Linux sandbox over a localhost API. Three implementations share one protocol (v86/WebAssembly, Apple Containers, Microsoft Quicksand/QEMU), each with mounted folders only, no network by default, an allow-list proxy, and credential substitution so the agent never sees real API keys.

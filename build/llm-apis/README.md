@@ -1,6 +1,6 @@
 # LLM APIs & structured output
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > The provider API features you write code against: structured outputs, tool calling, streaming, batch and files, and the breaking changes between versions. Model launches live in [LLM news](../../models/news/README.md); prices in [Inference & cost](../../models/cost-and-serving/README.md).
 
@@ -24,6 +24,11 @@ _Last updated: 2026-11-21_
 ## 🗞️ Latest
 
 <!-- newest first: new API features, breaking changes, migration guides -->
+
+### OpenAI: standby mode for GPT-Live WebRTC sessions · 2026-11-19 🆕
+GPT-Live-1 and GPT-Live-1.1 WebRTC sessions can enter a standby mode that pauses inference while the session is inactive and resumes when someone speaks. The same changelog entry adds `gpt-live-1.1`, which you select in an existing Live session configuration (`v1/live/sessions`); see [LLM news](../../models/news/README.md).
+**Why it matters:** Long-open voice sessions (call centres, assistants left running) stop doing inference work while nobody is talking.
+Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · Added: 2026-11-22
 
 ### Google: tool retrieval for the Gemini Interactions API (preview) · 2026-11-19 🆕
 Mark function or `mcp_server` tools with `defer_loading: true` and add a `{"type": "tool_search"}` tool: the model sees only each deferred tool's name and description and loads the full schema when it needs it, within the same request (`execution: "client"` lets your app run the lookup). Works with Gemini 3.6 and later, including Gemini 4. No separate fee: enabling it adds a small fixed block of input tokens, and each loaded schema is billed as input for the rest of the conversation.

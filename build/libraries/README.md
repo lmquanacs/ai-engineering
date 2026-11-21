@@ -1,6 +1,6 @@
 # Libraries: Python · TypeScript · JVM
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-22_
 
 > Agent and LLM application libraries, with the latest version we confirmed and when to choose each one.
 

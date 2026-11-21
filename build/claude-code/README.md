@@ -1,14 +1,33 @@
 # Claude Code mastery
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > Tips, tricks and workflows for getting the most out of Claude Code, refreshed every day. Release notes and upgrade warnings stay in [Coding agents & IDEs](../coding-agents/README.md); this page is about *how to use it well*.
 
 ## 💡 Tip of the day
 
-### Scope rules to the files they're about with `paths:`
-Put area-specific conventions in `.claude/rules/<topic>.md` and add `paths:` frontmatter. The rule loads only when Claude reads or edits a matching file; rules without `paths` load at launch like CLAUDE.md. Globs are relative to the folder holding `.claude`, and brace expansion works (`"src/**/*.{ts,tsx}"`). If the frontmatter fails to parse, the rule loads everywhere, so check with `claude --debug`.
-```markdown
+### Give an MCP server to one subagent only, with `mcpServers:`
+Define a heavy server (Playwright, a database) inline in a subagent's frontmatter instead of in `.mcp.json`: it connects when that subagent starts and disconnects when it finishes, so its tool descriptions never load into the main conversation. A bare name in the list (such as `github`) reuses a server already configured in the session.
+```yaml
+---
+name: browser-tester
+description: Tests features in a real browser using Playwright
+mcpServers:
+  # Inline definition: scoped to this subagent only
+  - playwright:
+      type: stdio
+      command: npx
+      args: ["-y", "@playwright/mcp@latest"]
+  # Reference by name: reuses an already-configured server
+  - github
+---
+
+Use the Playwright tools to navigate, screenshot, and interact with pages.
+```
+Gotchas: inline servers in a project's `.claude/agents/` load only after you accept the trust dialog for that folder (otherwise they're skipped; `~/.claude/agents/` skips the check), and managed allow/deny lists still apply. Upgrade to 2.1.330 first if several subagents share a server: it fixed one subagent finishing shutting the server down for the others.
+**Why it matters:** browser and database tools stop costing context in every session that doesn't need them.
+Source: [Subagents: scope MCP servers to a subagent](https://code.claude.com/docs/en/sub-agents#scope-mcp-servers-to-a-subagent) · Added: 2026-11-22
+
 ---
 paths:
   - "src/api/**/*.ts"
@@ -92,6 +111,10 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 ## 🗞️ Latest tips
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
+
+### Scope rules to the files they're about with `paths:` 🆕
+Put area-specific conventions in `.claude/rules/<topic>.md` and add `paths:` frontmatter. The rule loads only when Claude reads or edits a matching file; rules without `paths` load at launch like CLAUDE.md. Globs are relative to the folder holding `.claude`, and brace expansion works (`"src/**/*.{ts,tsx}"`). If the frontmatter fails to parse, the rule loads everywhere, so check with `claude --debug`.
+```markdown
 
 ### Let `/loop` and recurring tasks run for weeks 🆕
 From 2.1.330, recurring scheduled tasks and `/loop` last up to 30 days instead of 7 while their session keeps running. Loops created before you upgrade still stop at 7 days, so recreate long-running watchers after upgrading. For anything that must outlive the session, use cloud or Desktop scheduled tasks. (The scheduled-tasks page still says seven days; the changelog is newer.)

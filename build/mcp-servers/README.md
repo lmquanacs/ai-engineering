@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -87,6 +87,11 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 - **Let the agent do it:** the `mcp-builder` skill from [anthropics/skills](https://github.com/anthropics/skills).
 
 ## 🔒 Security notes
+
+### More MCP server CVEs: mcp-ssh-manager, SurrealDB, ArcadeDB, codebase-memory-mcp · 2026-11-18 → 11-21 🆕
+Command injection in **mcp-ssh-manager** backup and DB tools, including ones allowed in read-only mode (upgrade to ≥ 3.8.5); SQL injection through **SurrealDB**'s MCP identifier check (≥ 4.0.0); writes through **ArcadeDB**'s read-only MCP query tool (≥ 26.11.1); memory-safety and argument-injection bugs in **codebase-memory-mcp** (≥ 0.9.0); unauthenticated **k8s-mcp-server** SSE on 0.0.0.0 (≥ 1.1.0) and **jupyter-mcp-server** HTTP mode (≥ 1.0.3). Details in [AI security](../../architecture/security/README.md#-recent-items).
+**Do this:** Upgrade any of these you run, and don't treat a server's "read-only" mode as a security boundary.
+Source: [CVE-2026-129995](https://www.cve.org/CVERecord?id=CVE-2026-129995) · [CVE-2026-134293](https://www.cve.org/CVERecord?id=CVE-2026-134293) · Added: 2026-11-22
 
 ### MCP bridge and server CVE wave · Supergateway (no fix yet), Obot, LibreChat · 2026-11-18 → 11-20 🆕
 NVD published a batch of MCP-related CVEs: **Supergateway** cross-site WebSocket hijacking in stdio-to-WebSocket mode (CVE-2026-132121, 2.4.0–4.2.2) and a DoS in stdio-to-SSE mode (CVE-2026-131857), with no fixed npm release yet; **Obot** < 0.27.0; **LibreChat** < 0.8.8 (MCP OAuth redirect SSRF). Upgrade lines and the AWS document-loader server are in [AI security](../../architecture/security/README.md#-recent-items).

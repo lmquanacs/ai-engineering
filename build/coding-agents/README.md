@@ -1,6 +1,6 @@
 # Coding agents & IDEs
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > Release notes that change how you work in Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin and Kiro. Only items worth acting on are included.
 
@@ -19,6 +19,7 @@ _Last updated: 2026-11-21_
 | now | Gemini CLI 0.70.0: `commandPrefix`/`commandRegex` policy rules match top-level command arguments only | Re-test policy rules written for nested or wrapped commands |
 | now | Antigravity App < 2.33.0 sends MCP headers on cross-origin redirects and can let hooks/wildcard rules bypass enforced command review | Update managed installs to 2.33.0+ |
 | now | Kiro Crew 0.13.0 turns usage data on by default | Opt out with `telemetry.enabled: false`, `KIROCREW_TELEMETRY=0` or `DO_NOT_TRACK=1` if policy requires |
+| when enabled | Devin Access and Sharing: Slack-started sessions take instructions only from people they're shared with | Agree group sharing defaults before your Cognition rep turns it on |
 | **2026-11-26** | Kiro enterprise daily metrics move to 00:30 UTC | Shift any job that reads the daily metrics export |
 | by **2026-11-30** | Claude Sonnet 4.5 retires | Update `model` settings, `CLAUDE.md` and CI configs that pin it |
 | **2026-12-14** | Copilot retires Claude Fable 5, Claude Haiku 4.5, Gemini 3.8 Flash, Gemini 4 Argon, Grok 4.6 and Kimi K3 | Move to Fable 5.2, Haiku 5.5, Gemini 4 Hydrogen, Gemini 4 Carbon and Grok 4.7 (no Kimi replacement announced yet) |
@@ -26,6 +27,16 @@ _Last updated: 2026-11-21_
 | **Feb 2027** | Copilot in VS Code: the Local harness is removed | Move remaining workflows to the Copilot harness (already the default for new sessions) |
 
 ## 🗞️ Latest releases
+
+### Devin: Access and Sharing, Devin Bots · 2026-11-19 → 11-20 🆕
+**Access and Sharing** (gradual rollout, off by default, enabled through your Cognition rep) adds user groups: secrets, environments, sessions, automations, playbooks, skills, MCP servers and knowledge can be shared with a group, and each session has its own sharing setting. Sessions started from Slack still reply in the channel, but only people the session is shared with can instruct it. Service users and bots now use only resources explicitly granted to them. **Devin Bots** (Nov 19) are always-on Devins with their own identity, memory and permissions that split a goal into parallel cloud sessions and drive each to a mergeable PR, starting from templates such as QA engineer, reviewer or on-call.
+**Why it matters:** Once sharing is on, teammates' Slack instructions are ignored until a session is shared with them; audit what bots and service users are granted.
+Source: [Devin release notes](https://docs.devin.ai/release-notes/overview) · Added: 2026-11-22
+
+### Google Antigravity App 2.34.0: MCP Apps, Gemini 4 Neon for API-key users · 2026-11-20 🆕
+Gemini 4 Neon and the Neon Orchestrator now work on eligible paid consumer plans, with Gemini API keys and with Application Default Credentials; MCP App support arrives. Also: choose Enter or Ctrl/Cmd+Enter to send, side questions from selected terminal output, and new marketplace plugins. Fixes include skills without a frontmatter `name` colliding (they now take their folder name), plugins whose manifest starts with a UTF-8 BOM silently failing to load, and staged updates corrupting Windows installs.
+**Why it matters:** Not a security release, but skill authors who relied on folder names should re-check that their skills load.
+Source: [Antigravity changelog](https://antigravity.google/docs/changelog) · Added: 2026-11-22
 
 ### Claude Code 2.1.330 · 2026-11-20 🆕
 Signing in to an organization managed in Anthropic's Enterprise Admin Console now applies that org's settings and its cloud provider or gateway after `claude auth login`. A built-in mod, **easel**, draws charts on request and under MCP metrics results (turn automatic charts off in `/config`). Recurring scheduled tasks and `/loop` now last up to 30 days instead of 7. Behaviour changes: more broad `rm` commands now ask, and `deniedMcpServers` name entries hide only the named claude.ai connector. Fixes include `ExitWorktree` deleting a worktree another running session was using, settings lost on concurrent saves, and freezes after compaction and in WebFetch.

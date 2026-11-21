@@ -1,8 +1,28 @@
 # Research to watch
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### Letting models rewrite skills without feedback makes them worse · arXiv 2611.25534 · Nov 2026 🆕
+Models repeatedly rewrote expert skill files with no task or feedback; agents using the rewritten skills did worse on every benchmark, about 15 points lower on SkillsBench after 30 rounds. Rewrites drift toward what the model would write anyway and drop the expert-only knowledge first *(as reported)*.
+**So what:** Don't let agents "self-improve" SKILL.md files without evals, and protect the non-obvious content. → [Agent skills](../../build/agent-skills/README.md)
+Source: [arXiv 2611.25534](https://arxiv.org/abs/2611.25534) · Added: 2026-11-22
+
+### Static-analysis findings injected during generation · arXiv 2611.26312 · Nov 2026 🆕
+When an analyzer flags generated code, generation rolls back and the finding is inserted into the prompt. On RiskyPy with DeepSeek-V4.1-flash, secure-and-correct programs rose from 52.5% to 64.4%, near the best iterative loop (66.2%) for under a fifth of the tokens *(as reported)*.
+**So what:** A cheap linter or SAST rule in the code-generation loop pays off, especially for rules with a local fix.
+Source: [arXiv 2611.26312](https://arxiv.org/abs/2611.26312) · Added: 2026-11-22
+
+### Judge agent actions by their syscalls · Tether · arXiv 2611.25599 · Nov 2026 🆕
+Each proposed shell or program action first runs in an ephemeral sandbox; Tether infers its effects from system calls and allows it only if stateful policies (information flow, access control, network, written in a Lean 4 DSL) permit it. That catches effects command-string allow-lists miss, such as a network call inside a Python script.
+**So what:** A direction for agent sandboxes and permission systems: check what an action did, not what it looked like. → [AI security](../../architecture/security/README.md)
+Source: [arXiv 2611.25599](https://arxiv.org/abs/2611.25599) · Added: 2026-11-22
+
+### The browser's built-in LLM as a post-compromise tool · arXiv 2611.25086 · Nov 2026 🆕
+Gemini Nano in Chrome could be driven from the host with interpreters that ship with the OS; the user-activation check before model download was easy to satisfy. In a simulated operation the model read a password from a webcam image, triaged files and staged a key for exfiltration *(as reported)*.
+**So what:** Security teams should inventory and, on managed machines, monitor or disable on-device models.
+Source: [arXiv 2611.25086](https://arxiv.org/abs/2611.25086) · Added: 2026-11-22
 
 ### Agent runtimes hold a VM while they wait · "Held While Waiting" · arXiv 2611.26480 · Nov 2026 🆕
 On Bedrock AgentCore, agents waited a median 2.7 s per model reply and computed for an estimated 5–40 ms, but every conversation reserves its own VM, which stayed held about 15 minutes after a 33-second conversation unless closed. Simulating 64 conversations sharing one environment needed 59× fewer environments *(as reported)*.

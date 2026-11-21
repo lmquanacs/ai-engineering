@@ -1,6 +1,6 @@
 # AWS for AI engineering
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > Everything on AWS that matters to AI engineers: Bedrock models, AgentCore (the agent runtime platform), Strands Agents, Kiro, AWS MCP servers, and how they connect to Spring, Python and TypeScript apps. **re:Invent 2026 runs 30 Nov – 4 Dec**, so expect a large wave of launches.
 
@@ -50,6 +50,10 @@ A managed platform for running agents in production: **Runtime** (serverless age
 
 | Date | What shipped | Why it matters |
 |---|---|---|
+| 2026-11-20 | **Gateway streaming response interceptors:** set `responseInterceptionMode: STREAM` and your interceptor Lambda gets each batch of SSE or event-stream events (batch size via `responseStreamingConfiguration.maxEventsPerInvocation`) to redact, change or drop | PII filtering on model output without losing streaming |
+| 2026-11-20 | **Runtime Instances on EC2 G7** (`g7.2xlarge`–`g7.48xlarge`, NVIDIA RTX PRO 4500 Blackwell): add them to the capacity provider's allowed types; drivers are installed, sessions up to 14 days; 8 Regions incl. ap-southeast-2 | A GPU per agent session for vision models or rendering |
+| 2026-11-20 | **Agent Registry:** verify a domain and publish agents and tools for discovery by any AWS-authenticated user (no extra charge for now); new WebBotAuth record type that works with WAF Bot Control | Check who owns an agent before yours connects to it |
+| 2026-11-21 | **Web Search:** Spanish, French, German, Italian, Japanese and non-US English, plus an optional `country` field (ISO 3166-1 alpha-2) to bias sources; AgentCore in 6 Regions incl. Sydney, Bedrock in US Regions | Local sources for non-US users with no code change |
 | 2026-11-19 | **Runtime Instances:** nested virtualization (KVM) lets agents run their own VMs, such as an Android emulator, inside a session; a separate opt-in lets agents on Instances run with elevated privileges (off by default; read the security considerations first) | Mobile-app testing and VM-based sandboxes inside managed agent sessions |
 | 2026-11-19 | **Agentic payments:** agents can find and buy selected AWS Marketplace products and pay per request in USD over x402 through AgentCore payments, billed to the AWS account; discovery via the Gateway Marketplace connector (`connectorId: "aws-marketplace"`) | Agents can buy paid tools and data under spending limits; set limits and approved sellers before enabling |
 | Nov 2026 | **Governance:** Organizations resource control policies cover AgentCore; Gateway `bedrock-agentcore:InboundJwtClaim/*` condition keys filter `InvokeGateway` by `iss`, `sub`, `aud`, `scope`, `client_id`. **Runtime V2:** `s3BucketMount` mounts your S3 bucket (use `{runtimeSessionId}` in the prefix for per-session folders). **Agent Registry:** stores skill packages (`.zip` with `SKILL.md`), synced from S3 or GitHub, with keyword, semantic or hybrid search | Org-wide limits, per-caller JWT rules and versioned shared skills |
@@ -118,6 +122,11 @@ November brought Kiro CLI 3.0.0–3.1.0. October added a **local command sandbox
 Sources: [Kiro changelog](https://kiro.dev/changelog/dev-server-and-spec-workflows/) · [AWS Japan SA deck, Oct](https://speakerdeck.com/inariku/kiro-update-2026-10-en) · [Nov deck](https://speakerdeck.com/inariku/kiro-update-2026-11-en) · Added: 2026-11-18
 
 ## 🖥️ Self-hosted models on AWS
+
+### Vector filters: S3 Vectors 40 KB metadata, DynamoDB `SearchVectors` filters · 2026-11-20 🆕
+S3 Vectors raises filterable metadata per vector from 2 KB to 40 KB (default for new vector buckets; existing indexes need `UpdateIndexMode` to switch to enhanced index mode; no extra cost). DynamoDB `SearchVectors` filters now accept range comparisons and `BETWEEN` on numbers, `IN`, `attribute_exists`/`attribute_not_exists` and `AND`/`OR`/`NOT`, applied during the search so every result matches.
+**Why it matters:** Permission, tenant and date filters can live in the vector store instead of post-filtering, which also fixes short result pages. Patterns: [RAG & retrieval](../../architecture/rag-and-retrieval/README.md).
+Source: [S3 Vectors 40 KB metadata](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-s3-vectors-raises-filterable-metadata-40kb-per-vector/) · [DynamoDB vector filters](https://aws.amazon.com/about-aws/whats-new/2026/11/dynamodb-vector-filters/) · Added: 2026-11-22
 
 ### SageMaker AI inference routers: cross-Region failover for your own endpoints · 2026-11-18 🆕
 An inference router is a Regional resource you call instead of an endpoint; it sends each request to a healthy endpoint or inference component for the same model, in another Region or account, preferring local destinations and shifting traffic when they throttle or return 5xx. The response header `X-Amzn-SageMaker-Invoked-Routing-Reason` says where it went. Limits: no response streaming, 60 s per real-time request (use `InvokeInferenceRouterAsync` for longer), 5 routers per account per Region; calls use the `sagemaker-inference-router-runtime` client. No extra charge.

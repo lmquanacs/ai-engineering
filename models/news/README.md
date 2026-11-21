@@ -1,6 +1,6 @@
 # LLM news: models, trends, techniques
 
-_Last updated: 2026-11-20 · This page keeps about 30 days; older items move to [archive/](archive/)_
+_Last updated: 2026-11-22 · This page keeps about 30 days; older items move to [archive/](archive/)_
 
 > Only what changes a builder's decision. Every model row carries its **API ID** and a primary source. Benchmark numbers are vendor claims unless marked otherwise.
 
@@ -23,6 +23,7 @@ Newest first. Status is as of release.
 
 | Date | Provider | Model | API ID | Status | Source |
 |---|---|---|---|---|---|
+| 2026-11-19 | OpenAI | GPT-Live-1.1: realtime voice model with better pronunciation, accent consistency and transcription in multilingual conversations | `gpt-live-1.1` | Released (Live API) | [Changelog](https://developers.openai.com/api/docs/changelog) |
 | 2026-11-17 | OpenAI | **GPT-6.2 Astra** (hardest reasoning and coding); $8/$40 per 1M in/out, cheaper than GPT-6 Astra's $10/$50; 1.05M context, 128K max output | `gpt-6.2-astra` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) |
 | 2026-11-17 | OpenAI | **GPT-6.2 Sol** (everyday coding and agents); $2/$10 per 1M in/out, same as GPT-6.1 Sol; 1.05M context, 128K max output | `gpt-6.2-sol` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) |
 | 2026-11-16 | Alibaba | Qwen4-Max: 2.4T total / ~71B active, 1M context; ~35% fewer tokens than Qwen3.8-Max on Alibaba's Work360 benchmark (self-reported). Not open weights; smaller open Qwen4 models promised | `qwen4-max` | API (Model Studio); $1.50/$4.50 per 1M in/out (international), cache hit $0.075 | [Alibaba Cloud](https://www.alibabacloud.com/press-room/alibaba-unveils-qwen4-max) · [Model Studio pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) |

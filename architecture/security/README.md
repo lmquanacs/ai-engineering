@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,27 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### Vercel AI SDK: tool-approval signatures replayable for auto-denied calls · 7.0.178 · 2026-11-20 🆕
+With `experimental_toolApprovalSecret` set, the SDK signed approval requests even for tool calls its policy denied automatically; a client controlling message history could flip them to approved. Fixed in `ai` 7.0.178, but earlier signatures stay valid until you rotate the secret. Details on the [TypeScript libraries page](../../build/libraries/typescript.md).
+**Why it matters:** A human-in-the-loop gate is only as strong as what the client can't forge; rotate the secret after upgrading.
+Source: [`ai` on npm](https://www.npmjs.com/package/ai?activeTab=versions) · Added: 2026-11-22
+
+### MCP server CVEs: "read-only" modes that weren't · 2026-11-18 → 11-21 🆕
+- **mcp-ssh-manager:** backup tools (CVE-2026-129995, CVSS 8.8) and DB tools (CVE-2026-77383) build shell commands from tool arguments; `ssh_backup_list`/`ssh_db_list` count as read-only, so readonly mode doesn't help, and indirect prompt injection is a stated vector. **Upgrade to ≥ 3.8.5** (3.6.7 fixed only the DB tools).
+- **SurrealDB** 3.1.0 to < 4.0.0: an escaped backtick in an MCP tool argument breaks out of the identifier and runs arbitrary SurrealQL (CVE-2026-134293). Fixed in 4.0.0.
+- **ArcadeDB** 26.3.1 to < 26.11.1: Gremlin scripts that fall back to Groovy are classed as reads, so writes pass the MCP read-only query tool (CVE-2026-134324, plus related CVEs). Fixed in 26.11.1.
+- **codebase-memory-mcp:** a Cypher query with too many RETURN items overflows a stack array (CVE-2026-114494) and `base_branch` can inject git options to write files (CVE-2026-114496); fixed in 0.9.0. A Windows-only process-kill check bypass (CVE-2026-114497) is fixed in 0.9.1-rc.1 and later.
+- **k8s-mcp-server** < 1.1.0: default SSE transport listens on 0.0.0.0:8080 without auth, exposing Kubernetes write tools (CVE-2026-130007).
+- **jupyter-mcp-server** < 1.0.3: standalone HTTP mode has unauthenticated control endpoints and no Origin check (CVE-2026-77318, CVE-2026-77359), so a web page can redirect the kernel.
+- **Coder Agents** `read_skill_file` follows symlinks, so a malicious skill can pull other workspace files into context (CVE-2026-134363, low); fixed in 2.34.17 / 2.36.12 / 2.37.9 / 2.38.5.
+**Why it matters:** Query classifiers and "read-only" flags in MCP servers keep failing; enforce read-only with database permissions and network binding, not the tool's label.
+Source: [CVE-2026-129995](https://www.cve.org/CVERecord?id=CVE-2026-129995) · [CVE-2026-134293](https://www.cve.org/CVERecord?id=CVE-2026-134293) · [CVE-2026-134324](https://www.cve.org/CVERecord?id=CVE-2026-134324) · [CVE-2026-114494](https://www.cve.org/CVERecord?id=CVE-2026-114494) · [CVE-2026-130007](https://www.cve.org/CVERecord?id=CVE-2026-130007) · [CVE-2026-77318](https://www.cve.org/CVERecord?id=CVE-2026-77318) · [CVE-2026-134363](https://www.cve.org/CVERecord?id=CVE-2026-134363) · Added: 2026-11-22
+
+### Pydantic AI Harness: ReDoS in ANSI stripping · CVE-2026-133161 · 2026-11-19 🆕
+`ToolOutputLimits(strip_ansi=True)` uses a regex that is quadratic in line length, so a few hundred KB of tool output with unterminated escape sequences can block the event loop for tens of seconds or more. Shell, file, web and MCP tool output can all carry it. The CVE lists 0.4.0 up to 0.69.0 as affected; 0.70.0 (2026-11-17) is the likely fix, but we couldn't confirm it in the advisory.
+**Why it matters:** One hostile web page or file can stall every agent sharing that event loop.
+Source: [CVE-2026-133161](https://www.cve.org/CVERecord?id=CVE-2026-133161) · Added: 2026-11-22
 
 ### Pydantic AI: tool results rebuilt as file objects (SSRF, credentialed reads) · CVE-2026-133505 · 2026-11-20 🆕
 When message history is serialized and reloaded, a tool result containing JSON shaped like a Pydantic AI file type is rebuilt as a real file object. Whoever controls that tool data (an MCP server, an external record) can make the app fetch internal URLs or make the provider read `s3://` objects or uploaded files with your credentials. Stored history, server-held UI history and durable runs (Temporal, DBOS, Prefect) are affected. Fixed in `pydantic-ai`/`pydantic-ai-slim` 2.66.0 and 1.107.10.

@@ -1,13 +1,25 @@
 # Agent skills · ☕ Java / Kotlin + Spring Boot
 
-← [Back to Agent skills](README.md) · _Last updated: 2026-11-18_
+← [Back to Agent skills](README.md) · _Last updated: 2026-11-23_
 
 > Skills that make agents write idiomatic Spring Boot 4 code in Java or Kotlin, including Gradle Kotlin DSL builds. Also see the [Spring Boot + Kotlin starter skill](starter-skills/spring-boot-kotlin/SKILL.md).
 
 ## ⭐ Start here
 
+### kotlin/kotlin-agent-skills · official JetBrains Kotlin skills 🆕
+JetBrains' own skill collection (incubator status), named `kotlin-<category>-<name>`. For Spring work the key one is `kotlin-backend-jpa-entity-mapping`: entity design, identity and `equals`/`hashCode`, relationships and fetch plans, and Kotlin-specific JPA traps such as using `data class` for entities. The `tooling` skills cover Java-to-Kotlin conversion, AGP 9 and immutable-collections migrations, and moving Gradle builds to the Kotlin toolchain.
+**Why it matters:** It comes from the language's maintainers, and the JPA skill targets the bugs agents most often write in Kotlin + Spring Data code (N+1 queries, `LazyInitializationException`, broken equality).
+```bash
+npx skills add Kotlin/kotlin-agent-skills
+# Claude Code plugin form (also adds the Kotlin docs MCP server, https://mcp.kotlinlang.org/mcp):
+claude plugin marketplace add Kotlin/kotlin-agent-skills
+claude plugin install kotlin-agent-skills@Kotlin
+```
+Note: the plugin turns on a remote MCP server (no credentials needed) automatically; use the skills CLI or copy single skill folders if you only want the skills.
+Source: [github.com/kotlin/kotlin-agent-skills](https://github.com/kotlin/kotlin-agent-skills) · 10 skills, ~14.3K installs, `kotlin-backend-jpa-entity-mapping` ~1.9K on [skills.sh](https://skills.sh/kotlin/kotlin-agent-skills) (2026-11-23) · Added: 2026-11-23
+
 ### kotlin-springboot · `github/awesome-copilot`
-Best practices for idiomatic Spring Boot with Kotlin: constructor injection, immutability, package structure, and using Kotlin features rather than Java-style code. About 9.4K installs.
+Best practices for idiomatic Spring Boot with Kotlin: constructor injection, immutability, package structure, and using Kotlin features rather than Java-style code. About 9.8K installs (2026-11-23).
 **Why it matters:** It is maintained in GitHub's official awesome-copilot repo and works in Claude Code, Copilot and others through the open skill format.
 ```bash
 npx -y skills add github/awesome-copilot --skill kotlin-springboot --agent claude-code

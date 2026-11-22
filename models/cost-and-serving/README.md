@@ -1,6 +1,6 @@
 # Inference, cost & serving
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-23_
 
 > What models cost, how to pay less, and how to serve open models yourself. Prices are list prices in USD per 1M tokens unless stated, and they change often, so check the provider's page before you budget.
 
@@ -8,11 +8,11 @@ _Last updated: 2026-11-21_
 
 | Date | Change | Source |
 |---|---|---|
-| **2026-11-30** | Gemini 4 Carbon introductory pricing ends | [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/) |
 | **2026-11-30** | OpenAI's promotional price for **GPT-5.6 Sol** ends (it does not cover GPT-6.x Sol) | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
-| **2026-12-01** | **Gemini 4 Argon doubles**: $2/$10 → **$4/$20** (cached $0.10 → $0.20) | [Google pricing](https://aistudio.google.com/docs/pricing) |
+| **2026-12-01** | **Gemini 4 Carbon and Gemini 4 Argon double** (introductory pricing ends): $2/$10 → **$4/$20** (cached $0.10 → $0.20; Batch/Flex $1/$5 → $2/$10) | [Google pricing](https://aistudio.google.com/docs/pricing) · [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) |
 | **2027-01-01** | **Gemini 3.8 Flash and 3.6 Flash double**: $0.75/$3.75 → **$1.50/$7.50**; context-cache storage $0.50 → $1.00 per MTok-hour | [Google pricing](https://aistudio.google.com/docs/pricing) |
 | **2027-01-11** | OpenAI ends fast/priority `service_tier` for **GPT-5.2, GPT-5.4, GPT-5.4 mini** with EU data residency (Standard only) | [OpenAI deprecations](https://developers.openai.com/api/docs/deprecations) |
+| **2027-01-12** | **Gemini 4 Hydrogen** starts charging for cache writes: $1.875 per 1M tokens (global, Vertex) | [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) |
 | **2027-03-01** | **GPT-6.2 Astra / Sol Ultrafast** goes from 3× to **6× Standard** (Standard rates unchanged) | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
 
 ## 💲 Price snapshot (list, standard tier, as of 2026-11-15)
@@ -28,7 +28,9 @@ _Last updated: 2026-11-21_
 | GPT-6.2 Sol | $2 | $0.10 | $10 | Background 2h −30% / 8h −40% (beta); Ultrafast option costs 3× |
 | GPT-6.1 Sol | $2 | $0.10 | $10 | Lower tier at 50% |
 | GPT-6 Luna | $0.10 | $0.01 | $0.50 | — |
-| Gemini 4 Argon | $2 | $0.10 | $10 | Batch/Flex −50% · ⚠️ rises Dec 1 |
+| Gemini 4 Carbon | $2 | $0.10 | $10 | Batch/Flex −50% · ⚠️ rises to $4/$20 Dec 1 |
+| Gemini 4 Argon | $2 | $0.10 | $10 | Batch/Flex −50% · ⚠️ rises to $4/$20 Dec 1 |
+| Gemini 4 Hydrogen | $1.50 | $0.075 | $7.50 | Batch/Flex −50% · cache writes billed from 2027-01-12 |
 | Gemini 3.8 Flash | $0.75 | $0.075 | $3.75 | Batch/Flex −50% · ⚠️ rises Jan 1 |
 | Grok 4.7 | $2 | $0.50 | $6 | Batch −20%; 200K+ prompts double |
 | DeepSeek-V4.1-Flash (`deepseek-flash`) | $0.30 / $0.15 off-peak | $0.006 | $1.20 / $0.60 off-peak | Off-peak (by UTC hour) −50% |
@@ -36,7 +38,7 @@ _Last updated: 2026-11-21_
 | Qwen4-Max (`qwen4-max`, international) | $1.50 | $0.075 (cache hit) | $4.50 | Explicit cache writes cost extra |
 | Mistral Large 4 | $0.70 | $0.07 | $2.10 | Batch −50% (the pricing page also shows $0.50/$1.50, so confirm for your ID) |
 
-Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15; GPT-6.2 rows from [OpenAI pricing](https://developers.openai.com/api/docs/pricing) on 2026-11-19; DeepSeek-V4-Pro from [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) and Qwen4-Max from [Model Studio pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) on 2026-11-20. Gemini 4 Carbon, Gemini 4 Hydrogen and GPT-6 Sol are not yet in the table.
+Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15; GPT-6.2 rows from [OpenAI pricing](https://developers.openai.com/api/docs/pricing) on 2026-11-19; DeepSeek-V4-Pro from [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) and Qwen4-Max from [Model Studio pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) on 2026-11-20. Gemini 4 Carbon and Hydrogen rows from [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) (global endpoint) on 2026-11-23. GPT-6 Sol is not yet in the table.
 
 **More trackers:** [getdeploying.com/llms](https://getdeploying.com/llms) (199 models, hand-checked) · [benchlm.ai cost ledger](https://benchlm.ai/llm-pricing) (217 models, with value-for-money scores)
 
@@ -59,6 +61,11 @@ Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog)
 From 2026-11-18 12:00 Beijing time, server-side search and web-fetch calls made during a model call are no longer billed as separate tool calls; their results go into the context and are billed as input tokens. The standalone Search and Fetch APIs still cost $0.75 per 1,000 successful requests. Peak hours (full price) are 01:00–04:00 and 06:00–10:00 UTC on weekdays.
 **Why it matters:** Agents that lean on DeepSeek's built-in search now pay per token of fetched content, so long pages cost more. Re-estimate cost for tool-heavy runs.
 Source: [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) · Added: 2026-11-20
+
+### Gemini 4: long completions are billed even if the request times out · 2026-11-13 🆕
+Since 2026-11-13, any Gemini 4 completion over 32K tokens is billed for the tokens it generated even when the request then fails on a client or server timeout. Carbon and Argon also double in price on 2026-12-01 (see the table above).
+**Why it matters:** Retrying long generations after a timeout now costs you twice. Raise client timeouts, stream long outputs, or use background/batch modes for long jobs, and re-estimate Gemini 4 budgets for December.
+Source: [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) · Added: 2026-11-23
 
 ## 🖥️ Self-hosting & serving
 

@@ -1,10 +1,18 @@
 # AI-native programming languages
 
-_Last updated: 2026-11-18_
+_Last updated: 2026-11-23_
 
 > Languages designed with LLMs and agents as primary users, and the essays arguing about whether we need them. All of these are experimental. Watch them; don't ship production code in them.
 
 ## 🧪 Languages
+
+### Jac · Jaseci Labs / University of Michigan · Python superset with `by llm()` 🆕
+A Python-superset language whose runtime (Jaseci) treats LLM calls, agent routing and graph-shaped workflow state as language features. You write a typed function body as `by llm()`, and you let the model choose where a "walker" goes next with `visit ... by llm()`, so the compiler and runtime can see the agent's control flow instead of it being hidden inside an SDK. A new paper (arXiv 2611.21298, 2026-11-16) reports 1.8× to 8.7× less AI-integration code than the OpenAI SDK across five benchmarks, with comparable task quality *(self-reported)*. MIT-licensed. Unlike most languages on this page, it is installable from PyPI.
+```bash
+pip install jaclang
+```
+**Why it matters:** It is the most complete test so far of making LLM calls a language primitive rather than a library call. The paper also shows speculative execution and service partitioning applied through configuration alone, which a plain SDK can't do because it can't see the workflow.
+Sources: [arXiv 2611.21298: *Agent-Native by Design*](https://arxiv.org/abs/2611.21298) · [jaseci-labs/jaseci](https://github.com/jaseci-labs/jaseci) · [PyPI: jaclang](https://pypi.org/project/jaclang) · [The Register (2026-10-23)](https://www.theregister.com/devops/2026/10/23/michigan-prof-creates-python-like-jac-language-for-ai-agents/5305110) · Added: 2026-11-23
 
 ### Zero · Vercel Labs · systems language for agents
 An experimental systems language whose toolchain talks to agents: every diagnostic is structured JSON with stable repair IDs and fix plans. Agents query and patch a **semantic program graph** instead of editing raw text, and the compiler checks every change. Native binaries are under 10 KiB. The design prefers one obvious way to write each thing ("regularity over syntax"). Apache-2.0, pre-1.0, breaking changes expected.

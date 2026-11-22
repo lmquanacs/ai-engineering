@@ -1,6 +1,6 @@
 # RAG & retrieval
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-23_
 
 > Getting the right facts from your own data into the model: chunking, search, reranking and the models and databases behind them. For what happens to context once it's in the window, see [Context engineering & memory](../context-and-memory/README.md).
 
@@ -31,7 +31,9 @@ The `hybrid` query gains a fusion mode: normalisation and combination are set in
 **Why it matters:** Hybrid weights become a per-request knob you can tune and A/B, and template-based agentic search bounds what an LLM-written query can do.
 Source: [OpenSearch blog: Explore OpenSearch 3.10](https://opensearch.org/blog/explore-opensearch-3-10/) · Added: 2026-11-20
 
-Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01).
+Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01). As of 2026-11-23, Weaviate 1.41.0 is still only at `1.41.0-rc.1` builds on Docker Hub (no GA), and pgvector 0.8.7 now has `pg19` images.
+
+**On AWS:** Amazon Textract Insights (GA 2026-11-20) extracts schema-defined fields from mixed document packets with a confidence score and page/bounding-box grounding per value. → [AWS](../../platforms/aws/README.md)
 
 ---
 

@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-23_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory and caching. Retrieval lives in [RAG & retrieval](../rag-and-retrieval/README.md). Agent quality now depends more on this than on which model you pick.
 
@@ -77,5 +77,6 @@ Embedding, reranker and parser models, vector databases and RAG patterns now hav
 ## 🧠 Memory & conventions
 
 - **AGENTS.md / CLAUDE.md:** a repo-level instruction file is now a de facto standard across coding agents. Keep it short and link out to detail.
+- **Managed memory stores on AWS:** AgentCore Memory, and since 2026-11-18 Amazon OpenSearch Memory (events in, derived memories out, hybrid search). → [AWS](../../platforms/aws/README.md)
 - **Spring AI Session API:** event-sourced short-term memory with compaction for JVM agents. ([spring.io](https://spring.io/team/tzolov))
 - **Skills as lazy context:** only the description is always loaded and the body loads on demand. → [Agent skills](../../build/agent-skills/README.md)

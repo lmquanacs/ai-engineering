@@ -1,6 +1,6 @@
 # Libraries · 🟦 TypeScript
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-22_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-23_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
@@ -12,6 +12,11 @@
 | **OpenAI Agents SDK (JS)** | — | OpenAI's agents SDK for TS | OpenAI-centric stacks |
 
 ## 🆕 Notable changes
+
+### AI SDK 6.x: Google MCP connector credentials leaked into telemetry · 6.0.336 (2026-11-22) 🆕
+In the v6 line, `google.mcp_server` tool definitions (the Gemini Interactions MCP connector) can carry headers such as `Authorization`, and telemetry redaction only recognised OpenAI tool ids, so those credentials were written to the `ai.prompt.tools` span attribute of `generateText` and `streamText`. The changelog lists the fix under 6.0.335; the first v6 release on npm that contains it is 6.0.336.
+**Why it matters:** If you stay on AI SDK 6 with telemetry on and pass headers to Google's MCP connector, upgrade, then rotate those tokens and check your tracing backend for stored spans.
+Source: [`ai` 6.0.336 CHANGELOG](https://unpkg.com/ai@6.0.336/CHANGELOG.md) · [`ai` on npm](https://www.npmjs.com/package/ai?activeTab=versions) · Added: 2026-11-23
 
 ### AI SDK 7.0.178: signed tool approvals could be replayed for auto-denied calls 🆕
 With `experimental_toolApprovalSecret` set, `generateText` and `streamText` also signed the approval request for tool calls the approval policy had denied automatically, so a client that controls message history could send it back as approved and run the denied tool. 7.0.178 stops signing those requests; it also copies `prepareStep` message arrays per step and forwards the `preliminary` flag on provider-executed tool results. 7.0.179 lets `gateway.experimental_realtime()` use `openai/gpt-live-1` and `openai/gpt-live-1.1`.

@@ -1,6 +1,6 @@
 # AWS for AI engineering
 
-_Last updated: 2026-11-22_
+_Last updated: 2026-11-23_
 
 > Everything on AWS that matters to AI engineers: Bedrock models, AgentCore (the agent runtime platform), Strands Agents, Kiro, AWS MCP servers, and how they connect to Spring, Python and TypeScript apps. **re:Invent 2026 runs 30 Nov – 4 Dec**, so expect a large wave of launches.
 
@@ -80,7 +80,7 @@ Sources: [AgentCore release notes](https://docs.aws.amazon.com/bedrock-agentcore
 ## 🧵 Strands Agents (AWS's open-source agent SDK)
 
 ### Strands Harness SDK + Strands harness 🆕
-A model-driven agent SDK for **Python and TypeScript** (Apache-2.0), now described as an "agent harness" with behavioural middleware and sandboxed execution. **Strands harness** (released 2026-09-21) is a ready-made, general-purpose agent built on the SDK. Latest versions: `strands-agents` 1.65.0 (2026-11-13), `@strands-agents/sdk` 1.25.0 (2026-11-13) and `strands-harness` 0.4.0 (2026-11-12), checked on PyPI and npm on 2026-11-19.
+A model-driven agent SDK for **Python and TypeScript** (Apache-2.0), now described as an "agent harness" with behavioural middleware and sandboxed execution. **Strands harness** (released 2026-09-21) is a ready-made, general-purpose agent built on the SDK. Latest versions: `strands-agents` 1.65.0 (2026-11-13), `@strands-agents/sdk` 1.26.0 (2026-11-19) and `strands-harness` 0.4.0 (2026-11-12), checked on PyPI and npm on 2026-11-23.
 ```bash
 pip install strands-agents strands-agents-tools   # SDK
 pip install strands-harness                       # assembled agent
@@ -123,10 +123,30 @@ Sources: [Kiro changelog](https://kiro.dev/changelog/dev-server-and-spec-workflo
 
 ## 🖥️ Self-hosted models on AWS
 
+### ElastiCache distributed KV caching for vLLM/SGLang + an agent skill to set it up · 2026-11-18 → 11-21 🆕
+ElastiCache for Valkey can now act as a shared KV-cache tier beside your GPU fleet (GA 2026-11-18): engines such as vLLM, SGLang and TensorRT-LLM connect through the open-source LMCache connector with a config change, so any server can reuse prefill state across sessions, re-routes and server failures. AWS claims up to 40% lower inference cost and up to 80% lower time to first token *(self-reported)*. On 2026-11-21 AWS added a **distributed KV caching skill** to the Agent Toolkit for AWS: it checks fit first (EFA-capable GPUs such as p5, LMCache 0.5.8rc1+, vLLM 0.11.1+ or SGLang 0.5.13+, Valkey 9.1+ on `cache.i8ge.48xlarge`), estimates savings from your own traffic with the free KVTrace tool, then configures the connector.
+**Why it matters:** Long-context agents that come back after a break stop paying for full prefill on whichever GPU picks them up. Check the multi-tenant guidance first: a shared cache can leak via timing, so isolate tenants or add a tenant ID to the KV hash.
+Sources: [AWS Database blog: announcement](https://aws.amazon.com/blogs/database/announcing-distributed-kv-caching-for-self-hosted-llms-with-amazon-elasticache/) · [AWS ML blog: the agent skill](https://aws.amazon.com/blogs/machine-learning/cut-self-hosted-llm-cost-and-latency-with-the-distributed-kv-caching-agent-skill/) · [Skill on GitHub](https://github.com/aws/agent-toolkit-for-aws/tree/main/skills/specialized-skills/database-skills/distributed-kv-caching) · Added: 2026-11-23
+
+### SageMaker HyperPod Global Inference Gateway: one endpoint across clusters and Regions · 2026-11-20 🆕
+A SageMaker-managed gateway that routes requests across every HyperPod cluster you register (same or other Regions), choosing by KV-cache headroom, queue depth, proximity and error rate, and failing over automatically; a failed request is retried once on another cluster unless it has started streaming. You enable `spec.globalRouting` in each cluster's `InferenceGatewayConfig`, then call `CreateGlobalInferenceGateway`. Calls are SigV4/IAM-signed (`sagemaker:InvokeGlobalInferenceGateway`, plus `...WithResponseStream` for streaming) and reach clusters only over PrivateLink. 13 Regions, including Sydney.
+**Why it matters:** Cross-Region overflow and failover for self-hosted LLMs on HyperPod without your own load balancers or DNS. Note that each published cluster's Network Load Balancer is billed even when no gateway uses it.
+Source: [AWS ML blog](https://aws.amazon.com/blogs/machine-learning/introducing-amazon-sagemaker-hyperpod-global-inference-gateway-one-endpoint-across-regions-and-clusters/) · Added: 2026-11-23
+
 ### Vector filters: S3 Vectors 40 KB metadata, DynamoDB `SearchVectors` filters · 2026-11-20 🆕
 S3 Vectors raises filterable metadata per vector from 2 KB to 40 KB (default for new vector buckets; existing indexes need `UpdateIndexMode` to switch to enhanced index mode; no extra cost). DynamoDB `SearchVectors` filters now accept range comparisons and `BETWEEN` on numbers, `IN`, `attribute_exists`/`attribute_not_exists` and `AND`/`OR`/`NOT`, applied during the search so every result matches.
 **Why it matters:** Permission, tenant and date filters can live in the vector store instead of post-filtering, which also fixes short result pages. Patterns: [RAG & retrieval](../../architecture/rag-and-retrieval/README.md).
 Source: [S3 Vectors 40 KB metadata](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-s3-vectors-raises-filterable-metadata-40kb-per-vector/) · [DynamoDB vector filters](https://aws.amazon.com/about-aws/whats-new/2026/11/dynamodb-vector-filters/) · Added: 2026-11-22
+
+### Amazon OpenSearch Memory GA: managed cross-session memory for agents · 2026-11-18 🆕
+A serverless memory store on OpenSearch Serverless: you write conversation turns as events (`CreateEvent`), it derives facts, preferences and summaries, and you recall them with hybrid keyword + semantic `SearchMemories` (or search raw turns with `SearchEvents`). Data lives in a *space*, scoped by actor and optional session ID. Boto3 client `opensearchmemory` (boto3 1.44.4 or later); extraction and embedding are included in the price. Regions: us-east-1, us-west-2, ap-northeast-1, eu-central-1. An AWS MCP server and skills for Kiro, Claude Code and Codex are offered.
+**Why it matters:** An alternative to AgentCore Memory if your retrieval already runs on OpenSearch. Not yet in Sydney. Patterns: [Context engineering & memory](../../architecture/context-and-memory/README.md).
+Source: [AWS Big Data blog](https://aws.amazon.com/blogs/big-data/introducing-amazon-opensearch-memory-persistent-memory-for-ai-agents/) · Added: 2026-11-23
+
+### Amazon Textract Insights GA: schema-driven extraction with page grounding · 2026-11-20 🆕
+A new asynchronous Textract API (`StartDocumentInsights`): you describe fields in a JSON Schema "blueprint" (AWS ships public ones for W-2, 1040, passports and others), submit a single document or a mixed packet of up to 3,000 pages from S3, and it splits the packet, matches each part to a blueprint and returns every value with a confidence score plus page and bounding box. Priced per page; PDF, PNG, JPEG, TIFF; English, French, German, Italian, Portuguese and Spanish. It uses cross-Region inference within your geography. Textract Core also gets better tables and handwriting and 40 languages, with no API change.
+**Why it matters:** Grounded, auditable extraction for document pipelines and RAG ingestion without building OCR, splitting and LLM prompting yourself. Set your auto-accept threshold on a sample of your own documents. More on parsers: [RAG & retrieval](../../architecture/rag-and-retrieval/README.md).
+Source: [AWS ML blog](https://aws.amazon.com/blogs/machine-learning/announcing-amazon-textract-insights-verifiable-generative-ai-for-documents/) · Added: 2026-11-23
 
 ### SageMaker AI inference routers: cross-Region failover for your own endpoints · 2026-11-18 🆕
 An inference router is a Regional resource you call instead of an endpoint; it sends each request to a healthy endpoint or inference component for the same model, in another Region or account, preferring local destinations and shifting traffic when they throttle or return 5xx. The response header `X-Amzn-SageMaker-Invoked-Routing-Reason` says where it went. Limits: no response streaming, 60 s per real-time request (use `InvokeInferenceRouterAsync` for longer), 5 routers per account per Region; calls use the `sagemaker-inference-router-runtime` client. No extra charge.

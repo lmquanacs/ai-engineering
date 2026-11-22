@@ -1,10 +1,18 @@
 # Agent skills · 🟦 TypeScript
 
-← [Back to Agent skills](README.md) · _Last updated: 2026-11-18_
+← [Back to Agent skills](README.md) · _Last updated: 2026-11-23_
 
 > Skills for TypeScript, Node.js and React/Next.js work. Also see the [TypeScript starter skill](starter-skills/typescript-service/SKILL.md).
 
 ## ⭐ Start here
+
+### fastify-best-practices · `mcollina/skills` 🆕
+Matteo Collina's Fastify skill covers routes, plugins, JSON Schema validation and serialization, hooks and the request lifecycle, error handling, Pino logging, testing with `inject`, and TypeScript via type stripping. The same repo has `node`, `typescript-magician`, `nodejs-core`, `oauth` and `linting-neostandard-eslint9` skills.
+**Why it matters:** With ~107K installs it is by far the most-used Fastify skill, and it passes the skills.sh security audits (Gen Agent Trust Hub, Socket, Snyk); install it alongside your own skill that pins the test runner and lint setup.
+```bash
+npx skills add https://github.com/mcollina/skills --skill fastify-best-practices
+```
+Source: [github.com/mcollina/skills](https://github.com/mcollina/skills) · ~106.7K installs on [skills.sh](https://skills.sh/mcollina/skills/fastify-best-practices) (2026-11-23) · Added: 2026-11-23
 
 ### Vercel React best practices · `vercel-labs`
 Vercel's own guidance on React and Next.js performance and patterns, packaged as a skill. One of the ten most-installed skills overall (~599K installs per Skillselion, Aug 2026).

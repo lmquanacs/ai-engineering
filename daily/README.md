@@ -7,6 +7,7 @@ Newest first. Each edition is written by the scheduled research agent at about 9
 
 ### November
 
+- [Mon 23 Nov 2026](2026/11/2026-11-23.md): More MCP CVEs (DBHub, mcp-server-kubernetes, FastMCP OAuth replay, MCP Python SDK issuer pinning) · AI SDK 6.0.336 leaks MCP auth headers into telemetry · Gemini 4 Carbon/Argon prices double 1 Dec · Cloudflare Agents SDK 0.34 breaking · Runway's software factory
 - [Sun 22 Nov 2026](2026/11/2026-11-22.md): AI SDK 7.0.178 tool-approval bypass (rotate the secret) · MCP "read-only" CVEs (mcp-ssh-manager, SurrealDB, ArcadeDB) · Daytona Python SDK 2.x breaks imports · AgentCore streaming interceptors and G7 GPUs · Devin access controls
 - [Sat 21 Nov 2026](2026/11/2026-11-21.md): Spring AI 2.1 GA fixes 13 CVEs · Pydantic AI CVE-2026-133505 · Supergateway MCP WebSocket hijack (no fix) · Claude Code 2.1.330 · Codex 0.171 · Copilot December retirements · AgentCore nested virtualization and x402 payments
 - [Fri 20 Nov 2026](2026/11/2026-11-20.md): Claude Code 2.1.326–329 sandbox hardening · MCP Python SDK CVEs · Claude API prefix-check and computer-use 400s · Spring Boot 4.2 + Spring AI 2.1 GA · GPT-6.2 Bedrock IDs · Qwen4-Max priced

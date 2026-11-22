@@ -1,8 +1,13 @@
 # Research to watch
 
-_Last updated: 2026-11-22_
+_Last updated: 2026-11-23_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### Can an agent rebuild an app just by using it? · SWE-Recreation · arXiv 2611.26311 · Nov 2026 🆕
+A benchmark where the agent sees only rendered pixels and uses pointer and keyboard (no DOM, source or logs), explores a real app, then builds a replica. It covers 54 apps (28 websites, 26 Android) with 1,446 hidden workflow requirements graded by a fixed judge on pixel evidence. The best of five frontier systems reached 0.530 weighted fidelity, and only 22.9% of requirements were fully reproduced *(as reported)*.
+**So what:** "Clone this product from screenshots" workflows still miss most stateful behaviour. If you try them, give the agent a written spec of the workflows instead of relying on exploration alone. → [Evals](../../architecture/evals-and-observability/README.md)
+Source: [arXiv 2611.26311](https://arxiv.org/abs/2611.26311) · Added: 2026-11-23
 
 ### Letting models rewrite skills without feedback makes them worse · arXiv 2611.25534 · Nov 2026 🆕
 Models repeatedly rewrote expert skill files with no task or feedback; agents using the rewritten skills did worse on every benchmark, about 15 points lower on SkillsBench after 30 rounds. Rewrites drift toward what the model would write anyway and drop the expert-only knowledge first *(as reported)*.

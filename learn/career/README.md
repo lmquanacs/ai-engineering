@@ -1,6 +1,6 @@
 # AI engineer career & skills
 
-_Last updated: 2026-11-20_
+_Last updated: 2026-11-23_
 
 > What the AI engineer role asks for, how to build those skills, and where to learn them. Useful whether you're moving into the role, levelling up in it, or hiring for it.
 
@@ -34,6 +34,16 @@ Each row links to the part of this repo that keeps it current.
 ## 🗞️ Latest
 
 <!-- newest first: writing on the role, hiring trends with named sources, courses, books, talks -->
+
+### Runway: what engineers do once agents ship most of the code · 2026-11-20 🆕
+Runway's write-up on handing its delivery pipeline to agents describes how the engineering job changed. Each time agents sped up one stage, the bottleneck moved to the next (review, then approval, then QA, then coordination). Engineers now spend their time on enabling work: removing access and infrastructure blockers, making codebases easier for agents to work in, and measuring friction.
+**Why it matters:** It shows, with measurements, which skills matter in an "AI-native" engineering team: deciding how much autonomy to allow by risk, choosing success criteria before reading results, and designing safety rails from real failures. Numbers: [Successful projects](../successful-projects/README.md).
+Source: [Runway engineering](https://runway.com/news/engineering/building-a-software-factory) · Added: 2026-11-23
+
+### AI Engineer Code Summit 2026 talks · free recordings 🆕
+The Code Summit (San Francisco, 2026-11-10 to 2026-11-12) ran two days of single-track talks on coding agents, and both full days are on YouTube.
+**Why it matters:** It is free, current material on building, evaluating and shipping coding agents, from the conference series this page tracks.
+Sources: [Event page](https://www.ai.engineer/code) · [Day 1 recording](https://www.youtube.com/watch?v=ZZ19zhYnDKY) · [Day 2 recording](https://www.youtube.com/watch?v=y9JtCCZP2MQ) · Added: 2026-11-23
 
 ## 📚 Reference
 

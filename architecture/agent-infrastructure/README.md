@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-22_
+_Last updated: 2026-11-23_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -24,6 +24,7 @@ Source: [Qovery: infrastructure platforms for agentic workloads](https://www.qov
 | Daytona | Linux container (a VM class is available) |
 | Cloudflare Containers | Each instance in its own VM, behind a Durable Object |
 | Northflank | microVMs and gVisor |
+| AWS Nitro Sandboxes (EKS, ECS, EC2) | Firecracker microVM per pod or task under the Nitro hypervisor (added 2026-11-23) |
 
 Shared-kernel containers (plain Docker/runc) are no longer considered enough for untrusted agent code. Prefer microVM or gVisor isolation when the agent runs code it wrote itself.
 Sources: [Agentpedia sandbox comparison](https://agentpedia.codes/blog/best-ai-agent-sandboxes-2026) · [Sandboxing guide](https://manveerc.substack.com/p/ai-agent-sandboxing-guide) · Added: 2026-11-18
@@ -37,9 +38,9 @@ Firecracker microVMs with pause and resume of memory plus filesystem, and 24-hou
 **Why it matters:** It is the default choice for agents that need to run code: ephemeral, fast and strongly isolated.
 Source: [Agentpedia comparison](https://agentpedia.codes/blog/best-ai-agent-sandboxes-2026) · [e2b.dev](https://e2b.dev) · Added: 2026-11-18
 
-### Daytona · persistent, self-hostable environments
-Persistent sandboxes and dev environments (Apache-2.0). Teams use them for long-lived, stateful coding agents where the working tree must survive.
-Source: [ZenML: choosing a sandbox runtime for long-lived coding agents](https://www.zenml.io/blog/choosing-a-sandbox-runtime-for-long-lived-coding-agents) · Added: 2026-11-18
+### Daytona · persistent sandboxes
+Persistent sandboxes and dev environments. Teams use them for long-lived, stateful coding agents where the working tree must survive. **No longer open source:** since 2026-06-11 the production code is closed and the old public repository is unmaintained, so self-hosting it means no fixes from Daytona. The SDKs live under github.com/daytona (the Python SDK is Apache-2.0).
+Source: [ZenML: choosing a sandbox runtime for long-lived coding agents](https://www.zenml.io/blog/choosing-a-sandbox-runtime-for-long-lived-coding-agents) · [Daytona: going closed source](https://daytona.io/dotfiles/updates/daytona-is-going-closed-source) · Added: 2026-11-18 · Updated: 2026-11-23
 
 ### Temporal Sandbox Orchestration Harness · May 2026
 Runs the agent as a Temporal Workflow, so state survives failures and waits, and orchestrates sandboxes (Modal, E2B, Daytona, GKE Agent Sandbox, Bedrock AgentCore) as activities.
@@ -55,6 +56,16 @@ A TypeScript API that starts a sandbox with a coding-agent harness (for example 
 Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best-sandbox-providers-for-ai-agents) · Added: 2026-11-18
 
 ## 📰 Recent releases
+
+### Cloudflare Agents SDK 0.34.0: Pi 1.6 tools that wait while the agent sleeps · 2026-11-20 🆕
+`PiHarness` moves to Pi 1.6: a tool can "park" instead of returning, and Pi reruns it when a signal arrives (`harness.signal()`) or a deadline passes, while the Durable Object hibernates. A `beforeTool` hook can park a call for human approval, and sessions can start from an existing history via `init`. **Breaking:** signals go through `harness.signal()` instead of `(await harness.pi()).signal()`, call `harness.root()` before reaching the root session, Pi Durable's `RunEndTask` is now `HookTask`, failed requests return a generic `500` (customise with `onFetchError()`), and MCP clients must catch `MCPAuthorizationRequiredError`. Conversations that ran on Pi 1.6 can't go back to Pi 1.5.
+**Why it matters:** Human-in-the-loop and wait-for-event tools no longer keep a paid instance awake. Because rollback is one-way, test the upgrade on a staging deployment and plan to roll forward.
+Source: [Cloudflare changelog](https://developers.cloudflare.com/changelog/post/2026-11-20-pi-harness-pi-1-6/) · `agents` 0.34.0 on npm (2026-11-20) · Added: 2026-11-23
+
+### AWS Nitro Sandboxes: a hardware-isolated VM per pod, task or agent · 2026-11-09 🆕
+Each EKS pod or ECS task (or your own VMs on EC2) can run in its own lightweight VM, a Firecracker microVM managed by the Nitro hypervisor, on your existing instances. On EKS you opt in per pod with `runtimeClassName: isolated-sandbox` (or `confidential-sandbox`, which adds attestation so KMS releases keys only to approved images and policies); every pod gets a Cedar policy governing image admission, exec and logs. It needs Kubernetes 1.36 or later and supported Nitro instance types, and is in all commercial Regions at no extra charge beyond EC2.
+**Why it matters:** microVM isolation for agent-generated code inside your own VPC and IAM, at EC2 prices. Unlike hosted sandboxes you run warm pools, cleanup and quotas yourself, and the sandbox keeps whatever IAM role the pod has, so scope it tightly.
+Sources: [AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/nitro-sandboxes-eks-ecs-ec2/) · [EKS User Guide: sandboxing](https://docs.aws.amazon.com/eks/latest/userguide/sandboxing.html) · Added: 2026-11-23
 
 ### Daytona Python SDK 2.x is now the default `pip install daytona` · 2026-11-13 → 11-20 🆕
 `daytona` 2.0.0 (Nov 13) and 2.1.0 (Nov 20) put every call behind a version namespace (`Daytona().v2` / `.v0`), and importing resource types such as `Sandbox` or `Image` from the package root now raises `ImportError`. The old API needs the `daytona[v0-sdk]` extra; the legacy `daytona-sdk` package stays on 0.x, and npm `@daytonaio/sdk` is still 0.x.

@@ -1,6 +1,6 @@
 # AI system architecture (hub)
 
-_Last updated: 2026-11-18 · Cadence: weekly (Mondays), plus anything exceptional_
+_Last updated: 2026-11-23 · Cadence: weekly (Mondays), plus anything exceptional_
 
 > The end-to-end view: how models, gateways, orchestration, context, tools, sandboxes, guardrails, evals and observability fit together in a production AI system. This page **pulls together** material spread across other categories and links to them for detail. It adds reference architectures, a reliability checklist and decision records.
 
@@ -174,6 +174,19 @@ Eval-as-a-gate, policy-as-code at runtime and an immutable evidence store are th
 | Container vs microVM sandbox | microVM or gVisor for agent-written code | Trusted, first-party code only |
 | Build vs buy a coding-agent platform | Buy (Claude Code, Codex, Cursor, Devin, Kiro) | Unique internal tooling and verification needs, as Ramp, Spotify and Stripe had |
 
+## 🗞️ Notable architecture write-ups
+
+### OpenAI: inside the Codex sandbox · native OS sandboxing instead of containers 🆕
+Michael Bolin explains how Codex constrains the commands it runs on a developer's own machine. Every command goes through one `spawn_command_under_sandbox()` call that takes a permission profile and an optional network proxy, and the restrictions carry over to child processes. Enforcement uses Seatbelt on macOS, bubblewrap plus seccomp-bpf on Linux, and is moving to Microsoft's MXC library on Windows. Network access is off by default, or allowed through a proxy with domain allow and deny rules, and a hostname is resolved only after the request is allowed.
+**Why it matters:** It is a detailed alternative to the "microVM per session" default in the decision records below, for agents that must use the host's own toolchain (the post's example is the iOS simulator). It also names the gaps to plan for: broad read access can still reach key files elsewhere on disk, files created after a deny glob is expanded aren't covered, MCP servers aren't sandboxed by default, and writes to directories like `node_modules` can run later outside the sandbox.
+Source: [OpenAI engineering (2026-11-18)](https://openai.com/index/inside-the-codex-sandbox/) · Added: 2026-11-23 · → [Agent infrastructure](agent-infrastructure/README.md) · [AI security](security/README.md)
+
+### Runway and OpenAI: agent pipelines with an independent checker 🆕
+Two production write-ups from the same week share one shape: a durable task record outside any single agent's context, a dispatcher that assigns work to agents, a separate agent that checks or tries to refute the first one's result, and people kept at risk-tiered gates. Runway applies this to delivery (code, review, risk-rated approval, QA, rollback on alerts), and OpenAI applies it to finding performance regressions.
+**Why it matters:** It extends [reference architecture C](#c--background-coding-agent-platform-the-ramp-inspect--spotify-honk-pattern) past "agent opens a PR" to review, approval and operations. Two of its safety rails are worth copying: re-check gates against the exact commit being merged, and make every external action safe to repeat.
+Sources: [Runway: building a software factory (2026-11-20)](https://runway.com/news/engineering/building-a-software-factory) · [OpenAI: Performance Factory (2026-11-19)](https://openai.com/index/how-openai-performance-factory-keeps-chatgpt-fast/) · Added: 2026-11-23 · Results: [Successful projects](../learn/successful-projects/README.md) · Lessons: [Case studies](../learn/case-studies/README.md)
+
 ## 📚 Further reading
+- [AWS Architecture Blog: inside an enterprise AI agent, a governed, observable loop (2026-11-12)](https://aws.amazon.com/blogs/architecture/inside-an-enterprise-ai-agent-a-governed-observable-loop-architecture/): a five-layer AWS reference with one tool gateway, four output gates (guardrails, evals, confidence, human approval) and step-level tracing
 - [LLM eval stack: a reference architecture for 2026](https://futureagi.com/blog/llm-eval-stack-reference-architecture-2026/)
 - [How to productionize agentic applications (9 steps)](https://futureagi.com/blog/how-to-productionize-agentic-applications/)

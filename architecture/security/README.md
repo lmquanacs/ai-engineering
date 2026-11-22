@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-22_
+_Last updated: 2026-11-23_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,13 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### More MCP fixes: DBHub read-only bypass, mcp-server-kubernetes, FastMCP OAuth proxy · 2026-11-21 → 11-22 🆕
+- **DBHub** < 1.7.0 (`@bytebase/dbhub`): the SQL scanner misreads backslash-escaped quotes, so a client restricted to read-only `execute_sql` can hide stacked statements that clear `transaction_read_only` or `COMMIT`, then modify or drop MySQL, MariaDB or PostgreSQL data (CVE-2026-134803). Fixed in 1.7.0 (2026-11-16).
+- **mcp-server-kubernetes** < 4.2.0: dash-prefixed positional values in `exec_in_pod`, `kubectl_patch` and `kubectl_logs` reach kubectl as flags (for example `--filename`), letting a client on SSE or Streamable HTTP read files on the server host (CVE-2026-134817, CVSS 7.1). Fixed in 4.2.0.
+- **FastMCP** 4.2.4 (2026-11-21): concurrent token requests could redeem one OAuth-proxy authorization code or refresh token twice (GHSA-78c8-3jhx-5mg7), and a revoked proxy access token could validate again after a refresh. Both fixed.
+**Why it matters:** It's the same lesson as the last batch: a SQL parser deciding what counts as "read-only" is not a boundary. Connect database MCP servers with a read-only database role, and pass tool arguments to CLIs after `--`.
+Source: [CVE-2026-134803](https://www.cve.org/CVERecord?id=CVE-2026-134803) · [CVE-2026-134817](https://www.cve.org/CVERecord?id=CVE-2026-134817) · [FastMCP changelog](https://raw.githubusercontent.com/PrefectHQ/fastmcp/main/docs/changelog.mdx) · Added: 2026-11-23
 
 ### Vercel AI SDK: tool-approval signatures replayable for auto-denied calls · 7.0.178 · 2026-11-20 🆕
 With `experimental_toolApprovalSecret` set, the SDK signed approval requests even for tool calls its policy denied automatically; a client controlling message history could flip them to approved. Fixed in `ai` 7.0.178, but earlier signatures stay valid until you rotate the secret. Details on the [TypeScript libraries page](../../build/libraries/typescript.md).
@@ -78,15 +85,16 @@ Audits that continue real coding-agent transcripts toward a seeded risky behavio
 **Why it matters:** Enforce limits with the sandbox, permission rules or hooks, not prose in CLAUDE.md or AGENTS.md.
 Source: [arXiv 2611.24491](https://arxiv.org/abs/2611.24491) · Added: 2026-11-21
 
-### MCP Python SDK: three CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 🆕
+### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16 🆕
 Advisories against the official Python SDK (`mcp` on PyPI):
+- **CVE-2026-115563** (GHSA-qx49-fqc8-xw99, CVSS 7.5, published 2026-11-16): OAuth support in `mcp.client.auth` could send a `client_secret`, authorization code, PKCE verifier or signed client assertion to an authorization server chosen by an untrusted MCP server. Affects ≥ 1.9.1 < 1.30.0 and ≥ 2.0.0a1 < 2.2.0; unattended `ClientCredentialsOAuthProvider` and `PrivateKeyJWTOAuthProvider` are the most exposed. **Upgrading is not enough:** set `issuer=` on those providers, replace the deprecated `RFC7523OAuthClientProvider` (it has no issuer option), and clear stored client registrations without an issuer so they register again.
 - **CVE-2026-116686** (GHSA-rwrf-2pqf-9j8j, CVSS 6.5): when a client validates a server-declared `outputSchema`, `$ref` URLs (http, https or file) are resolved, allowing blind outbound requests, local file reads and stalling every session in the process. Affects ≥ 1.10.0 < 1.30.0 and ≥ 2.0.0 < 2.2.0.
 - **CVE-2026-116684** (CVSS 3.1 6.8): `TokenVerifier` did not check `aud`, so tokens issued for other services were accepted. Same ranges.
 - **CVE-2026-116685** (CVSS 5.9): cross-origin redirects forwarded credential headers, and on 307/308 the request body. Affects ≥ 1.8.0.
 
 The fixed versions were on PyPI from 2026-09-07; the advisories came later.
 **Why it matters:** Clients that connect to untrusted MCP servers are the most exposed. Upgrade to `mcp` ≥ 1.30.0 or ≥ 2.2.0.
-Sources: [GHSA-rwrf-2pqf-9j8j](https://github.com/modelcontextprotocol/python-sdk/security/advisories/GHSA-rwrf-2pqf-9j8j) · [OpenCVE: CVE-2026-116686](https://app.opencve.io/cve/CVE-2026-116686) · [Mend: CVE-2026-116684](https://www.mend.io/vulnerability-database/CVE-2026-116684/) · Added: 2026-11-20
+Sources: [GHSA-rwrf-2pqf-9j8j](https://github.com/modelcontextprotocol/python-sdk/security/advisories/GHSA-rwrf-2pqf-9j8j) · [OpenCVE: CVE-2026-116686](https://app.opencve.io/cve/CVE-2026-116686) · [Mend: CVE-2026-116684](https://www.mend.io/vulnerability-database/CVE-2026-116684/) · [CVE-2026-115563](https://www.cve.org/CVERecord?id=CVE-2026-115563) · Added: 2026-11-20 · Updated: 2026-11-23
 
 ### Claude Code 2.1.326 → 2.1.329 sandbox hardening · Nov 2026 🆕
 Sandboxed commands write to fewer home folders, sign-in files are write-protected, and bypass mode now asks about some commands.

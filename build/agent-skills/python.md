@@ -1,6 +1,6 @@
 # Agent skills · 🐍 Python
 
-← [Back to Agent skills](README.md) · _Last updated: 2026-11-19_
+← [Back to Agent skills](README.md) · _Last updated: 2026-11-23_
 
 > Skills that make coding agents write, run and review Python the way a careful team would. Also see the [Python starter skill](starter-skills/python-service/SKILL.md), which you can copy into `.claude/skills/` and edit.
 
@@ -15,7 +15,15 @@ npx skills add pydantic/skills --skill building-pydantic-ai-agents
 claude plugin marketplace add pydantic/skills
 claude plugin install pydantic@pydantic-skills
 ```
-Source: [Pydantic: skills for Claude Code and other agents](https://pydantic.dev/articles/pydantic-ai-logfire-claude-code-skills.md) · [github.com/pydantic/skills](https://github.com/pydantic/skills) · `building-pydantic-ai-agents` ~6.3K installs on [skills.sh](https://skills.sh/pydantic/skills/building-pydantic-ai-agents) (2026-11-19) · Added: 2026-11-19
+Source: [Pydantic: skills for Claude Code and other agents](https://pydantic.dev/articles/pydantic-ai-logfire-claude-code-skills.md) · [github.com/pydantic/skills](https://github.com/pydantic/skills) · `building-pydantic-ai-agents` ~6.6K installs on [skills.sh](https://skills.sh/pydantic/skills/building-pydantic-ai-agents) (2026-11-23) · Added: 2026-11-19
+
+### adk-agent-builder · `google/adk-python` · official Google ADK skill 🆕
+Google ships a skill inside the Agent Development Kit repo for building ADK Python agents: LLM agents with tools, graph workflows, conditional routing, fan-out and join, delegation between agents and human-in-the-loop pauses. It splits guidance into reference files and tells the agent to load only the one it needs, and says its APIs were checked against `google-adk` 2.14.0. The other `adk-*` skills in the repo (style, git, PR triage) are for ADK contributors, not users.
+**Why it matters:** ADK's API moves quickly, and a vendor-maintained skill pinned to a stated version is safer than the model's memory.
+```bash
+npx skills add https://github.com/google/adk-python --skill adk-agent-builder
+```
+Source: [github.com/google/adk-python](https://github.com/google/adk-python) · ~767 installs on [skills.sh](https://skills.sh/google/adk-python/adk-agent-builder) (2026-11-23) · Added: 2026-11-23
 
 ### Python skills leaderboard · claudeskills.info
 A ranked list of the 20 most-installed Python-specific skills, drawn from 104 qualifying skills. The top three are `python-executor` (sandboxed execution via inference.sh, ~34K installs), `python-design-patterns` and `async-python-patterns`.
@@ -51,4 +59,4 @@ Public Python skills are less mature than the TypeScript and Spring ones. A smal
 
 ## 🔭 Watching
 
-- Skills shipped by other Python agent frameworks (LangGraph). Pydantic's official skills are now listed above.
+- Skills shipped by other Python agent frameworks (LangGraph). Pydantic's and Google ADK's official skills are now listed above.

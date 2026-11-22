@@ -1,6 +1,6 @@
 # Successful AI projects
 
-_Last updated: 2026-11-18 · Cadence: weekly (Mondays), plus anything exceptional_
+_Last updated: 2026-11-23 · Cadence: weekly (Mondays), plus anything exceptional_
 
 > AI projects that **shipped and worked**, with a named owner, a measurable before/after result and a public source, and what made them succeed. The companion page [Case studies & postmortems](../case-studies/README.md) covers lessons and failures; this page is the showcase.
 
@@ -10,6 +10,7 @@ _Last updated: 2026-11-18 · Cadence: weekly (Mondays), plus anything exceptiona
 
 | Project | What it is | Reported result | As of | Source |
 |---|---|---|---|---|
+| **Runway · software factory** | Handed its delivery pipeline to agents one stage at a time: a cloud coding agent, an AI reviewer, risk-rated AI approval (people still sign off high-risk and sensitive changes), QA agents, agents that roll back on alerts, and a coordinator | Agent share of merged PRs **0.1% (Jun) → 38% (Oct)**. Weekly merged PRs **929 → 2,235**. Median wait for first approval **2.3 h → ~5 min**. Core API ready-to-merge **~11 h → under 2 h**. AI-approved merges reverted ~0.10% vs ~0.5% for human-approved | Jun–Nov 2026 | [Runway engineering (2026-11-20)](https://runway.com/news/engineering/building-a-software-factory) |
 | **Ramp · Inspect** | In-house background coding agent: one Modal sandbox per session, full dev environment, verifies its own work. Launched in Slack. | Writes about **3 of every 4 merged PRs**, up from ~30% at launch; about 1M sessions; also used by non-engineers. Ramp opened it to other companies in Oct 2026. | Oct–Nov 2026 | [Linear customer story](https://linear.app/customers/ramp) · [ZenML case study](https://www.zenml.io/llmops-database/building-an-internal-background-coding-agent-with-full-development-environment-integration) |
 | **Spotify · Honk** | Background coding agent on a Claude Agent SDK harness | About **1,000 merged PRs every 10 days**; Spotify says *review*, not coding, is now the constraint | 2026 | [In-house coding agents research](https://rywalker.com/research/in-house-coding-agents) |
 | **Coinbase · Forge + Mux** | Coding agent plus a multi-agent orchestration layer | 5% of merged PRs, with PR cycle time cut about 10× (~150h → ~15h). Mux: 5,068 merged PRs across 461 repos, and its users merge 3.5× more PRs per engineer | Feb–May 2026 | [Coinbase Forge research](https://rywalker.com/research/coinbase-forge) |

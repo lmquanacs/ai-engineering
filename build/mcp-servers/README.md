@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-22_
+_Last updated: 2026-11-23_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -88,6 +88,11 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 
 ## 🔒 Security notes
 
+### DBHub read-only bypass, mcp-server-kubernetes flag injection, FastMCP OAuth proxy fix · 2026-11-21 → 11-22 🆕
+**DBHub** (Bytebase's database MCP server) < 1.7.0 lets a client limited to read-only `execute_sql` hide write and DDL statements behind backslash-escaped quotes (CVE-2026-134803); upgrade to ≥ 1.7.0. **mcp-server-kubernetes** < 4.2.0 passes dash-prefixed values in tools such as `exec_in_pod` and `kubectl_logs` to kubectl as flags, so a client on SSE or Streamable HTTP can make kubectl read host files (CVE-2026-134817, CVSS 7.1); upgrade to ≥ 4.2.0. **FastMCP 4.2.4** (2026-11-21) fixes two concurrent requests redeeming one OAuth-proxy authorization code or refresh token twice (GHSA-78c8-3jhx-5mg7) and stops a revoked proxy access token from becoming valid again after a refresh. Details in [AI security](../../architecture/security/README.md#-recent-items).
+**Do this:** Upgrade the ones you run. If you use FastMCP's OAuth proxy, move to ≥ 4.2.4.
+Source: [CVE-2026-134803](https://www.cve.org/CVERecord?id=CVE-2026-134803) · [CVE-2026-134817](https://www.cve.org/CVERecord?id=CVE-2026-134817) · [FastMCP changelog](https://raw.githubusercontent.com/PrefectHQ/fastmcp/main/docs/changelog.mdx) · Added: 2026-11-23
+
 ### More MCP server CVEs: mcp-ssh-manager, SurrealDB, ArcadeDB, codebase-memory-mcp · 2026-11-18 → 11-21 🆕
 Command injection in **mcp-ssh-manager** backup and DB tools, including ones allowed in read-only mode (upgrade to ≥ 3.8.5); SQL injection through **SurrealDB**'s MCP identifier check (≥ 4.0.0); writes through **ArcadeDB**'s read-only MCP query tool (≥ 26.11.1); memory-safety and argument-injection bugs in **codebase-memory-mcp** (≥ 0.9.0); unauthenticated **k8s-mcp-server** SSE on 0.0.0.0 (≥ 1.1.0) and **jupyter-mcp-server** HTTP mode (≥ 1.0.3). Details in [AI security](../../architecture/security/README.md#-recent-items).
 **Do this:** Upgrade any of these you run, and don't treat a server's "read-only" mode as a security boundary.
@@ -98,10 +103,10 @@ NVD published a batch of MCP-related CVEs: **Supergateway** cross-site WebSocket
 **Do this:** Don't expose Supergateway's WebSocket or SSE modes, even on localhost, until a fix ships; a web page in your browser can reach them.
 Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · Added: 2026-11-21
 
-### MCP Python SDK: three CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 🆕
-CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-audience check) and CVE-2026-116685 (credentials sent on cross-origin redirects).
-**Do this:** run `mcp` ≥ 1.30.0 (1.x) or ≥ 2.2.0 (2.x). Details → [AI security](../../architecture/security/README.md#-recent-items)
-Added: 2026-11-20
+### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16 🆕
+CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-audience check), CVE-2026-116685 (credentials sent on cross-origin redirects) and CVE-2026-115563 (OAuth clients could send credentials to an authorization server the MCP server chose).
+**Do this:** run `mcp` ≥ 1.30.0 (1.x) or ≥ 2.2.0 (2.x). For CVE-2026-115563 upgrading isn't enough: set `issuer=` on `ClientCredentialsOAuthProvider`/`PrivateKeyJWTOAuthProvider`, replace the deprecated `RFC7523OAuthClientProvider`, and clear stored client registrations that lack an issuer. Details → [AI security](../../architecture/security/README.md#-recent-items)
+Source: [CVE-2026-115563](https://www.cve.org/CVERecord?id=CVE-2026-115563) · Added: 2026-11-20 · Updated: 2026-11-23
 
 ### MCP TypeScript SDK: four CVEs fixed in 1.32.0 / 2.3.0 · 2026-10-20 🆕
 Advisories published on 2026-10-20 cover the official TypeScript SDK:

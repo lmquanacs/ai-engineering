@@ -2,7 +2,7 @@
 
 > Reusable `SKILL.md` instruction packs that coding agents load when they need them. This page covers cross-language development skills. Stack-specific pages: **[Python](python.md) · [TypeScript](typescript.md) · [Java/Kotlin + Spring Boot](jvm-spring-kotlin.md)** · **[Starter skills to copy](starter-skills/)**
 
-_Last updated: 2026-11-19_
+_Last updated: 2026-11-23_
 
 ## What a skill is (30-second version)
 
@@ -26,7 +26,7 @@ A software development methodology for coding agents, built from reusable skills
 ```bash
 npx -y skills add obra/superpowers --skill subagent-driven-development --agent claude-code
 ```
-Source: [github.com/obra/superpowers](https://github.com/obra/superpowers) · ~319K ⭐ (2026-11-13) · Added: 2026-11-18
+Source: [github.com/obra/superpowers](https://github.com/obra/superpowers) · ~324K ⭐, `subagent-driven-development` ~265K installs (2026-11-23) · Added: 2026-11-18
 
 ### mattpocock/skills · handoff, grill-me, tdd, improve-codebase-architecture
 Matt Pocock's collection is among the most-installed in the ecosystem. `handoff` compresses a session into a markdown document so you can continue in a fresh context. `grill-me` makes the agent question you before it builds. `tdd` and `improve-codebase-architecture` cover the core engineering loop.
@@ -35,7 +35,7 @@ Matt Pocock's collection is among the most-installed in the ecosystem. `handoff`
 npx -y skills add mattpocock/skills --skill handoff --agent claude-code
 npx -y skills add mattpocock/skills --skill grill-me --agent claude-code
 ```
-Source: [github.com/mattpocock/skills](https://github.com/mattpocock/skills) · ~326K ⭐, `handoff` ~1.1M installs (2026-11-13) · Added: 2026-11-18
+Source: [github.com/mattpocock/skills](https://github.com/mattpocock/skills) · ~330K ⭐, `handoff` ~1.2M installs (2026-11-23) · Added: 2026-11-18
 
 ### anthropics/skills · mcp-builder, frontend-design
 Anthropic's official skill repository. `mcp-builder` guides an agent through building an MCP server. `frontend-design` pushes UI work away from generic, templated output.
@@ -43,7 +43,7 @@ Anthropic's official skill repository. `mcp-builder` guides an agent through bui
 ```bash
 npx -y skills add anthropics/skills --skill mcp-builder --agent claude-code
 ```
-Source: [github.com/anthropics/skills](https://github.com/anthropics/skills) · ~196K ⭐ (2026-11-13) · Added: 2026-11-18
+Source: [github.com/anthropics/skills](https://github.com/anthropics/skills) · ~199K ⭐, `mcp-builder` ~146K installs (2026-11-23) · Added: 2026-11-18
 
 ### karpathy-guidelines · `forrestchang/andrej-karpathy-skills`
 Coding guidelines distilled from Andrej Karpathy's advice on working with LLM coding agents.

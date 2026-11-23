@@ -1,6 +1,6 @@
 # Agentic workflows: patterns and breakthroughs
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-24_
 
 > How to structure agent systems, and what the evidence says actually works. Patterns are stable; the "latest evidence" section changes fastest.
 
@@ -23,6 +23,11 @@ Production guardrails that apply to every pattern: an iteration cap, deadlock de
 ---
 
 ## 🔬 Latest evidence: what actually moves the needle
+
+### Lead agents rubber-stamp their subagents · RI-Bench · arXiv 2611.27139 · 2026-11-20 🆕
+RI-Bench tests whether a "senior" agent actually weighs, verifies and relays its subordinates' reports, by perturbing that material in controlled ways and watching how the output changes. Across eight LLMs and more than 12,000 episodes, planted procedural errors were rarely adopted (2.9%), but senior agents went with a majority of low-value generic reviews in up to 71% of decisions and dropped sources' stated limitations in up to 65% of cited claims. Prompts that spell out the senior agent's obligations helped without fixing it, and changed behaviour in control runs *(self-reported)*. Code and data: `jxtse/ri-bench`.
+**Why it matters:** In orchestrator–worker and reviewer-committee setups, a good final answer can hide poor aggregation. Test the lead's weighing and caveat-passing directly, and don't let it count votes. → [Research](../../learn/research/README.md)
+Source: [arXiv 2611.27139](https://arxiv.org/abs/2611.27139) · Added: 2026-11-24
 
 ### Evolve the harness before the weights · arXiv 2611.25380 · 2026-11-19 🆕
 The authors optimise the system prompt, tool schemas, skill library and planning scaffold with GEPA while the model stays frozen, on SWE-bench Verified, OfficeBench and Terminal-Bench with a Claude Code-style agent. Weight updates gave the biggest single gains, harness evolution recovered most of them for a small fraction of the compute, and both together did best. Hugging Face's same-week [harness adapters](../../models/fine-tuning/README.md#-releases) point the same way from the training side *(both self-reported)*.

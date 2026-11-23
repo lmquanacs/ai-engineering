@@ -114,6 +114,16 @@
           "scope": "Price changes (keep the snapshot and 'price changes coming up' tables current), caching and batch discounts, vLLM/SGLang/llama.cpp/Ollama releases, self-hosting news."
         },
         {
+          "id": "open-model-providers",
+          "title": "Open-weight model providers",
+          "path": "models/open-model-providers",
+          "summary": "Z.ai GLM, DeepSeek, Kimi, Qwen, MiniMax and the hosts that serve them (Fireworks, Together, DeepInfra, Baseten, Groq, Cerebras, OpenRouter, Vercel AI Gateway), with SDK wiring",
+          "best_for": "Finding a cheaper or faster alternative to a frontier API",
+          "cadence": "daily",
+          "scope": "First-party APIs from Z.ai, DeepSeek, Moonshot (Kimi), Alibaba (Qwen), MiniMax and Xiaomi MiMo: model IDs available on their APIs, coding plans, base URLs, OpenAI- and Anthropic-compatible endpoints. Third-party hosts of open-weight models: which host serves which model, quantization (FP8/FP4), speed and price comparisons with a dated source (e.g. Artificial Analysis), and routers (OpenRouter, Vercel AI Gateway). How to call them from AI SDK, Pydantic AI, Spring AI and LangChain4j (provider package names and minimum versions). Keep the 'Who serves what' table current.",
+          "out_of_scope": "Model launch announcements and benchmarks (news); frontier-provider price snapshot and self-hosting with vLLM/SGLang/Ollama (cost-and-serving); API feature changes at DeepSeek and Mistral (llm-apis); Bedrock availability (aws)."
+        },
+        {
           "id": "fine-tuning",
           "title": "Fine-tuning & post-training",
           "path": "models/fine-tuning",
@@ -205,7 +215,7 @@
       "emoji": "☁️",
       "title": "Platforms",
       "path": "platforms",
-      "intro": "Cloud-specific services for building and running AI. Add Azure or Google Cloud here when needed.",
+      "intro": "Cloud and edge platforms for building and running AI: AWS, Google Cloud, Azure, Vercel and Cloudflare.",
       "categories": [
         {
           "id": "aws",
@@ -216,6 +226,36 @@
           "cadence": "daily",
           "scope": "Bedrock model availability (IDs, CRIS profiles, regions, pricing), AgentCore releases, Strands releases, Kiro changes and the Q Developer migration, AWS MCP servers, Spring AI on AWS. During re:Invent week (2026: 30 Nov – 4 Dec) add an 'AWS re:Invent' section to each digest.",
           "out_of_scope": "Non-AWS releases of Strands or Spring AI that don't touch AWS (libraries)."
+        },
+        {
+          "id": "google-cloud",
+          "title": "Google Cloud",
+          "path": "platforms/google-cloud",
+          "summary": "Gemini Enterprise Agent Platform (formerly Vertex AI), Agent Engine, ADK, Model Garden, Google Cloud MCP servers",
+          "best_for": "Building and running AI on Google Cloud",
+          "cadence": "daily",
+          "scope": "Gemini Enterprise Agent Platform (formerly Vertex AI) releases: model availability on the platform (IDs, regions, pricing, provisioned throughput), Model Garden third-party and open models (Claude, Llama, etc.), Agent Engine/runtime, memory and sessions, Agent Development Kit (ADK) and A2A releases, Vector Search and grounding, Google Cloud MCP servers, Spring AI and LangChain4j on Google Cloud, Vertex-to-Agent-Platform migration notes. During Google Cloud Next week add a 'Google Cloud Next' section to each digest.",
+          "out_of_scope": "Gemini model launches (news); Gemini Developer API feature changes (llm-apis); Gemini CLI and Antigravity (coding-agents)."
+        },
+        {
+          "id": "azure",
+          "title": "Azure",
+          "path": "platforms/azure",
+          "summary": "Microsoft Foundry, Foundry Agent Service and hosted agents, Microsoft Agent Framework, Azure OpenAI in Foundry Models, Azure MCP servers",
+          "best_for": "Building and running AI on Azure",
+          "cadence": "daily",
+          "scope": "Microsoft Foundry releases: Foundry Models availability (Azure OpenAI and third-party models; IDs, regions, deployment types, pricing, retirements), Foundry Agent Service (hosted agents, memory, toolboxes, publishing to Teams/M365 Copilot), Foundry IQ and Azure AI Search, Foundry Control Plane observability and evaluation, Microsoft Agent Framework (Python and .NET) and Semantic Kernel migration, Azure MCP servers, Spring AI and LangChain4j on Azure. During Microsoft Build and Ignite weeks add a 'Build' or 'Ignite' section to each digest.",
+          "out_of_scope": "OpenAI model launches (news); OpenAI API feature changes not specific to Azure (llm-apis); GitHub Copilot releases (coding-agents)."
+        },
+        {
+          "id": "vercel-cloudflare",
+          "title": "Vercel & Cloudflare",
+          "path": "platforms/vercel-cloudflare",
+          "summary": "Vercel AI Gateway, Sandbox and Workflow; Cloudflare Workers AI, AI Gateway, Agents SDK and Sandbox SDK",
+          "best_for": "Shipping TypeScript AI apps and agents at the edge",
+          "cadence": "weekly",
+          "scope": "Vercel: AI Gateway features (routing, BYOK, observability, pricing), Vercel Sandbox, Workflow/durable functions for agents, v0 and deployment features relevant to AI apps. Cloudflare: Workers AI model catalogue and pricing, AI Gateway features, Agents SDK and Code Mode releases, Sandbox SDK, Durable Objects/Workflows for agents, MCP server hosting and MCP governance, workers-ai-provider and ai-gateway-provider releases and their AI SDK compatibility.",
+          "out_of_scope": "AI SDK releases (libraries); which open-weight models each gateway or host serves (open-model-providers); general sandbox comparisons across vendors (agent-infrastructure)."
         }
       ]
     },

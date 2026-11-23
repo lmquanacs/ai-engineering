@@ -10,4 +10,5 @@ Which models exist, what they cost, how to serve them, and how to adapt them.
 |---|---|---|---|
 | [**LLM news**](news/README.md) | New models with API IDs, trends, new techniques, deprecations (about 30 days kept; older items in `archive/`) | Picking and pinning models | daily |
 | [**Inference, cost & serving**](cost-and-serving/README.md) | Price snapshot, upcoming price changes, cost levers, vLLM and self-hosting | Keeping the bill down | daily |
+| [**Open-weight model providers**](open-model-providers/README.md) | Z.ai GLM, DeepSeek, Kimi, Qwen, MiniMax and the hosts that serve them (Fireworks, Together, DeepInfra, Baseten, Groq, Cerebras, OpenRouter, Vercel AI Gateway), with SDK wiring | Finding a cheaper or faster alternative to a frontier API | daily |
 | [**Fine-tuning & post-training**](fine-tuning/README.md) | LoRA/QLoRA, GRPO/RLVR, distillation; TRL, Unsloth, Axolotl | Specialising open models | daily |

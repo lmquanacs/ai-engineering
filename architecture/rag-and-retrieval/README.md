@@ -1,6 +1,6 @@
 # RAG & retrieval
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > Getting the right facts from your own data into the model: chunking, search, reranking and the models and databases behind them. For what happens to context once it's in the window, see [Context engineering & memory](../context-and-memory/README.md).
 
@@ -31,13 +31,18 @@ The `hybrid` query gains a fusion mode: normalisation and combination are set in
 **Why it matters:** Hybrid weights become a per-request knob you can tune and A/B, and template-based agentic search bounds what an LLM-written query can do.
 Source: [OpenSearch blog: Explore OpenSearch 3.10](https://opensearch.org/blog/explore-opensearch-3-10/) · Added: 2026-11-20
 
-Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01). As of 2026-11-23, Weaviate 1.41.0 is still only at `1.41.0-rc.1` builds on Docker Hub (no GA), and pgvector 0.8.7 now has `pg19` images.
+Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01) and now has `pg19` images. **Weaviate 1.41.0:** a `1.41.0` image (also tagged `latest`) appeared on Docker Hub on 2026-11-23, but as of 2026-11-24 GitHub still lists only `v1.41.0-rc.1` and the docs' release notes stop at 1.40, so wait for the release notes before upgrading. The RC lists namespaces with RF=3, a lower-memory HNSW node format, semi-automatic shard rebalancing (preview) and reranking with decision models.
 
 **On AWS:** Amazon Textract Insights (GA 2026-11-20) extracts schema-defined fields from mixed document packets with a confidence score and page/bounding-box grounding per value. → [AWS](../../platforms/aws/README.md)
 
 ---
 
 ## 🔎 Retrieval models (embeddings, rerankers, parsers)
+
+### EmbeddingGemma 2 · open multimodal embeddings · 2026-10-06 🆕
+Google's open embedding model (740M parameters, built on Gemma 4) maps text, code, images, video and audio into one vector space; text-only use needs as little as 270M because the vision and audio encoders are optional. It has an 8K-token context and 768-dimensional vectors that can be truncated to 512, 256 or 128 (Matryoshka). Google reports MTEB Code rising from 68.76 to 78.68 over the first EmbeddingGemma *(self-reported)*. Licence: Apache 2.0. Weights are on Hugging Face (`google/embeddinggemma-2`) and Kaggle, and run in sentence-transformers, vLLM, SGLang, Ollama, llama.cpp and transformers.js; Vertex AI availability is "coming soon". The technical report followed on 2026-11-17.
+**Why it matters:** A commercially usable, self-hostable model for multimodal RAG that is small enough for CPUs and phones. Benchmark it against your current embedder on your own queries before re-indexing.
+Sources: [Google blog: EmbeddingGemma 2](https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/) · [Technical report overview](https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2-technical-report/) · Added: 2026-11-24
 
 ### NVIDIA Nemotron 3.5 Embed / Rerank / Parse · 2026-10-21 🆕
 Five open, commercially usable retrieval models: Embed (8B and 1B, plus a 1B NVFP4 variant), an 8B reranker and a 631M document parser. NVIDIA reports first place among dense retrievers on ViDoRe v3.1 (61.17 nDCG@10) and top reranker scores as of Oct 20 *(self-reported)*. Available on Hugging Face and as NIM.

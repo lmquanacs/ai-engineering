@@ -1,6 +1,6 @@
 # Coding agents & IDEs
 
-_Last updated: 2026-11-22_
+_Last updated: 2026-11-24_
 
 > Release notes that change how you work in Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin and Kiro. Only items worth acting on are included.
 
@@ -20,13 +20,26 @@ _Last updated: 2026-11-22_
 | now | Antigravity App < 2.33.0 sends MCP headers on cross-origin redirects and can let hooks/wildcard rules bypass enforced command review | Update managed installs to 2.33.0+ |
 | now | Kiro Crew 0.13.0 turns usage data on by default | Opt out with `telemetry.enabled: false`, `KIROCREW_TELEMETRY=0` or `DO_NOT_TRACK=1` if policy requires |
 | when enabled | Devin Access and Sharing: Slack-started sessions take instructions only from people they're shared with | Agree group sharing defaults before your Cognition rep turns it on |
+| now | Cursor CLI < v2026.11.17: team-dashboard prompt hooks never ran in the CLI, and MCP resource downloads skipped file-write rules | Update the CLI; re-check any guardrail you set as a dashboard prompt hook |
+| now | Claude Code 2.1.331 (VS Code): wrappers, hooks or MCP servers that run VS Code as Node must set `ELECTRON_RUN_AS_NODE=1` | Add the variable to those scripts |
 | **2026-11-26** | Kiro enterprise daily metrics move to 00:30 UTC | Shift any job that reads the daily metrics export |
+| on/after **2026-11-30** | Claude Code: marketplaces in managed `extraKnownMarketplaces` start auto-updating by default (2.1.331 notice) | Set `"autoUpdate": false` on any managed marketplace you want to keep pinned |
 | by **2026-11-30** | Claude Sonnet 4.5 retires | Update `model` settings, `CLAUDE.md` and CI configs that pin it |
 | **2026-12-14** | Copilot retires Claude Fable 5, Claude Haiku 4.5, Gemini 3.8 Flash, Gemini 4 Argon, Grok 4.6 and Kimi K3 | Move to Fable 5.2, Haiku 5.5, Gemini 4 Hydrogen, Gemini 4 Carbon and Grok 4.7 (no Kimi replacement announced yet) |
 | **2026-12-18** | Copilot retires MAI-Code-1.1-Flash | Switch to the latest MAI Code Flash model |
 | **Feb 2027** | Copilot in VS Code: the Local harness is removed | Move remaining workflows to the Copilot harness (already the default for new sessions) |
 
 ## 🗞️ Latest releases
+
+### Claude Code 2.1.331: Code Mode on cloud providers, plugin optional dependencies · 2026-11-23 🆕
+Experimental Code Mode now works in terminal sessions on Amazon Bedrock, Google Cloud's Agent Platform, Microsoft Foundry and Claude Platform on AWS. Plugin manifests gain `optionalDependencies` (installed with the parent plugin, but each can be disabled or removed on its own). `claude doctor` now reports whether the API is reachable, and `claude_code.llm_request` trace spans carry OpenTelemetry `gen_ai.usage.*`, `gen_ai.response.model` and `gen_ai.operation.name` (input tokens include prompt-cache tokens). New `CLAUDE_CODE_DISABLE_RESPONSE_COMPRESSION` helps behind proxies that cut compressed replies off. Fixes include MCP tool calls hanging up to 30 minutes on malformed replies, compaction dropping part of its summary, a rewind deleting files after a failed restore, and interrupted plugin updates leaving half-installed plugins. The VS Code extension adds "Fix with Claude Code" quick fixes and "Resolve Merge Conflicts".
+**Why it matters:** Not a security release, but admins should decide before 30 Nov whether managed marketplaces may auto-update, and OTel dashboards can now read token usage from standard `gen_ai.*` attributes.
+Source: [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · release date from [npm](https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions) · Added: 2026-11-24
+
+### Cursor CLI v2026.11.17: credential and plan-mode hardening · 2026-11-17 🆕
+Missed earlier. On Linux, other processes running as you (including commands the agent runs) can no longer read the CLI's memory, environment or open files, or attach a debugger (`CURSOR_AGENT_ALLOW_PROCESS_INSPECTION=1` re-allows it). MCP resources saved to disk now go through normal file-write approvals and must land in the workspace. Plan mode can no longer write outside its canvases folder through symlinks or hard links, and saving a login to the macOS keychain no longer exposes the token in the process list. Prompt hooks set in the team dashboard now actually run in the CLI; before, they ran as empty commands. Also new: `"privateTmp": true` in `sandbox.json` (Linux) and `CURSOR_LOGIN_SHELL=0`. Cursor SDK 1.4.0 adds `run.steer()` for cloud runs and per-model-call token usage in local runs.
+**Why it matters:** If your team relies on dashboard prompt hooks as a guardrail, CLI sessions were bypassing them until this release.
+Source: [Cursor release notes](https://cursor.com/docs/release-notes) · Added: 2026-11-24
 
 ### Devin: Access and Sharing, Devin Bots · 2026-11-19 → 11-20 🆕
 **Access and Sharing** (gradual rollout, off by default, enabled through your Cognition rep) adds user groups: secrets, environments, sessions, automations, playbooks, skills, MCP servers and knowledge can be shared with a group, and each session has its own sharing setting. Sessions started from Slack still reply in the channel, but only people the session is shared with can instruct it. Service users and bots now use only resources explicitly granted to them. **Devin Bots** (Nov 19) are always-on Devins with their own identity, memory and permissions that split a goal into parallel cloud sessions and drive each to a mergeable PR, starting from templates such as QA engineer, reviewer or on-call.

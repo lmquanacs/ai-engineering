@@ -1,13 +1,13 @@
 # Libraries · 🐍 Python
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-21_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-24_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
 | [**Pydantic AI**](https://github.com/pydantic/pydantic-ai) | 2.71.0 (2026-11-18) | Type-safe agent framework from the Pydantic team. V2 has been stable since 2026-06-23 and uses a "capabilities-first" design. It supports MCP and uses OpenTelemetry tracing (Logfire). Requires Python 3.11+. MIT. | Default for new Python agents, especially if you already use Pydantic or FastAPI |
-| [**LangGraph**](https://github.com/langchain-ai/langgraph) | 1.2.23 (2026-11-19) | Graph/state-machine orchestration with durable checkpoints, from LangChain. Python and TS. MIT. | You need explicit control flow, human-in-the-loop interrupts and resumable long runs |
+| [**LangGraph**](https://github.com/langchain-ai/langgraph) | 1.2.24 (2026-11-20) | Graph/state-machine orchestration with durable checkpoints, from LangChain. Python and TS. MIT. | You need explicit control flow, human-in-the-loop interrupts and resumable long runs |
 | [**MCP Python SDK**](https://github.com/modelcontextprotocol/python-sdk) | `mcp` 2.3.0 (2026-10-02); Tier 1, supports the 2026-07-28 spec | Official SDK for building MCP servers and clients | Exposing your Python tools to any agent |
-| [**Strands Agents**](https://github.com/strands-agents) (AWS) | 1.65.0 (2026-11-13) | AWS's open-source, model-driven agent harness SDK with behavioural middleware and sandboxing; deploys to Bedrock AgentCore or anywhere. Apache-2.0. | AWS/Bedrock-centric teams → [AWS](../../platforms/aws/README.md) |
+| [**Strands Agents**](https://github.com/strands-agents) (AWS) | 1.66.0 (2026-11-23) | AWS's open-source, model-driven agent harness SDK with behavioural middleware and sandboxing; deploys to Bedrock AgentCore or anywhere. Apache-2.0. | AWS/Bedrock-centric teams → [AWS](../../platforms/aws/README.md) |
 | [**Google ADK**](https://github.com/google/adk-python) | 2.15.0 (2026-11-19) | Google's Agent Development Kit: agents, tools, sessions, eval CLI and live (voice) runs; works with Gemini and other models. Apache-2.0. | Gemini/Vertex-centric teams, or you want built-in `adk eval` |
 | **OpenAI Agents SDK** | 0.25.0 (2026-11-18) | OpenAI's lightweight agents and handoffs SDK. 0.25.0 removes the Runloop sandbox provider. | Mostly OpenAI models, with simple triage/handoff patterns |
 | **CrewAI** | — | Role-based multi-agent crews | Prototyping multi-role workflows (check the [evidence on committees](../../architecture/agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle) first) |
@@ -40,4 +40,4 @@ Source: [Developers Digest: Pydantic AI V2 in late 2026](https://www.developersd
 
 Comparison source: [Pydantic AI vs LangGraph, verified 2026-10-18](https://www.developersdigest.tech/agent-frameworks/compare/pydantic-ai-vs-langgraph)
 
-Version numbers confirmed on 2026-11-20 at [PyPI](https://pypi.org/) (release upload dates).
+Version numbers confirmed on 2026-11-24 at [PyPI](https://pypi.org/) (release upload dates).

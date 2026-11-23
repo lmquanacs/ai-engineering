@@ -1,6 +1,6 @@
 # Agent skills · 🐍 Python
 
-← [Back to Agent skills](README.md) · _Last updated: 2026-11-23_
+← [Back to Agent skills](README.md) · _Last updated: 2026-11-24_
 
 > Skills that make coding agents write, run and review Python the way a careful team would. Also see the [Python starter skill](starter-skills/python-service/SKILL.md), which you can copy into `.claude/skills/` and edit.
 
@@ -16,6 +16,18 @@ claude plugin marketplace add pydantic/skills
 claude plugin install pydantic@pydantic-skills
 ```
 Source: [Pydantic: skills for Claude Code and other agents](https://pydantic.dev/articles/pydantic-ai-logfire-claude-code-skills.md) · [github.com/pydantic/skills](https://github.com/pydantic/skills) · `building-pydantic-ai-agents` ~6.6K installs on [skills.sh](https://skills.sh/pydantic/skills/building-pydantic-ai-agents) (2026-11-23) · Added: 2026-11-19
+
+### langchain-ai/langchain-skills · official LangChain, LangGraph and Deep Agents skills, now one plugin 🆕
+LangChain's official skills (Deep Agents, LangGraph, LangChain, LangSmith evals; Python and TypeScript) now ship as a single `langchain-skills` plugin that replaces the many small standalone skills such as `langgraph-fundamentals` and `langchain-rag`, and the separate `langsmith-skills` plugin. The old names still install but now only add a short redirect. The plugin also registers two documentation MCP servers (`https://docs.langchain.com/mcp` and `https://reference.langchain.com/mcp`) that need no credentials; the skills-only install adds none. The repo calls itself early development.
+**Why it matters:** If you installed the old standalone skills (the most-used ones have ~17–20K installs each), remove them before installing the plugin, or your agent sees two overlapping sets of guidance.
+```bash
+# Claude Code (v2.1.292+), from your shell:
+claude plugin install langchain-skills --marketplace langchain-ai/langchain-skills
+# Skills only, no MCP servers:
+npx skills add langchain-ai/langchain-skills --skill '*' --yes
+```
+Note: third-party marketplaces don't auto-update by default; turn it on in `/plugin` → Marketplaces, or set `"autoUpdate": true` on the `langchain-skills` entry in `~/.claude/settings.json`. The README lists the exact `npx skills remove ...` command for the retired skills.
+Source: [github.com/langchain-ai/langchain-skills](https://github.com/langchain-ai/langchain-skills) · plugin 0.4.2, 279K total installs on [skills.sh](https://skills.sh/langchain-ai/langchain-skills) (2026-11-24) · Added: 2026-11-24
 
 ### adk-agent-builder · `google/adk-python` · official Google ADK skill 🆕
 Google ships a skill inside the Agent Development Kit repo for building ADK Python agents: LLM agents with tools, graph workflows, conditional routing, fan-out and join, delegation between agents and human-in-the-loop pauses. It splits guidance into reference files and tells the agent to load only the one it needs, and says its APIs were checked against `google-adk` 2.14.0. The other `adk-*` skills in the repo (style, git, PR triage) are for ADK contributors, not users.
@@ -59,4 +71,4 @@ Public Python skills are less mature than the TypeScript and Spring ones. A smal
 
 ## 🔭 Watching
 
-- Skills shipped by other Python agent frameworks (LangGraph). Pydantic's and Google ADK's official skills are now listed above.
+- Skills shipped by other Python agent frameworks. Pydantic's, Google ADK's and LangChain's official skills are now listed above.

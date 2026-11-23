@@ -7,6 +7,7 @@ Newest first. Each edition is written by the scheduled research agent at about 9
 
 ### November
 
+- [Tue 24 Nov 2026](2026/11/2026-11-24.md): New categories: Open-weight model providers, Google Cloud, Azure, Vercel & Cloudflare · Claude Opus 4.5 deprecated (retires 2027-01-22) · OpenAI /v1/prompts, Evals and Agent Builder shut down 30 Nov · LiteLLM, Pomerium and Hermes Agent CVEs · Claude Code 2.1.331
 - [Mon 23 Nov 2026](2026/11/2026-11-23.md): More MCP CVEs (DBHub, mcp-server-kubernetes, FastMCP OAuth replay, MCP Python SDK issuer pinning) · AI SDK 6.0.336 leaks MCP auth headers into telemetry · Gemini 4 Carbon/Argon prices double 1 Dec · Cloudflare Agents SDK 0.34 breaking · Runway's software factory
 - [Sun 22 Nov 2026](2026/11/2026-11-22.md): AI SDK 7.0.178 tool-approval bypass (rotate the secret) · MCP "read-only" CVEs (mcp-ssh-manager, SurrealDB, ArcadeDB) · Daytona Python SDK 2.x breaks imports · AgentCore streaming interceptors and G7 GPUs · Devin access controls
 - [Sat 21 Nov 2026](2026/11/2026-11-21.md): Spring AI 2.1 GA fixes 13 CVEs · Pydantic AI CVE-2026-133505 · Supergateway MCP WebSocket hijack (no fix) · Claude Code 2.1.330 · Codex 0.171 · Copilot December retirements · AgentCore nested virtualization and x402 payments

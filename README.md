@@ -1,11 +1,11 @@
 # 🧰 AI Engineering Utilities
 
-> A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, model APIs, RAG, architecture, agentic patterns, libraries and the AI engineer career, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus AWS.
+> A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, model APIs, RAG, architecture, agentic patterns, libraries and the AI engineer career, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus the main cloud and edge platforms (AWS, Google Cloud, Azure, Vercel and Cloudflare).
 
 <!-- BADGES:START -->
-![Last updated](https://img.shields.io/badge/last%20updated-2026--11--23-2563eb)
+![Last updated](https://img.shields.io/badge/last%20updated-2026--11--24-2563eb)
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
-![Editions](https://img.shields.io/badge/daily%20editions-6-9333ea)
+![Editions](https://img.shields.io/badge/daily%20editions-7-9333ea)
 <!-- BADGES:END -->
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
@@ -15,12 +15,12 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ## 📰 Today's digest
 
 <!-- TODAY:START -->
-### [23 Nov 2026 →](daily/2026/11/2026-11-23.md)
+### [24 Nov 2026 →](daily/2026/11/2026-11-24.md)
 
-- **Security:** MCP CVEs in DBHub (read-only bypass), mcp-server-kubernetes (flag injection) and FastMCP (OAuth replay); the MCP Python SDK needs `issuer=` set as well as an upgrade; AI SDK 6.0.336 leaked MCP auth headers into telemetry, so rotate them. → [AI security](architecture/security/README.md) · [MCP servers](build/mcp-servers/README.md)
-- **Cost:** Gemini 4 Carbon and Argon double to $4/$20 on 1 Dec, and long completions are billed even when the request times out. → [Inference, cost & serving](models/cost-and-serving/README.md)
-- **Breaking:** Cloudflare Agents SDK 0.34 (no rollback from Pi 1.6), Pipecat 1.16, and browser-use 1.0 now defaults to its cloud browser. → [Agent infrastructure](architecture/agent-infrastructure/README.md) · [Voice & multimodal](build/voice-and-multimodal/README.md)
-- **Weekly:** Runway's software factory (agents' share of merged PRs 0.1% → 38%), AWS ElastiCache KV caching and Textract Insights, and a tip on injecting live data into skills. → [Successful projects](learn/successful-projects/README.md) · [AWS](platforms/aws/README.md) · [Claude Code mastery](build/claude-code/README.md)
+- **New categories:** [Open-weight model providers](models/open-model-providers/README.md) with a "Who serves what" table, plus [Google Cloud](platforms/google-cloud/README.md), [Azure](platforms/azure/README.md) and [Vercel & Cloudflare](platforms/vercel-cloudflare/README.md).
+- **Retirements:** Claude Opus 4.5 deprecated (retires 2027-01-22); OpenAI `/v1/prompts`, Evals and Agent Builder shut down 30 Nov, and the GPT-5/o3 family on 11 Dec. → [LLM news](models/news/README.md) · [LLM APIs](build/llm-apis/README.md)
+- **Security:** LiteLLM Proxy < 1.84.0 prompt capture, Pomerium MCP token endpoint, Hermes Agent RCE, Supergateway and FastMCP OAuth fixes. → [AI security](architecture/security/README.md) · [MCP servers](build/mcp-servers/README.md)
+- **Tools:** Claude Code 2.1.331 brings Code Mode to Bedrock, Google Cloud and Foundry; tip on sharing plugins through `.claude/settings.json`. → [Coding agents](build/coding-agents/README.md) · [Claude Code mastery](build/claude-code/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)
@@ -53,6 +53,7 @@ Which models exist, what they cost, how to serve them, and how to adapt them.
 |---|---|---|---|
 | [**LLM news**](models/news/README.md) | New models with API IDs, trends, new techniques, deprecations (about 30 days kept; older items in `archive/`) | Picking and pinning models | daily |
 | [**Inference, cost & serving**](models/cost-and-serving/README.md) | Price snapshot, upcoming price changes, cost levers, vLLM and self-hosting | Keeping the bill down | daily |
+| [**Open-weight model providers**](models/open-model-providers/README.md) | Z.ai GLM, DeepSeek, Kimi, Qwen, MiniMax and the hosts that serve them (Fireworks, Together, DeepInfra, Baseten, Groq, Cerebras, OpenRouter, Vercel AI Gateway), with SDK wiring | Finding a cheaper or faster alternative to a frontier API | daily |
 | [**Fine-tuning & post-training**](models/fine-tuning/README.md) | LoRA/QLoRA, GRPO/RLVR, distillation; TRL, Unsloth, Axolotl | Specialising open models | daily |
 
 ### 🏗️ Architecture & production
@@ -71,11 +72,14 @@ How the pieces fit together in production. Start at the [architecture hub](archi
 
 ### ☁️ Platforms
 
-Cloud-specific services for building and running AI. Add Azure or Google Cloud here when needed.
+Cloud and edge platforms for building and running AI: AWS, Google Cloud, Azure, Vercel and Cloudflare.
 
 | Category | What you'll find | Best for | Checked |
 |---|---|---|---|
 | [**AWS**](platforms/aws/README.md) | Bedrock models, AgentCore, Strands Agents, Kiro, AWS MCP servers, re:Invent | Building and running AI on AWS | daily |
+| [**Google Cloud**](platforms/google-cloud/README.md) | Gemini Enterprise Agent Platform (formerly Vertex AI), Agent Engine, ADK, Model Garden, Google Cloud MCP servers | Building and running AI on Google Cloud | daily |
+| [**Azure**](platforms/azure/README.md) | Microsoft Foundry, Foundry Agent Service and hosted agents, Microsoft Agent Framework, Azure OpenAI in Foundry Models, Azure MCP servers | Building and running AI on Azure | daily |
+| [**Vercel & Cloudflare**](platforms/vercel-cloudflare/README.md) | Vercel AI Gateway, Sandbox and Workflow; Cloudflare Workers AI, AI Gateway, Agents SDK and Sandbox SDK | Shipping TypeScript AI apps and agents at the edge | weekly (Mon) |
 
 ### 📚 Learn from others
 

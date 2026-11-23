@@ -1,6 +1,6 @@
 # Evals & observability
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-24_
 
 > You can't improve an agent you can't see. This page covers tracing, evals, benchmarks and the standards underneath them.
 
@@ -38,6 +38,11 @@ Comparison sources: [benchlm.ai](https://www.benchlm.ai/blog/posts/best-llm-obse
 
 ## 📰 Recent releases & results
 
+### CodeReviewBench: grading code-review bots by what developers actually fix · arXiv 2611.26942 · Nov 2026 🆕
+Instead of annotators labelling review comments, this benchmark counts a bot's suggestion as useful when the PR author acts on it and not useful when it is ignored. The signal is mined daily from the public GitHub event stream and covers 500K+ judged PRs across 18 review tools. The authors say it agrees with an independent offline benchmark on precision rankings and picks up vendor product updates within days *(self-reported)*. It is a NeurIPS 2026 poster; the abstract gives no per-tool scores.
+**Why it matters:** A template for evaluating your own review bot: log whether each suggestion was applied, and track that acceptance rate over time instead of relying on a static labelled set.
+Source: [arXiv 2611.26942](https://arxiv.org/abs/2611.26942) · [NeurIPS 2026 poster](https://neurips.cc/virtual/2026/poster/139002) · Added: 2026-11-24
+
 ### Arize Phoenix 22.0: cost tracking for decision and embedding spans; phoenix-otel on OTel JS 3 · 2026-11-18 → 11-20 🆕
 `@arizeai/phoenix-otel` moves to OpenTelemetry JS 3 (breaking; new `sampler`/`spanLimits` options on `register()`). `arize-phoenix` 22.0.0 tracks cost for DECISION and EMBEDDING spans and adds a `type` column to `generative_models`, which is a database migration (no manual steps, per the notes).
 **Why it matters:** TS users must move to OTel JS 3 when upgrading phoenix-otel; self-hosters should back up before 22.0.
@@ -53,8 +58,8 @@ From real developer–agent sessions (SWE-chat), the authors catalogue eleven ki
 **Why it matters:** Grade agents and hand off between them on artifacts (tests, diffs, tool logs), not on the agent's summary.
 Source: [arXiv 2611.25760](https://arxiv.org/abs/2611.25760) · Added: 2026-11-21
 
-### Langfuse: read audit logs, IAM role for Bedrock, gateway budgets · 2026-11-17 → 11-19 🆕
-Reads of traces, observations, scores, sessions and experiments are now audit-logged (11-17). Enterprise users can connect Bedrock with an IAM role instead of stored keys (11-18). The AI Gateway adds spend budgets per key, user and organization (11-19).
+### Langfuse: read audit logs, IAM role for Bedrock, gateway budgets, new trace view · 2026-11-17 → 11-20 🆕
+Reads of traces, observations, scores, sessions and experiments are now audit-logged (11-17). Enterprise users can connect Bedrock with an IAM role instead of stored keys (11-18). The AI Gateway adds spend budgets per key, user and organization (11-19). The trace view was redesigned for reading and navigating large agent traces (11-20).
 **Why it matters:** Trace data often holds prompts and customer data; read auditing and keyless AWS access help pass security review.
 Source: [Langfuse changelog](https://langfuse.com/changelog) · Added: 2026-11-20
 

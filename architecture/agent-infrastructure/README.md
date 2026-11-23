@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -57,6 +57,16 @@ Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best
 
 ## 📰 Recent releases
 
+### Strands Box CLI: run Claude Code, Codex or Kiro CLI inside a policy sandbox · 2026-11-23 🆕
+Box is AWS's open-source (Apache-2.0, Rust) sandbox for agents, first previewed in October; the new `box` CLI wraps an agent you already have installed. `box profile create claude --with bedrock`, then `box run claude` in the project folder, and the agent keeps its normal interface. Shell commands, file access, outbound requests and MCP calls are checked against default-deny Dogwood `permit`/`forbid` rules outside the model, and an egress gateway adds real API keys or SigV4 signatures only to requests the policy allows, so the agent never holds the secrets. Box 0.3.0; still a preview; macOS 15+ on Apple silicon and Linux (ARM64, x86-64).
+**Why it matters:** A free, local alternative to hosted sandboxes for coding agents on your own machine, with policies that can depend on earlier actions (for example, block network calls after a secrets file was read). The getting-started guide installs with `curl … | sh` pinned to a commit, so read the script first.
+```sh
+box --version          # box 0.3.0 at time of writing
+box profile create claude --with bedrock
+box run claude
+```
+Sources: [Strands Box: get started](https://strandsagents.com/docs/user-guide/box/getting-started/) · [GitHub: strands-agents/box](https://github.com/strands-agents/box) · [Run Codex CLI in a box](https://strandsagents.com/docs/user-guide/box/guides/run-codex-cli/) · [Unite.AI](https://www.unite.ai/aws-releases-strands-decider-v2-and-sandboxes-more-coding-agents/) · Added: 2026-11-24
+
 ### Cloudflare Agents SDK 0.34.0: Pi 1.6 tools that wait while the agent sleeps · 2026-11-20 🆕
 `PiHarness` moves to Pi 1.6: a tool can "park" instead of returning, and Pi reruns it when a signal arrives (`harness.signal()`) or a deadline passes, while the Durable Object hibernates. A `beforeTool` hook can park a call for human approval, and sessions can start from an existing history via `init`. **Breaking:** signals go through `harness.signal()` instead of `(await harness.pi()).signal()`, call `harness.root()` before reaching the root session, Pi Durable's `RunEndTask` is now `HookTask`, failed requests return a generic `500` (customise with `onFetchError()`), and MCP clients must catch `MCPAuthorizationRequiredError`. Conversations that ran on Pi 1.6 can't go back to Pi 1.5.
 **Why it matters:** Human-in-the-loop and wait-for-event tools no longer keep a paid instance awake. Because rollback is one-way, test the upgrade on a staging deployment and plan to roll forward.
@@ -99,6 +109,7 @@ Source: [Temporal changelog](https://temporal.io/changelog/temporal-cloud-on-azu
 
 ## 🪪 Identity & permissions for agents
 
+- **Sandbox workload identity (E2B):** a sandbox can get short-lived ES256 JWT-SVID tokens (issuer `https://id.e2b.dev`, `sub` = `spiffe://id.e2b.dev/<project>/<sandbox>/<execution>`), up to 5 audiences each, configured with `iam.tokens` in the SDK; the egress proxy injects them into matching requests. Docs show AWS federation via `AssumeRoleWithWebIdentity`, so sandboxes need no long-lived AWS keys; keep role sessions short, because AWS credentials outlive the sandbox. GA on E2B Cloud (launched early Nov 2026, added 2026-11-24). ([E2B docs](https://docs.e2b.dev/iam/workload-identity))
 - **MCP auth:** remote MCP servers are OAuth 2.1 resource servers under the 2026-07-28 spec, so prefer scoped tokens to static keys. → [MCP servers](../../build/mcp-servers/README.md)
 - **Fail closed:** Claude Code 2.1.319 auto mode now asks or denies when its server-side check is unavailable. → [Coding agents](../../build/coding-agents/README.md)
 - **Default-deny PATs:** Devin now requires approval for personal access tokens by default in enterprises without a policy.

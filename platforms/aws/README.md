@@ -1,6 +1,6 @@
 # AWS for AI engineering
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > Everything on AWS that matters to AI engineers: Bedrock models, AgentCore (the agent runtime platform), Strands Agents, Kiro, AWS MCP servers, and how they connect to Spring, Python and TypeScript apps. **re:Invent 2026 runs 30 Nov – 4 Dec**, so expect a large wave of launches.
 
@@ -79,8 +79,17 @@ Sources: [AgentCore release notes](https://docs.aws.amazon.com/bedrock-agentcore
 
 ## 🧵 Strands Agents (AWS's open-source agent SDK)
 
+### Strands Decider v2 + Box CLI · 2026-11-23 🆕
+**Decider v2** is a family of five open "decision models" (Apache-2.0, fine-tuned from Gemma 4 E2B, E4B, 12B, 26B-A4B and 31B) that pick one of a fixed set of answers in a single forward pass and return calibrated confidence: which model or tool to use, whether tool arguments look right, whether an answer is grounded, which team owns a ticket. They are not for free-text generation. Strands reports the 31B averaging 82.1 on six text benchmarks (v1 26B-A4B: 70.0), and a Haiku 5.5 → Sonnet 5.5 router solving 94% as many tasks as Sonnet alone at 44% of the cost *(self-reported)*. Weights are under `StrandsAgents` on Hugging Face (e.g. `StrandsAgents/strands-decider-E4B-gemma4-v2-2611`); the Harness SDK exposes them as decision models. Also launched: the **Strands Box CLI**, which sandboxes Claude Code, Codex or Kiro CLI under Dogwood policies (see [Agent infrastructure](../../architecture/agent-infrastructure/README.md)).
+```bash
+pip install strands-decider
+strands-decider serve StrandsAgents/strands-decider-E4B-gemma4-v2-2611 --port 8000   # POST /v1/systemone
+```
+**Why it matters:** Cheap, self-hostable routing and guard checks inside an agent loop, instead of asking a frontier model to choose. Validate the router's cost/quality trade-off on your own traffic.
+Sources: [Strands blog: Decider v2](https://strandsagents.com/blog/introducing-strands-decider-v2/) · [SiliconANGLE](https://siliconangle.com/2026/11/23/aws-is-making-ai-agents-more-decisive-and-secure-with-its-latest-strands-updates/) · Added: 2026-11-24
+
 ### Strands Harness SDK + Strands harness 🆕
-A model-driven agent SDK for **Python and TypeScript** (Apache-2.0), now described as an "agent harness" with behavioural middleware and sandboxed execution. **Strands harness** (released 2026-09-21) is a ready-made, general-purpose agent built on the SDK. Latest versions: `strands-agents` 1.65.0 (2026-11-13), `@strands-agents/sdk` 1.26.0 (2026-11-19) and `strands-harness` 0.4.0 (2026-11-12), checked on PyPI and npm on 2026-11-23.
+A model-driven agent SDK for **Python and TypeScript** (Apache-2.0), now described as an "agent harness" with behavioural middleware and sandboxed execution. **Strands harness** (released 2026-09-21) is a ready-made, general-purpose agent built on the SDK. Latest versions: `strands-agents` 1.66.0 (2026-11-23), `@strands-agents/sdk` 1.26.0 (2026-11-19), `strands-harness` 0.5.0 (2026-11-23) and `strands-decider` 0.4.0 (2026-11-20), checked on PyPI and npm on 2026-11-24.
 ```bash
 pip install strands-agents strands-agents-tools   # SDK
 pip install strands-harness                       # assembled agent
@@ -122,6 +131,11 @@ November brought Kiro CLI 3.0.0–3.1.0. October added a **local command sandbox
 Sources: [Kiro changelog](https://kiro.dev/changelog/dev-server-and-spec-workflows/) · [AWS Japan SA deck, Oct](https://speakerdeck.com/inariku/kiro-update-2026-10-en) · [Nov deck](https://speakerdeck.com/inariku/kiro-update-2026-11-en) · Added: 2026-11-18
 
 ## 🖥️ Self-hosted models on AWS
+
+### CloudWatch Container Insights: built-in vLLM, SGLang, KServe and Ray dashboards on EKS · 2026-11-20 🆕
+Turning on OTel Container Insights for EKS (add-on/Helm chart 8.0.0 or later) now also monitors vLLM, SGLang, KServe, Ray, Karpenter, KEDA and Knative Serving with no Prometheus or Grafana to run. For model servers you get queued requests, time to first token and KV-cache usage, tagged by pod, workload and node. Metrics are billed at the EKS OpenTelemetry ingestion rate ($0.08 per GB).
+**Why it matters:** Quick TTFT and KV-cache visibility for self-hosted LLMs on EKS, useful alongside the ElastiCache KV tier below. Estimate ingestion volume first on busy clusters.
+Source: [AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/cloudwatch-eks-kubernetes-tools/) · Added: 2026-11-24
 
 ### ElastiCache distributed KV caching for vLLM/SGLang + an agent skill to set it up · 2026-11-18 → 11-21 🆕
 ElastiCache for Valkey can now act as a shared KV-cache tier beside your GPU fleet (GA 2026-11-18): engines such as vLLM, SGLang and TensorRT-LLM connect through the open-source LMCache connector with a config change, so any server can reuse prefill state across sessions, re-routes and server failures. AWS claims up to 40% lower inference cost and up to 80% lower time to first token *(self-reported)*. On 2026-11-21 AWS added a **distributed KV caching skill** to the Agent Toolkit for AWS: it checks fit first (EFA-capable GPUs such as p5, LMCache 0.5.8rc1+, vLLM 0.11.1+ or SGLang 0.5.13+, Valkey 9.1+ on `cache.i8ge.48xlarge`), estimates savings from your own traffic with the free KVTrace tool, then configures the connector.

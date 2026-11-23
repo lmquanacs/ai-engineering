@@ -92,6 +92,33 @@ Starting points for the daily agent. **Confirm every item at its primary source*
 - AWS MCP: https://github.com/awslabs/mcp
 - re:Invent: https://reinvent.awsevents.com
 
+## Open-weight model providers
+- First-party docs: Z.ai https://docs.z.ai · DeepSeek https://api-docs.deepseek.com · Moonshot/Kimi https://platform.kimi.ai/docs and https://www.kimi.com/code/docs · Alibaba Model Studio/DashScope https://www.alibabacloud.com/help/en/model-studio · MiniMax https://platform.minimax.io/docs · Xiaomi MiMo https://mimo.mi.com/docs
+- SDKs: AI SDK providers https://ai-sdk.dev/providers · Pydantic AI models https://pydantic.dev/docs/ai/models · Spring AI https://docs.spring.io/spring-ai/reference · LangChain4j https://docs.langchain4j.dev
+- Hosts and routers: Vercel AI Gateway https://vercel.com/ai-gateway/models and changelog https://vercel.com/changelog · OpenRouter https://openrouter.ai · Fireworks https://fireworks.ai/models · Together AI https://www.together.ai · DeepInfra https://deepinfra.com · Baseten https://docs.baseten.co · Groq https://console.groq.com/docs/models · Cerebras https://inference-docs.cerebras.ai
+- Comparisons (dated snapshots): Artificial Analysis https://artificialanalysis.ai
+
+## Google Cloud
+- Agent Platform release notes: https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes
+- Model versions and retirements: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions
+- Google Cloud blog, AI & ML: https://cloud.google.com/blog/products/ai-machine-learning
+- Agent Runtime and SDK migration: https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime · https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/sdk-migration
+- ADK docs: https://google.github.io/adk-docs · releases: https://github.com/google/adk-python/releases (also adk-java, adk-js, adk-go) · https://pypi.org/project/google-adk/
+- Google Cloud MCP servers: https://docs.cloud.google.com/mcp/overview
+- Spring AI Google GenAI: https://docs.spring.io/spring-ai/reference/api/chat/google-genai-chat.html
+
+## Azure
+- Microsoft Foundry blog and monthly "What's new": https://devblogs.microsoft.com/foundry/category/whats-new/
+- Foundry model retirements: https://learn.microsoft.com/en-us/azure/foundry/concepts/model-lifecycle-retirement · https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-retirements
+- Microsoft Agent Framework: https://devblogs.microsoft.com/agent-framework/ · https://learn.microsoft.com/en-us/agent-framework/overview/ · https://github.com/microsoft/agent-framework/releases
+- Azure MCP Server: https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/ · https://github.com/microsoft/mcp
+- Ignite/Build Book of News: https://news.microsoft.com/events/ignite/2026/book-of-news/
+
+## Vercel & Cloudflare
+- Vercel changelog: https://vercel.com/changelog · AI Gateway docs: https://vercel.com/docs/ai-gateway · Sandbox: https://vercel.com/docs/sandbox · Workflow: https://vercel.com/docs/workflows
+- Cloudflare developer changelog (AI): https://developers.cloudflare.com/changelog/product-group/ai · AI Gateway changelog: https://developers.cloudflare.com/ai-gateway/changelog/ · blog: https://blog.cloudflare.com
+- Cloudflare Agents SDK releases: https://github.com/cloudflare/agents/releases · Sandbox SDK: https://developers.cloudflare.com/sandbox/ · workers-ai-provider and ai-gateway-provider: https://github.com/cloudflare/ai
+
 ## Case studies
 - ZenML LLMOps database: https://www.zenml.io/llmops-database
 - Engineering blogs: Anthropic, OpenAI, PagerDuty, Replit, Ramp, Shopify, Stripe, Atlassian

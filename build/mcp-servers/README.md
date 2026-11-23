@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -88,6 +88,16 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 
 ## 🔒 Security notes
 
+### FastMCP 4.2.5: OAuth hardening, listen streams on by default · 2026-11-23 🆕
+Security fixes: a CIMD client's metadata can no longer widen allowed scopes, redirect URIs must match an allowed pattern's query exactly (and an exact root pattern now matches only that path), reusing a rotated refresh token more than 60 s later ends the whole grant, and OpenAPI tools stop forwarding MCP transport headers to the wrapped API (new `forward_client_headers`). On 2026-07-28 connections, servers now serve `subscriptions/listen` by default, so clients hold one open stream per connection (up to 1024 per process).
+**Do this:** Upgrade, then check three things: set `valid_scopes` if you have CIMD clients (with no scopes configured they can now request none), add `/*` to root redirect patterns that need sub-paths, and pass `token_issuer` to a multi-tenant `AzureProvider`, which no longer checks the issuer. On serverless or small worker pools, consider `FASTMCP_ENABLE_SUBSCRIPTIONS_LISTEN=false`.
+Source: [FastMCP changelog v4.2.5](https://raw.githubusercontent.com/PrefectHQ/fastmcp/main/docs/changelog.mdx) · [PyPI](https://pypi.org/project/fastmcp/) · Added: 2026-11-24
+
+### Reference servers, Pomerium and astro-airflow-mcp CVEs · published 2026-11-23 🆕
+**mcp-server-git** before 2026.10.28: a nested `.git` file pointing elsewhere bypasses `--repository` (CVE-2026-134465); already fixed if you took the 2026.11.18 upgrade below. **mcp-server-fetch** 2026.10.10 to < 2026.11.11 treats IPv6 site-local addresses as public in its SSRF guard (CVE-2026-134492, low). **Pomerium** 0.30.0 to < 0.34.0 skips client-secret checks at its MCP token endpoint, so an intercepted code or refresh token can be redeemed (CVE-2026-135300, CVSS 4.0 9.1). **astro-airflow-mcp** 0.5.0–0.9.1 can run a `json.py` from the working directory (CVE-2026-133632). Details in [AI security](../../architecture/security/README.md#-recent-items).
+**Do this:** Upgrade to `mcp-server-git` ≥ 2026.11.18, `mcp-server-fetch` ≥ 2026.11.11, Pomerium ≥ 0.34.0, `astro-airflow-mcp` ≥ 0.9.2 (or set `AF_TELEMETRY_DISABLED=1`).
+Source: [NVD CVE-2026-134465](https://nvd.nist.gov/vuln/detail/CVE-2026-134465) · [NVD CVE-2026-134492](https://nvd.nist.gov/vuln/detail/CVE-2026-134492) · [NVD CVE-2026-135300](https://nvd.nist.gov/vuln/detail/CVE-2026-135300) · [NVD CVE-2026-133632](https://nvd.nist.gov/vuln/detail/CVE-2026-133632) · Added: 2026-11-24
+
 ### DBHub read-only bypass, mcp-server-kubernetes flag injection, FastMCP OAuth proxy fix · 2026-11-21 → 11-22 🆕
 **DBHub** (Bytebase's database MCP server) < 1.7.0 lets a client limited to read-only `execute_sql` hide write and DDL statements behind backslash-escaped quotes (CVE-2026-134803); upgrade to ≥ 1.7.0. **mcp-server-kubernetes** < 4.2.0 passes dash-prefixed values in tools such as `exec_in_pod` and `kubectl_logs` to kubectl as flags, so a client on SSE or Streamable HTTP can make kubectl read host files (CVE-2026-134817, CVSS 7.1); upgrade to ≥ 4.2.0. **FastMCP 4.2.4** (2026-11-21) fixes two concurrent requests redeeming one OAuth-proxy authorization code or refresh token twice (GHSA-78c8-3jhx-5mg7) and stops a revoked proxy access token from becoming valid again after a refresh. Details in [AI security](../../architecture/security/README.md#-recent-items).
 **Do this:** Upgrade the ones you run. If you use FastMCP's OAuth proxy, move to ≥ 4.2.4.
@@ -98,10 +108,11 @@ Command injection in **mcp-ssh-manager** backup and DB tools, including ones all
 **Do this:** Upgrade any of these you run, and don't treat a server's "read-only" mode as a security boundary.
 Source: [CVE-2026-129995](https://www.cve.org/CVERecord?id=CVE-2026-129995) · [CVE-2026-134293](https://www.cve.org/CVERecord?id=CVE-2026-134293) · Added: 2026-11-22
 
-### MCP bridge and server CVE wave · Supergateway (no fix yet), Obot, LibreChat · 2026-11-18 → 11-20 🆕
-NVD published a batch of MCP-related CVEs: **Supergateway** cross-site WebSocket hijacking in stdio-to-WebSocket mode (CVE-2026-132121, 2.4.0–4.2.2) and a DoS in stdio-to-SSE mode (CVE-2026-131857), with no fixed npm release yet; **Obot** < 0.27.0; **LibreChat** < 0.8.8 (MCP OAuth redirect SSRF). Upgrade lines and the AWS document-loader server are in [AI security](../../architecture/security/README.md#-recent-items).
-**Do this:** Don't expose Supergateway's WebSocket or SSE modes, even on localhost, until a fix ships; a web page in your browser can reach them.
-Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · Added: 2026-11-21
+### MCP bridge and server CVE wave · Supergateway, Obot, LibreChat · 2026-11-18 → 11-20 🆕
+NVD published a batch of MCP-related CVEs: **Supergateway** cross-site WebSocket hijacking in stdio-to-WebSocket mode (CVE-2026-132121, 2.4.0–4.2.2) and a DoS in stdio-to-SSE mode (CVE-2026-131857); **Obot** < 0.27.0; **LibreChat** < 0.8.8 (MCP OAuth redirect SSRF). Upgrade lines and the AWS document-loader server are in [AI security](../../architecture/security/README.md#-recent-items).
+**Update 2026-11-24:** Supergateway **4.2.3** and **4.2.4** (2026-11-23) are on npm. In the published code, SSE sessions are now kept in a `Map` (the DoS used prototype keys), and WebSocket upgrades from a browser `Origin` not listed in `--cors` get a 403. The WebSocket check is opt-in: with neither `--cors <origins>` nor `--apiKey`, any web page can still connect, and the gateway only prints a warning. No release notes or advisory update yet.
+**Do this:** Upgrade to ≥ 4.2.4 and start stdio-to-WebSocket mode with `--cors <your origins>` or `--apiKey`.
+Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · [supergateway on npm](https://www.npmjs.com/package/supergateway?activeTab=versions) · Added: 2026-11-21 · Updated: 2026-11-24
 
 ### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16 🆕
 CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-audience check), CVE-2026-116685 (credentials sent on cross-origin redirects) and CVE-2026-115563 (OAuth clients could send credentials to an authorization server the MCP server chose).

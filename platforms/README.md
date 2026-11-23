@@ -4,8 +4,11 @@
 
 ← [Repo home](../README.md)
 
-Cloud-specific services for building and running AI. Add Azure or Google Cloud here when needed.
+Cloud and edge platforms for building and running AI: AWS, Google Cloud, Azure, Vercel and Cloudflare.
 
 | Category | What you'll find | Best for | Checked |
 |---|---|---|---|
 | [**AWS**](aws/README.md) | Bedrock models, AgentCore, Strands Agents, Kiro, AWS MCP servers, re:Invent | Building and running AI on AWS | daily |
+| [**Google Cloud**](google-cloud/README.md) | Gemini Enterprise Agent Platform (formerly Vertex AI), Agent Engine, ADK, Model Garden, Google Cloud MCP servers | Building and running AI on Google Cloud | daily |
+| [**Azure**](azure/README.md) | Microsoft Foundry, Foundry Agent Service and hosted agents, Microsoft Agent Framework, Azure OpenAI in Foundry Models, Azure MCP servers | Building and running AI on Azure | daily |
+| [**Vercel & Cloudflare**](vercel-cloudflare/README.md) | Vercel AI Gateway, Sandbox and Workflow; Cloudflare Workers AI, AI Gateway, Agents SDK and Sandbox SDK | Shipping TypeScript AI apps and agents at the edge | weekly (Mon) |

@@ -1,6 +1,6 @@
 # LLM APIs & structured output
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > The provider API features you write code against: structured outputs, tool calling, streaming, batch and files, and the breaking changes between versions. Model launches live in [LLM news](../../models/news/README.md); prices in [Inference & cost](../../models/cost-and-serving/README.md).
 
@@ -24,6 +24,16 @@ _Last updated: 2026-11-23_
 ## 🗞️ Latest
 
 <!-- newest first: new API features, breaking changes, migration guides -->
+
+### Anthropic: Enterprise Frontier Safeguards (beta) and storage webhooks · 2026-11-23 🆕
+Enterprise Frontier Safeguards (EFS) is now in beta on Claude Platform, Claude Platform on AWS and Claude Models on Google Cloud (Anthropic managed). Eligible organizations get Zero Data Retention while encrypted copies of prompts and responses ("Sealed Safety Data") are written to a bucket in their own cloud account; workspaces left on Anthropic-managed storage are not covered. Two new organization webhook events, `external_storage.failed` and `external_storage.recovered`, fire when that bucket fails or passes Anthropic's daily check.
+**Why it matters:** It is the route to ZDR-style data handling for teams that need it. If you enable it, wire up the storage webhooks, because a misconfigured bucket is now something you have to monitor.
+Source: [Claude release notes](https://platform.claude.com/docs/en/release-notes/overview) · [EFS setup guide](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/setup-console) · Added: 2026-11-24
+
+### OpenAI: `/v1/prompts`, Evals API and Agent Builder shut down 2026-11-30 🆕
+Announced on 2026-06-03 and still on the deprecations page: reusable prompt objects (`/v1/prompts`), the Evals dashboard, API and graders, and Agent Builder all stop working on 2026-11-30. OpenAI's suggested replacements are prompt text kept in your own code, Promptfoo for evals, and the Agents SDK or ChatKit for Agent Builder flows.
+**Why it matters:** Code that references stored prompt IDs or calls the Evals API breaks next Monday. Grep for them now. Model retirements on the same page are in [LLM news](../../models/news/README.md#-action-items).
+Source: [OpenAI deprecations](https://developers.openai.com/api/docs/deprecations) · Added: 2026-11-24
 
 ### OpenAI: standby mode for GPT-Live WebRTC sessions · 2026-11-19 🆕
 GPT-Live-1 and GPT-Live-1.1 WebRTC sessions can enter a standby mode that pauses inference while the session is inactive and resumes when someone speaks. The same changelog entry adds `gpt-live-1.1`, which you select in an existing Live session configuration (`v1/live/sessions`); see [LLM news](../../models/news/README.md).
@@ -67,7 +77,7 @@ Requests that declare the older `computer_20251124` tool now return 400 on every
 **Why it matters:** Computer-use integrations stop working until migrated. → [Voice & multimodal](../voice-and-multimodal/README.md)
 Source: [Claude docs: migrate from computer_20251124](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#migrate-from-computer-20251124) · Added: 2026-11-20
 
-Library check (PyPI, 2026-11-23): no new releases of Instructor (1.17.0), Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window.
+Library check (PyPI, 2026-11-24): no new releases of Instructor (1.17.0), Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window. Gemini API and Mistral changelogs had no new entries (DeepSeek updates page could not be read); xAI retired `grok-build-0.1` on 2026-11-19.
 
 ## 📚 Reference
 

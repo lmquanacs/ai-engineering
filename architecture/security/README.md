@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,20 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### MCP auth and gateway CVEs: Pomerium, LiteLLM, Hermes Agent, reference servers · published 2026-11-23 🆕
+- **Pomerium** 0.30.0 to < 0.34.0: the MCP token endpoint (`/.pomerium/mcp/token`) skips the client-secret check for `client_secret_basic` clients, so anyone holding an intercepted authorization code or refresh token can redeem it with any secret (CVE-2026-135300, CVSS 4.0 9.1). Fixed in 0.34.0.
+- **LiteLLM Proxy** 1.62.4 to < 1.84.0: any API-key holder can put `callbacks` in a request body and register a process-wide logging callback, for example an unconfigured Langfuse or LangSmith integration, to collect every user's prompts and responses, or switch off operator logging (CVE-2026-135287, GHSA-34v7-jqrg-944p). The fix, 1.84.0, has been on PyPI since 2026-05-14.
+- **Hermes Agent** (Nous Research) 0.21.6–0.23.1: with a Docker or SSH terminal backend, code inside the backend can write `LD_PRELOAD` or `PATH` into an env file that the agent merges into later browser and computer-use processes, giving code execution on the agent host (CVE-2026-130164). Fixed in 0.23.2; the default local backend is not affected.
+- **mcp-server-git** before 2026.10.28: a nested `.git` file with a `gitdir` pointer escapes the `--repository` restriction to read and branch another repository (CVE-2026-134465, GHSA-w766-5x43-whvw). **mcp-server-fetch** 2026.10.10 to < 2026.11.11: IPv6 site-local addresses pass the SSRF guard (CVE-2026-134492, low).
+- **astro-airflow-mcp** 0.5.0–0.9.1: its telemetry subprocess can import a `json.py` from the working directory, so opening an untrusted project runs code (CVE-2026-133632). Fixed in 0.9.2, or set `AF_TELEMETRY_DISABLED=1`.
+**Why it matters:** The plumbing around agents keeps failing at its trust boundaries: an MCP gateway's token endpoint, fields in an LLM proxy's request body, an env file a sandbox can write. Upgrade the ones you run. If you ran a LiteLLM proxy older than 1.84.0 with keys handed to other teams, check its callback settings for integrations you never enabled.
+Source: [NVD CVE-2026-135300](https://nvd.nist.gov/vuln/detail/CVE-2026-135300) · [NVD CVE-2026-135287](https://nvd.nist.gov/vuln/detail/CVE-2026-135287) · [NVD CVE-2026-130164](https://nvd.nist.gov/vuln/detail/CVE-2026-130164) · [NVD CVE-2026-134465](https://nvd.nist.gov/vuln/detail/CVE-2026-134465) · [NVD CVE-2026-134492](https://nvd.nist.gov/vuln/detail/CVE-2026-134492) · [NVD CVE-2026-133632](https://nvd.nist.gov/vuln/detail/CVE-2026-133632) · Added: 2026-11-24
+
+### FastMCP 4.2.5: OAuth proxy hardening · 2026-11-23 🆕
+FastMCP 4.2.5 includes several security fixes: CIMD clients can no longer widen the scopes a server allows, redirect-URI matching checks the query component, root path patterns are compared exactly, reusing a rotated refresh token after 60 s revokes the whole grant, and OpenAPI-wrapped tools stop forwarding MCP transport headers to the backend. Some of these change behaviour; the checklist is on the [MCP servers page](../../build/mcp-servers/README.md#-security-notes).
+**Why it matters:** Refresh-token reuse detection is standard OAuth practice, but it breaks clients that copy one stored refresh token between processes.
+Source: [FastMCP changelog v4.2.5](https://raw.githubusercontent.com/PrefectHQ/fastmcp/main/docs/changelog.mdx) · Added: 2026-11-24
 
 ### More MCP fixes: DBHub read-only bypass, mcp-server-kubernetes, FastMCP OAuth proxy · 2026-11-21 → 11-22 🆕
 - **DBHub** < 1.7.0 (`@bytebase/dbhub`): the SQL scanner misreads backslash-escaped quotes, so a client restricted to read-only `execute_sql` can hide stacked statements that clear `transaction_read_only` or `COMMIT`, then modify or drop MySQL, MariaDB or PostgreSQL data (CVE-2026-134803). Fixed in 1.7.0 (2026-11-16).
@@ -62,7 +76,7 @@ When message history is serialized and reloaded, a tool result containing JSON s
 Source: [NVD CVE-2026-133505](https://nvd.nist.gov/vuln/detail/CVE-2026-133505) · [GHSA-4cj4-hgwf-4hc4](https://github.com/pydantic/pydantic-ai/security/advisories/GHSA-4cj4-hgwf-4hc4) · Added: 2026-11-21
 
 ### MCP server and gateway CVE batch · 2026-11-18 → 11-20 🆕
-- **Supergateway:** cross-site WebSocket hijacking in stdio-to-WebSocket mode lets any web page drive the wrapped stdio tools, even on localhost (CVE-2026-132121, 2.4.0–4.2.2, CVSS 8.1); unauthenticated DoS in stdio-to-SSE mode (CVE-2026-131857, 4.2.0–4.2.2). **No fixed release yet.**
+- **Supergateway:** cross-site WebSocket hijacking in stdio-to-WebSocket mode lets any web page drive the wrapped stdio tools, even on localhost (CVE-2026-132121, 2.4.0–4.2.2, CVSS 8.1); unauthenticated DoS in stdio-to-SSE mode (CVE-2026-131857, 4.2.0–4.2.2). **Update 2026-11-24:** 4.2.3/4.2.4 (2026-11-23) fix the DoS and refuse WebSocket upgrades from browser origins not in `--cors`, but only when you pass `--cors <origins>` or `--apiKey`. By default the gateway still accepts any page and just warns (from the published package code and README; no advisory update yet).
 - **Obot** < 0.27.0: four CVEs, including token theft via unvalidated MCP protected-resource metadata (CVE-2026-130766) and heredoc command injection (CVE-2026-130767).
 - **`awslabs.document-loader-mcp-server`** 1.0.10–1.0.20: path traversal when `DOCUMENT_BASE_DIR` is unset (CVE-2026-130901); fixed in 1.0.21.
 - **LibreChat** < 0.8.8: MCP OAuth redirect SSRF (CVE-2026-54031).

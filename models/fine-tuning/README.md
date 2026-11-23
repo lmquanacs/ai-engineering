@@ -1,6 +1,6 @@
 # Fine-tuning & post-training
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-24_
 
 > Adapting open-weight models: LoRA/QLoRA, preference tuning, RL with verifiable rewards, distillation and the data behind them. Lower priority unless you train models, but this is where open models get specialised.
 
@@ -29,6 +29,11 @@ Sources: [Fine-tuning guide (Jose Nobile)](https://josenobile.pages.dev/guides/f
 Sources: [Hugging Face: TRL v1.0](https://huggingface.co/blog/trl-v1) · [Unsloth on PyPI](https://pypi.org/project/unsloth/2026.8.1/) · [Open RLHF toolchain 2026](https://presenc.ai/research/open-rlhf-finetuning-toolchain-2026) · Added: 2026-11-18
 
 ## 🗞️ Releases
+
+### TOUMAII: 4.5M tool-calling preference pairs for DPO · arXiv 2611.26722 · Nov 2026 🆕
+A preference dataset of about 4.5M validated pairs built from the Toucan-1.5M tool-use conversations, covering single- and multi-turn, parallel and sequential function calls, plus TOUMAII-Gen, a pipeline that turns any tool-calling SFT set into preference pairs based on the mistakes models actually make. A 3B model trained with DPO on it performed on par with other high-quality tool-calling preference sets *(self-reported)*. A smaller ToolACE-derived set shows the generator works on other sources. The poster page doesn't state a licence for the new data or code; check before commercial use.
+**Why it matters:** If your SFT'd small model still mis-calls tools, this gives you ready DPO data, or a way to make pairs from your own SFT traces.
+Source: [arXiv 2611.26722](https://arxiv.org/abs/2611.26722) · [NeurIPS 2026 workshop poster](https://neurips.cc/virtual/2026/160067) · [toumaii-gen code](https://github.com/toumaii/toumaii-gen) · Added: 2026-11-24
 
 ### Hugging Face "harness adapters": RL a LoRA inside the harness you ship · 2026-11-20 🆕
 Hugging Face trained one LoRA for Qwen3.8-27B per agent harness (pi, Hermes Agent, OpenCode), running RL inside the unmodified harness with TRL's `AsyncGRPOTrainer`, OpenEnv and Harbor-format tasks. With pi on Terminal-Bench 2.1, pass@1 rose from 39% to 55% while average tokens per task fell from 2.9K to 1.5K, and the three adapters merged into one "super adapter" that works under all three *(self-reported)*. Adapters, tasks and trajectories are on the Hub.

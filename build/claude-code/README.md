@@ -1,33 +1,32 @@
 # Claude Code mastery
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > Tips, tricks and workflows for getting the most out of Claude Code, refreshed every day. Release notes and upgrade warnings stay in [Coding agents & IDEs](../coding-agents/README.md); this page is about *how to use it well*.
 
 ## 💡 Tip of the day
 
-### Feed live data into a skill with `` !`command` ``
-In a skill's `SKILL.md`, a line with `` !`<command>` `` runs that shell command before Claude sees the skill, and the output replaces the line. Claude starts with the real diff, PR comments or test output already in its prompt instead of spending turns fetching them. Use a fenced ` ```! ` block for several commands. Add `context: fork` to run the skill in its own subagent so the bulky output stays out of your main conversation.
-```yaml
----
-name: pr-summary
-description: Summarize changes in a pull request
-context: fork
-agent: Explore
-allowed-tools: Bash(gh *)
----
-
-## Pull request context
-- PR diff: !`gh pr diff`
-- PR comments: !`gh pr view --comments`
-- Changed files: !`gh pr diff --name-only`
-
-## Your task
-Summarize this pull request...
+### Ship your team's plugins with the repo: `extraKnownMarketplaces` + `enabledPlugins`
+Commit both keys to `.claude/settings.json`. `extraKnownMarketplaces` registers your marketplace for everyone who opens the repo and trusts the folder; `enabledPlugins` (keyed `plugin-name@marketplace-name`) turns the plugins on for the project. Enabling does **not** download a plugin, so each teammate runs the install once per clone (or `--scope user` for all projects), then `/reload-plugins`.
+```json
+{
+  "extraKnownMarketplaces": {
+    "acme-tools": {
+      "source": { "source": "github", "repo": "acme-corp/claude-plugins" },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "code-formatter@acme-tools": true
+  }
+}
 ```
-Gotchas: if any injected command fails (non-zero exit, apart from exit 1 from search and compare commands), the whole skill invocation stops and Claude never sees the skill. `!` only counts at the start of a line or after whitespace. Each command gets the Bash tool's 2-minute timeout and runs in the session's current folder, so use `${CLAUDE_SKILL_DIR}` or `${CLAUDE_PROJECT_DIR}` in paths. Admins can turn the feature off with `"disableSkillShellExecution": true` (bundled and managed skills keep it).
-**Why it matters:** skills like "review my diff" or "summarise this PR" start from the real data on the first turn, and the result is the same every time.
-Source: [Skills: inject dynamic context](https://code.claude.com/docs/en/skills#inject-dynamic-context) · Added: 2026-11-23
+```shell
+claude plugin install code-formatter@acme-tools --scope project
+```
+Gotchas: in an untrusted folder, including a `-p` run there, the marketplace entry is ignored without a message. Third-party marketplaces don't auto-update unless you set `"autoUpdate": true` (official Anthropic ones default to on). Project settings beat user settings, so a teammate who wants a plugin off sets it to `false` in `.claude/settings.local.json`; a `false` in managed settings blocks it everywhere. From a release on or after 2026-11-30, marketplaces listed in *managed* `extraKnownMarketplaces` will auto-update by default (2.1.331 notice), so add `"autoUpdate": false` to any you want pinned.
+**Why it matters:** the team's skills, hooks, agents and MCP config arrive with `git clone` instead of a wiki page of setup steps.
+Source: [Settings reference: extraKnownMarketplaces](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces) · [enabledPlugins](https://code.claude.com/docs/en/settings-reference#enabledplugins) · [Enabled in project settings but not installed](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed) · [Changelog 2.1.331](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · Added: 2026-11-24
 
 ---
 
@@ -104,6 +103,29 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 ## 🗞️ Latest tips
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
+
+### Feed live data into a skill with `` !`command` `` 🆕
+In a skill's `SKILL.md`, a line with `` !`<command>` `` runs that shell command before Claude sees the skill, and the output replaces the line. Claude starts with the real diff, PR comments or test output already in its prompt instead of spending turns fetching them. Use a fenced ` ```! ` block for several commands. Add `context: fork` to run the skill in its own subagent so the bulky output stays out of your main conversation.
+```yaml
+---
+name: pr-summary
+description: Summarize changes in a pull request
+context: fork
+agent: Explore
+allowed-tools: Bash(gh *)
+---
+
+## Pull request context
+- PR diff: !`gh pr diff`
+- PR comments: !`gh pr view --comments`
+- Changed files: !`gh pr diff --name-only`
+
+## Your task
+Summarize this pull request...
+```
+Gotchas: if any injected command fails (non-zero exit, apart from exit 1 from search and compare commands), the whole skill invocation stops and Claude never sees the skill. `!` only counts at the start of a line or after whitespace. Each command gets the Bash tool's 2-minute timeout and runs in the session's current folder, so use `${CLAUDE_SKILL_DIR}` or `${CLAUDE_PROJECT_DIR}` in paths. Admins can turn the feature off with `"disableSkillShellExecution": true` (bundled and managed skills keep it).
+**Why it matters:** skills like "review my diff" or "summarise this PR" start from the real data on the first turn, and the result is the same every time.
+Source: [Skills: inject dynamic context](https://code.claude.com/docs/en/skills#inject-dynamic-context) · Added: 2026-11-23
 
 ### Give an MCP server to one subagent only, with `mcpServers:` 🆕
 Define a heavy server (Playwright, a database) inline in a subagent's frontmatter instead of in `.mcp.json`: it connects when that subagent starts and disconnects when it finishes, so its tool descriptions never load into the main conversation. A bare name in the list (such as `github`) reuses a server already configured in the session.

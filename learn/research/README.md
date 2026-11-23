@@ -1,8 +1,18 @@
 # Research to watch
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-24_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### Do lead agents check their subagents' work? · RI-Bench · arXiv 2611.27139 · Nov 2026 🆕
+Controlled perturbations of subordinate reports across eight LLMs and 12,000+ episodes: senior agents followed a majority of low-value generic reviews in up to 71% of decisions and dropped sources' stated caveats in up to 65% of cited claims *(as reported)*.
+**So what:** Multi-agent designs need process evals of the lead agent, not just final-answer scores. → [Agentic workflows](../../architecture/agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle)
+Source: [arXiv 2611.27139](https://arxiv.org/abs/2611.27139) · Added: 2026-11-24
+
+### Code-review bots graded by developer behaviour · CodeReviewBench · arXiv 2611.26942 · Nov 2026 🆕
+A continuously refreshed benchmark (500K+ PRs, 18 tools) that scores review suggestions by whether the PR author acted on them *(as reported)*.
+**So what:** "Was it applied?" is a cheap, live eval signal for any review agent. → [Evals](../../architecture/evals-and-observability/README.md)
+Source: [arXiv 2611.26942](https://arxiv.org/abs/2611.26942) · Added: 2026-11-24
 
 ### Can an agent rebuild an app just by using it? · SWE-Recreation · arXiv 2611.26311 · Nov 2026 🆕
 A benchmark where the agent sees only rendered pixels and uses pointer and keyboard (no DOM, source or logs), explores a real app, then builds a replica. It covers 54 apps (28 websites, 26 Android) with 1,446 hidden workflow requirements graded by a fixed judge on pixel evidence. The best of five frontier systems reached 0.530 weighted fidelity, and only 22.9% of requirements were fully reproduced *(as reported)*.

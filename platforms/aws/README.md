@@ -1,6 +1,6 @@
 # AWS for AI engineering
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > Everything on AWS that matters to AI engineers: Bedrock models, AgentCore (the agent runtime platform), Strands Agents, Kiro, AWS MCP servers, and how they connect to Spring, Python and TypeScript apps. **re:Invent 2026 runs 30 Nov – 4 Dec**, so expect a large wave of launches.
 
@@ -16,6 +16,11 @@ _Last updated: 2026-11-24_
 ---
 
 ## 🧠 Amazon Bedrock: models
+
+### Bedrock Trusted Access API (GA) + Anthropic Enterprise Frontier Safeguards / Enterprise Data Controls (preview) · 2026-11-23 🆕
+A new API lists the model-provider programs your account can join and their status (`aws bedrock list-trusted-access-programs`); "eligible" means you can enroll, "requestable" means you need approval first. The first two programs are in public preview for customers already on Anthropic's EFS zero data retention. **Enterprise Frontier Safeguards** keeps retained prompts and responses in your own S3 bucket, encrypted with your KMS key. **Enterprise Data Controls** keeps them in Amazon-managed storage instead. Both turn ZDR off for the accounts or projects you enroll, set the retention mode to `aws_review`, and raise flagged content as review cases. Under EFS, these arrive as files in `review-cases/`, and you must answer within 7 days. Covered models are Claude Fable 5–5.2 and Mythos 5–5.2, plus Opus 5.5 and Sonnet 5.5 used through the Cyber Verification Program, called through `bedrock-runtime` on US, EU or Global CRIS profiles. You need a key and bucket in every Region you call from. AWS and Anthropic charge nothing extra beyond S3 and KMS.
+**Why it matters:** This is how Fable and Mythos stay usable for teams that can't let a vendor keep their data. It is also a new outage path: Bedrock stops serving covered models 24 hours after it loses access to your key or bucket, so monitor both. Preview only: no console yet, no condition keys to enforce it with SCPs, and test traffic only. The Claude API side is covered in [LLM APIs](../../build/llm-apis/README.md).
+Sources: [AWS ML blog](https://aws.amazon.com/blogs/machine-learning/introducing-the-amazon-bedrock-trusted-access-api-with-anthropics-enterprise-frontier-safeguards-and-enterprise-data-controls/) · [Bedrock user guide: EFS and EDC](https://docs.aws.amazon.com/bedrock/latest/userguide/anthropic-efs-enterprise-data-controls.html) · Added: 2026-11-25
 
 ### OpenAI GPT-6.2 Astra and GPT-6.2 Sol on Bedrock · 2026-11-17 🆕
 AWS made both models generally available on Bedrock. Astra is the frontier reasoning model and has an Ultrafast mode for latency-sensitive calls. Sol targets recurring coding and agentic work where speed and cost per task matter. The model cards give the details:
@@ -105,6 +110,11 @@ Source: [The New Stack](https://thenewstack.io/aws-strands-labs-launch/) · Adde
 ---
 
 ## 🛠️ Kiro (AWS's agentic IDE, replacing Q Developer)
+
+### Kiro CLI 3.6.0: SubagentStop hook and guided compaction · 2026-11-24 🆕
+In V3 sessions, a new **SubagentStop** hook runs when a dispatched subagent finishes and can send it one more instruction before its result goes back. Hook output over 3,000 characters is saved to a file, and the agent gets the start of the output plus the file path. `/compact <instructions>` shapes a single compaction, for example telling it to keep migration decisions. The release also adds conversation recaps, notification controls, managed V2 controls and an all-users Windows installer.
+**Why it matters:** A SubagentStop hook can make each subagent run its checks (tests, lint) before it reports back, instead of relying on the parent agent to remember.
+Sources: [Kiro CLI 3.6 changelog](https://kiro.dev/changelog/cli/3-6/) · [Hook types](https://kiro.dev/docs/hooks/types/#subagent-stop-cli-v3-only) · Added: 2026-11-25
 
 ### Kiro cloud sessions can reach your VPC; Kiro for VS Code · 2026-11-19 → 11-20 🆕
 Admins can connect Kiro cloud sessions to private resources in an Amazon VPC (Enterprise plan with IAM Identity Center profiles in `us-east-1`; the profile must use Controls). Also new: IDE 1.5.11 with Remote SSH and Dev Containers, and Kiro for VS Code 1.5.0 (details in [Coding agents](../../build/coding-agents/README.md)).

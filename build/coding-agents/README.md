@@ -1,6 +1,6 @@
 # Coding agents & IDEs
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > Release notes that change how you work in Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin and Kiro. Only items worth acting on are included.
 
@@ -22,14 +22,40 @@ _Last updated: 2026-11-24_
 | when enabled | Devin Access and Sharing: Slack-started sessions take instructions only from people they're shared with | Agree group sharing defaults before your Cognition rep turns it on |
 | now | Cursor CLI < v2026.11.17: team-dashboard prompt hooks never ran in the CLI, and MCP resource downloads skipped file-write rules | Update the CLI; re-check any guardrail you set as a dashboard prompt hook |
 | now | Claude Code 2.1.331 (VS Code): wrappers, hooks or MCP servers that run VS Code as Node must set `ELECTRON_RUN_AS_NODE=1` | Add the variable to those scripts |
+| now | Antigravity CLI 1.5.16 / App 2.35.0: Auto mode now writes files outside the workspace inside any Git/Jujutsu/Mercurial repo, and reads outside the project, without asking | Add `ask` or `deny` rules for sibling repos and paths it shouldn't touch |
+| now | Copilot CLI 1.0.115: `--available-tools=` with an empty value now gives the model no tools (before: all tools) | Check scripts that pass an empty or computed `--available-tools` |
+| now | Codex CLI 0.172.0: optional stdio MCP servers with cached tool lists start on first tool call | If a job expects a server to be up at session start, mark it required |
 | **2026-11-26** | Kiro enterprise daily metrics move to 00:30 UTC | Shift any job that reads the daily metrics export |
 | on/after **2026-11-30** | Claude Code: marketplaces in managed `extraKnownMarketplaces` start auto-updating by default (2.1.331 notice) | Set `"autoUpdate": false` on any managed marketplace you want to keep pinned |
 | by **2026-11-30** | Claude Sonnet 4.5 retires | Update `model` settings, `CLAUDE.md` and CI configs that pin it |
 | **2026-12-14** | Copilot retires Claude Fable 5, Claude Haiku 4.5, Gemini 3.8 Flash, Gemini 4 Argon, Grok 4.6 and Kimi K3 | Move to Fable 5.2, Haiku 5.5, Gemini 4 Hydrogen, Gemini 4 Carbon and Grok 4.7 (no Kimi replacement announced yet) |
-| **2026-12-18** | Copilot retires MAI-Code-1.1-Flash | Switch to the latest MAI Code Flash model |
+| **2026-12-18** | Copilot retires MAI-Code-1.1-Flash | Switch to the latest MAI Code Flash model (MAI-Code-2-Flash is in the Copilot CLI picker from 1.0.115) |
 | **Feb 2027** | Copilot in VS Code: the Local harness is removed | Move remaining workflows to the Copilot harness (already the default for new sessions) |
 
 ## 🗞️ Latest releases
+
+### Antigravity CLI 1.5.16 + App 2.35: Auto mode asks less, `~/.agents/skills` · 2026-11-23 → 11-24 🆕
+**CLI 1.5.16** (11-24): Auto mode, the default agent mode, no longer asks before creating or editing files outside the workspace when they sit inside a version-controlled repo, or when the change only adds content. Overwrites outside a repo, hidden paths, `.git` and hook metadata, and system folders still ask. Skills in `~/.agents/skills` are now discovered (those in `~/.gemini` win on name clashes), `agy -r <id>` resumes a conversation, and `pluginControls.pluginsDisabled` now leaves built-in plugins on. **CLI 1.5.15** (11-23) adds `AGY_CLI_AUTO_COMPACT_OVERRIDE` for all eligible models (token count, `800K` or `80%`) and stops pruning saved conversations after 500. **App 2.35.0** (11-23): Auto mode now reads files outside the project without asking (sensitive config folders stay protected), and a Conversation Management API lets agents and scripts create, list and delete local conversations.
+**Why it matters:** Auto mode can now write into sibling repos on your machine without a prompt; add explicit `ask`/`deny` rules if that matters to you.
+Source: [Antigravity changelog](https://antigravity.google/docs/changelog) · Added: 2026-11-25
+
+### Codex CLI 0.172.0: lazy MCP start, `codex exec resume` keeps sandbox settings · 2026-11-24 🆕
+Optional stdio MCP servers with cached tool lists now start on their first tool call by default. `codex exec resume` restores the saved sandbox permissions, working directory and workspace roots unless you override them, and `config.toml` can set an approval reviewer for individual connected-app tools. Also: Tab-completion for slash-command arguments, Amazon Bedrock Runtime selectable during app-server setup, and spend-limit errors that name which limit was hit. `code_mode_host_grpc` is deprecated (Code Mode always uses gRPC now).
+**Why it matters:** Sessions start faster with many MCP servers, and resumed `exec` jobs no longer fall back to default sandbox settings.
+```bash
+npm install -g @openai/codex@0.172.0
+```
+Source: [Codex changelog](https://developers.openai.com/codex/changelog/) · Added: 2026-11-25
+
+### Kiro CLI 3.6.0 + Claude Fable 5.2 preview for Kiro Enterprise · 2026-11-23 → 11-24 🆕
+**CLI 3.6.0** (11-24): in V3 sessions a `SubagentStop` hook runs when a subagent finishes and can send it one more instruction before its result returns; hook output over 3,000 characters is saved to a file and the agent gets the start plus the path; `/compact <instructions>` steers that one summary. **Claude Fable 5.2** (11-23) is rolling out in preview to Kiro Enterprise orgs: admins enable it in model governance; it has a 1M context window and a 6x credit multiplier, runs only in the US geography, and its traffic is kept up to 30 days for abuse detection. Kiro Enterprise for iPhone is on the App Store (iOS 26+, organisation sign-in only).
+**Why it matters:** Check the 6x multiplier and 30-day retention against your budget and data policy before you enable Fable 5.2.
+Source: [Kiro CLI 3.6](https://kiro.dev/changelog/cli/3-6/) · [Fable 5.2 for Kiro Enterprise](https://kiro.dev/changelog/models/claude-fable-5-2-for-enterprise/) · [Kiro changelog](https://kiro.dev/changelog/) · Added: 2026-11-25
+
+### Copilot CLI 1.0.115: tighter shell-read checks, MAI-Code-2-Flash, Gemini 4 Hydrogen · 2026-11-23 🆕
+Shell reads that reach outside approved folders through `~`, `~user`, an unset variable, PowerShell `FileSystem::` paths or a glob that matches a symlink now ask first. ACP clients now honour `permissions.disableBypassPermissionsMode`, `copilot -p` honours trusted-repo settings (denied URLs, disabled skills, model), and an empty `--available-tools=` now gives the model no tools instead of all of them. Saying No to a foreground subagent's request now stops the main turn. Windows sandbox package queries are on by default (`sandbox.userPolicy.capabilities: []` opts out). Gemini 4 Hydrogen, GPT-6.2 Astra and MAI-Code-2-Flash join the model picker.
+**Why it matters:** Closes several ways a shell read could slip past directory approvals; scripts relying on the old empty `--available-tools` behaviour change.
+Source: [Copilot CLI changelog](https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md) · Added: 2026-11-25
 
 ### Claude Code 2.1.331: Code Mode on cloud providers, plugin optional dependencies · 2026-11-23 🆕
 Experimental Code Mode now works in terminal sessions on Amazon Bedrock, Google Cloud's Agent Platform, Microsoft Foundry and Claude Platform on AWS. Plugin manifests gain `optionalDependencies` (installed with the parent plugin, but each can be disabled or removed on its own). `claude doctor` now reports whether the API is reachable, and `claude_code.llm_request` trace spans carry OpenTelemetry `gen_ai.usage.*`, `gen_ai.response.model` and `gen_ai.operation.name` (input tokens include prompt-cache tokens). New `CLAUDE_CODE_DISABLE_RESPONSE_COMPRESSION` helps behind proxies that cut compressed replies off. Fixes include MCP tool calls hanging up to 30 minutes on malformed replies, compaction dropping part of its summary, a rewind deleting files after a failed restore, and interrupted plugin updates leaving half-installed plugins. The VS Code extension adds "Fix with Claude Code" quick fixes and "Resolve Merge Conflicts".

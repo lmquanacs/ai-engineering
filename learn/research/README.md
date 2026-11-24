@@ -1,8 +1,28 @@
 # Research to watch
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### When a tool fails, agents make up the answer · RetryRealistic · arXiv 2611.28341 · Nov 2026 🆕
+The authors injected 9 kinds of fault into 8 real tools (filesystem, SQLite, HTTP, shell) across 30 multi-step tasks. Over 2,100 faulted runs, four agents recovered correctly only 27–54% of the time, and 19–30% of runs ended in a confident wrong answer. Faults that return partial or misleading data caused the most fabrication (up to 46%). Hard errors mostly led to honest failure. A monitor that checks answers against structured tool output and sends corrective hints raised correct recovery from 42.5% to 48.0%. Removing chain-of-thought increased fabrication by 7.7 points *(as reported)*. The testbed and traces are released.
+**So what:** Make tools fail loudly. Return explicit errors rather than partial results, and check final answers against tool outputs, not just the agent's summary. → [Agentic workflows](../../architecture/agentic-workflows/README.md)
+Source: [arXiv 2611.28341](https://arxiv.org/abs/2611.28341) · [NeurIPS 2026 workshop page](https://neurips.cc/virtual/2026/173038) · Added: 2026-11-25
+
+### One security block in the prompt cuts findings by a third · 400 AI-built web apps · arXiv 2611.28408 · Nov 2026 🆕
+The study built 100 fixed specs four times each, with Claude Code and Codex CLI, with and without a fixed block of OWASP-aligned requirements. Scanning found 6,721 issues in total. The security block cut findings per app by about a third (rate ratio 0.65) for both tools and nearly halved high-severity issues in first-party code. It also roughly doubled the number of declared dependencies, which brought more dependency advisories *(as reported)*.
+**So what:** Put a standing security section in CLAUDE.md or AGENTS.md. It is cheap and it works, but run dependency scanning too, because the agent will pull in more packages. → [AI security](../../architecture/security/README.md)
+Source: [arXiv 2611.28408](https://arxiv.org/abs/2611.28408) · Added: 2026-11-25
+
+### Can agents be trusted with a wallet? · Agent Money Benchmark · arXiv 2611.28610 · Nov 2026 🆕
+Twelve models bought data for financial research over x402, with real USDC payments on Solana mainnet. The benchmark had 80 payment tasks with simulated sellers and 76 live research questions. Three models passed 79 of 80 payment tasks with no payment or budget errors. Nine fell for a seller's trap at least once, and repeat charges and above-list quotes made up 79% of scam events. Estimated waste ranged from $21.0 per $100 spent (Claude Fable 5.2) to $70.8 per $100 (GPT-6 Luna) *(as reported)*.
+**So what:** If you turn on agent payments (for example AgentCore x402), enforce quote checks, deduplicate charges and set budget caps outside the model. → [AWS](../../platforms/aws/README.md)
+Source: [arXiv 2611.28610](https://arxiv.org/abs/2611.28610) · Added: 2026-11-25
+
+### Self-improving research agents: keep attempt records, prune unused lessons · arXiv 2611.28244 · Nov 2026 🆕
+On MLE-Bench and KernelBench, agents that could look up individual records of past attempts beat agents that kept a rolling summary. Context folding was the best context strategy in all six settings, up to 19.2% better than recency truncation. Dropping lessons that went unused for a long time worked better than merging them or promoting them to standing rules. The combined system, MLEvolver, reached a 72.7% medal rate on MLE-Bench Lite, ahead of AIDE and OpenEvolve on the same budget *(as reported)*.
+**So what:** For long-running agent loops, store attempts as retrievable records rather than one summary, and prune skill or lesson files instead of letting them grow. → [Context engineering](../../architecture/context-and-memory/README.md)
+Source: [arXiv 2611.28244](https://arxiv.org/abs/2611.28244) · Added: 2026-11-25
 
 ### Do lead agents check their subagents' work? · RI-Bench · arXiv 2611.27139 · Nov 2026 🆕
 Controlled perturbations of subordinate reports across eight LLMs and 12,000+ episodes: senior agents followed a majority of low-value generic reviews in up to 71% of decisions and dropped sources' stated caveats in up to 65% of cited claims *(as reported)*.

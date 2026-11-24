@@ -1,19 +1,19 @@
 # Azure for AI engineering
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > What matters on Azure for AI engineers: Microsoft Foundry (models, Foundry Agent Service and hosted agents, Foundry IQ, evaluation and observability), Microsoft Agent Framework for Python and .NET (the successor to Semantic Kernel and AutoGen), the Azure MCP Server, and Spring AI and LangChain4j on Azure. **Microsoft Ignite 2026 ran 17–20 Nov** in San Francisco; the developer-relevant announcements are in the section below. OpenAI model launches live in [LLM news](../../models/news/README.md), non-Azure API features in [LLM APIs](../../build/llm-apis/README.md), and GitHub Copilot in [Coding agents](../../build/coding-agents/README.md).
 
 ## ⚡ Action items & dates
 
-Retirement dates come from Microsoft's model retirement schedule (page last updated 2026-11-18). Check the [schedule](https://learn.microsoft.com/en-sg/Azure/foundry/concepts/model-lifecycle-retirement) before you plan, because dates move.
+Retirement dates come from Microsoft's model retirement schedule (re-checked 2026-11-25; the page shows 2026-11-18). Check the [schedule](https://learn.microsoft.com/en-sg/Azure/foundry/concepts/model-lifecycle-retirement) before you plan, because dates move.
 
 | When | What | Do this |
 |---|---|---|
 | **now** | `agent-framework` 1.26.1 and 1.26.2 on PyPI were malicious (2026-11-17). The current PyPI release is 1.26.0 (2026-11-12) | Pin `agent-framework` in lockfiles and follow the cleanup steps in [AI security](../../architecture/security/README.md). |
 | **now** | The npm `latest` tag of `@azure/mcp` points to **4.0.0-beta.10** (2026-11-23), so the documented `@azure/mcp@latest` config pulls a beta. The last stable release is 3.0.0 (2026-10-12) | Pin `@azure/mcp@3.0.0` in shared MCP configs unless you want the beta. ([npm](https://www.npmjs.com/package/@azure/mcp)) |
-| **2026-11-24** | MAI-Image-2.5, MAI-Image-2.5-Flash and MAI-Image-2.5-Pro (preview) retire | Move image workloads to a current model. |
 | **2026-11-30** | `claude-sonnet-4-5` (Azure Marketplace) retires; listed replacement `claude-sonnet-5-5` | Redeploy and re-run evals before the date. |
+| **2026-12-03 → 12-08** | Preview retirements: `DeepSeek-V4-Flash-0731` (12-03), `MAI-Transcribe-2-Streaming` (12-04), `gpt-chat-latest` 2026-05-28 (12-08) | Pin newer versions (for example `DeepSeek-V4.1-Flash-1017`, which retires 2027-03-06) or move off. |
 | **2026-12-09** | `Ministral-3B` → `ministral-ministral-4b-instruct`; `mistral-medium-2505` → `mistral-medium-3-5` (Marketplace) | Switch deployments. |
 | **2026-12-15** | `whisper` 001, `tts` 001 and `tts-hd` 001 retire, plus DeepSeek-V4-Pro-0813, DeepSeek-V4.1-Flash (preview) and Cohere-parse-v5 (preview) | Move speech workloads to the `gpt-4o-*-transcribe`/`-tts` family or newer; note those retire in 2027 too (below). |
 | **2027-01-14** | `gpt-4o` 2024-05-13 retires; replacement `gpt-5.1` 2025-11-13. Global Standard and Data Zone Standard deployments auto-upgrade; **Provisioned deployments do not**, and Global Batch is not auto-upgraded | Migrate provisioned and batch deployments by hand. Deployments set to `NoAutoUpgrade` stop working at retirement. |
@@ -21,6 +21,7 @@ Retirement dates come from Microsoft's model retirement schedule (page last upda
 | **2027-01-20** | `gpt-realtime-2` 2026-05-06 (preview) → `gpt-realtime-2.1`; `gpt-4o-mini-transcribe` and `gpt-4o-mini-tts` 2025-03-20 retire | Update voice agents. |
 | **2027-01-27** | `model-router` versions 2025-05-19 and 2025-08-07 (preview) retire | Move to a current model-router version. |
 | **2027-02-09** | `gpt-5` and `gpt-5-nano` 2025-08-07 retire | Plan the upgrade and re-run evals. |
+| **2027-02-22** | `claude-opus-4-5` (listed replacement `claude-opus-5-5`) and `claude-haiku-4-5` (→ `claude-haiku-5-5`) retire on Foundry, per the schedule. Anthropic's own notice gives **2027-01-22** for Opus 4.5 | Plan for the earlier date until Microsoft confirms. |
 | **2027-04-14** | `gpt-4o` 2024-08-06 and 2024-11-20, `gpt-4o-mini` 2024-07-18, and `gpt-4.1` / `-mini` / `-nano` 2025-04-14 retire (`gpt-5.1` listed for the `gpt-4o` versions) | Inventory deployments now; fine-tuning *training* on these ends no earlier than 2027-04-01 / 04-14. |
 
 Sources: [Model retirement schedule](https://learn.microsoft.com/en-sg/Azure/foundry/concepts/model-lifecycle-retirement) · [Azure OpenAI model retirements](https://learn.microsoft.com/en-za/azure/foundry/openai/concepts/model-retirements) · [PyPI: agent-framework](https://pypi.org/project/agent-framework/) · Added: 2026-11-24
@@ -90,6 +91,24 @@ Sources: [Ignite 2026 Book of News](https://news.microsoft.com/events/ignite/202
 ## 🗞️ Latest
 
 <!-- newest first -->
+
+### Foundry Managed Compute GA: open models on dedicated GPUs · 2026-11-20 🆕
+Managed Compute, in preview since Build 2026, is now GA. Foundry provisions the GPUs and runs the serving containers for open models from the Hugging Face collection in Foundry, which has more than 150 models. Microsoft licence-reviews each model, screens it for untrusted code and stages the weights in Azure. Deployment types are Global and US or EU Data Zone. GPUs are NVIDIA A100, H100 and H200 or AMD MI300X, depending on the model, billed per accelerator-hour. A deployment template fixes context length, serving runtime and GPU count. You scale by raising `capacity` behind one endpoint, and call it with the OpenAI client at `https://<account>.services.ai.azure.com/openai/v1/`. In the blog's SDK example (`azure-mgmt-cognitiveservices`), the SKU is `GlobalManagedCompute`. LoRA adapters from Foundry fine-tuning can share a base deployment (preview), and bring-your-own-weights is in limited preview.
+**Why it matters:** This is now the supported way to self-host open-weight models in Foundry, and it is the listed replacement for the Phi-4 Marketplace models that retire on 2027-01-17. You pay for GPU-hours whether or not you send traffic, so compare that with per-token serverless pricing before you move. Hosts and prices for open models are compared in [Open-weight model providers](../../models/open-model-providers/README.md).
+Sources: [Foundry blog: Managed Compute GA](https://devblogs.microsoft.com/foundry/managed-compute-ga/) · [Managed compute overview](https://learn.microsoft.com/en-us/azure/foundry/concepts/managed-compute-overview) · Added: 2026-11-25
+
+### GPT-6.2 Astra and GPT-6.2 Sol GA in Foundry · 2026-11-17 🆕
+Both models are GA as `gpt-6.2-astra` and `gpt-6.2-sol`, version 2026-11-17. Each has a 1.05M context (922K input, 128K output). Parallel tool calling works only through the Responses API. Deployment types are Global Standard, Data Zone Standard (US, EU, APAC) and Global Provisioned Throughput ($1 per PTU-hour). Short-context Global Standard prices per 1M tokens (input / cached / output):
+
+| | Astra | Sol |
+|---|---|---|
+| Global Standard | $8 / $0.40 / $40 | $2 / $0.10 / $10 |
+| Data Zone US | $8.80 / $0.44 / $44 | $2.20 / $0.11 / $11 |
+| Data Zone EU / APAC | $9.60 / $0.48 / $48 | $2.40 / $0.12 / $12 |
+
+Long-context requests cost more (Astra $16 / $60, Sol $4 / $15 input / output on Global Standard). The default cache TTL is 30 minutes; you can opt into a 12-hour cache write with `prompt_cache_options.ttl: "12h"` on the Responses API, which costs more to write.
+**Why it matters:** Prices match OpenAI's and Bedrock's Global prices, so you can choose between clouds on data residency and quota. Commenters on the announcement report they can't deploy in East US 2, so check regional availability before you plan. Migration notes for GPT-6.2 are in [LLM APIs](../../build/llm-apis/README.md).
+Sources: [Foundry blog: GPT-6.2 GA](https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/gpt-6-2-astra-and-gpt-6-2-sol-now-generally-available-in-microsoft-foundry/4574122) · [Foundry Models sold by Azure](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure) · Added: 2026-11-25
 
 ### `@azure/mcp` 4.0.0 betas now on the npm `latest` tag · 2026-11-23 🆕
 The npm registry's `latest` dist-tag for `@azure/mcp` points to 4.0.0-beta.10, published 2026-11-23 after weekly betas through November. The last non-beta release is 3.0.0 (2026-10-12). PyPI's `msmcp-azure` keeps 3.0.0 as its latest.

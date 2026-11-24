@@ -1,6 +1,6 @@
 # Evals & observability
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > You can't improve an agent you can't see. This page covers tracing, evals, benchmarks and the standards underneath them.
 
@@ -37,6 +37,16 @@ Comparison sources: [benchlm.ai](https://www.benchlm.ai/blog/posts/best-llm-obse
 ⚠️ Most launch numbers are **self-reported** and many depend on the harness. Treat them as hints and run your own evals on your own tasks.
 
 ## 📰 Recent releases & results
+
+### Langfuse Topics (public beta): cluster production traces by intent, sentiment, outcome and issue · 2026-11-24 🆕
+Topics summarises each finished trace from four angles (intent, sentiment, outcome, issues), embeds the summaries, and clusters and names them. You can run it as daily-rebuilt live maps over filtered, sampled traffic, or as one-off snapshots, for example to compare dataset coverage with production. Agents can query topics through the API, MCP and CLI. It runs on models from your own LLM connections, and each facet summary is one billable unit. It is available on Langfuse Cloud and self-hosted Langfuse v4.
+**Why it matters:** It is a cheap way to find failure modes you aren't tracking, then filter to those traces and turn them into evaluators or dataset items. Set a sample rate first, because every summary is a model call on your key.
+Source: [Langfuse changelog](https://langfuse.com/changelog/2026-11-24-topics) · Added: 2026-11-25
+
+### Judge error rates measured once can mis-rank agents · arXiv 2611.30742 · 2026-11-23 🆕
+If an LLM judge's errors depend on the trajectory, and agents produce different kinds of trajectories, correcting every agent's score with one judge error rate is biased. In the authors' semi-synthetic four-agent benchmark, that scalar correction never recovered the true ranking in 250 runs. A small random human audit combined with AIPW estimation kept maximum bias below 0.003 *(self-reported)*.
+**Why it matters:** When you rank agents or harnesses with an LLM judge, have humans label a random sample of each agent's trajectories, rather than reusing one calibration set across all of them.
+Source: [arXiv 2611.30742](https://arxiv.org/abs/2611.30742) · Added: 2026-11-25
 
 ### CodeReviewBench: grading code-review bots by what developers actually fix · arXiv 2611.26942 · Nov 2026 🆕
 Instead of annotators labelling review comments, this benchmark counts a bot's suggestion as useful when the PR author acts on it and not useful when it is ignored. The signal is mined daily from the public GitHub event stream and covers 500K+ judged PRs across 18 review tools. The authors say it agrees with an independent offline benchmark on precision rankings and picks up vendor product updates within days *(self-reported)*. It is a NeurIPS 2026 poster; the abstract gives no per-tool scores.

@@ -1,6 +1,6 @@
 # Fine-tuning & post-training
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > Adapting open-weight models: LoRA/QLoRA, preference tuning, RL with verifiable rewards, distillation and the data behind them. Lower priority unless you train models, but this is where open models get specialised.
 
@@ -30,6 +30,16 @@ Sources: [Hugging Face: TRL v1.0](https://huggingface.co/blog/trl-v1) · [Unslot
 
 ## 🗞️ Releases
 
+### PEFT 0.22.0: Python 3.11+, stricter `modules_to_save`, new PaCA method · 2026-11-19 🆕
+PEFT now needs Python 3.11 or newer. The release adds PaCA (Partial Connection Adaptation), which tunes selected input columns of the existing weights instead of adding adapter layers, plus Astra and NoRA initialisations for LoRA. Two changes can break existing setups. `modules_to_save` now matches whole sub-module names rather than suffixes. A fix to the OFT Conv2d forward pass can also change outputs from existing Conv2d OFT checkpoints. 0.21.3 (2026-11-13) made `save_pretrained` on tensor-parallel (DTensor) models gather only the adapter weights.
+**Why it matters:** Pin `peft<0.22` on Python 3.10 images. Before upgrading, check that `modules_to_save` still selects the modules you expect, because a suffix that used to match may now match nothing.
+Source: [PyPI peft 0.22.0](https://pypi.org/project/peft/) · [release notes (releases.sh mirror)](https://releases.sh/hugging-face/peft) · Added: 2026-11-25
+
+### Together Post-Training: hosted SFT and RL on open models · 2026-10-19 (missed earlier) 🆕
+Together's managed trainer runs SFT and RL, with built-in cross-entropy, GRPO, CISPO and DPPO losses. You can also compute a custom loss locally and send the gradients. It supports LoRA, including several adapters sharing one GPU, and full-weight training for selected models. Launch models were Muse Spark Open, GLM 5.3, Kimi K3 and Qwen 3.8-27B. Together says moving from Tinker takes a one-line import change, and trained checkpoints can be served as merged FP4. Pricing was discounted to $9 per B200 GPU-hour for the first eight weeks after launch.
+**Why it matters:** It is another managed option alongside Tinker for RL on large open MoE models without running your own cluster. Check that FP4 serving of your checkpoint matches your evals.
+Source: [Together blog](https://together.ai/blog/together-post-training) · Added: 2026-11-25
+
 ### TOUMAII: 4.5M tool-calling preference pairs for DPO · arXiv 2611.26722 · Nov 2026 🆕
 A preference dataset of about 4.5M validated pairs built from the Toucan-1.5M tool-use conversations, covering single- and multi-turn, parallel and sequential function calls, plus TOUMAII-Gen, a pipeline that turns any tool-calling SFT set into preference pairs based on the mistakes models actually make. A 3B model trained with DPO on it performed on par with other high-quality tool-calling preference sets *(self-reported)*. A smaller ToolACE-derived set shows the generator works on other sources. The poster page doesn't state a licence for the new data or code; check before commercial use.
 **Why it matters:** If your SFT'd small model still mis-calls tools, this gives you ready DPO data, or a way to make pairs from your own SFT traces.
@@ -40,10 +50,12 @@ Hugging Face trained one LoRA for Qwen3.8-27B per agent harness (pi, Hermes Agen
 **Why it matters:** An open, reproducible recipe for tuning a frozen base model to the exact harness and task mix you run, with cheaper runs as a side effect.
 Source: [HF blog: harness adapters](https://huggingface.co/blog/harness-adapters-at-scale) · Added: 2026-11-21
 
-### Unsloth: AMD NPU support, video-model LoRA, faster QLoRA · 2026-11-19 🆕
-Models converted to Q4NX can now run on AMD Ryzen AI NPUs. The release adds LoRA training for LTX-2.5 and MOSS-Image, makes diffusion LoRA up to 42% faster per step (now on T4 too), and QLoRA up to 25% faster *(self-reported)*.
-**Why it matters:** Existing QLoRA jobs get a free speed-up on upgrade, and local video/image fine-tuning gets cheaper.
-Source: [Unsloth changelog](https://unsloth.ai/docs/new/changelog) · Added: 2026-11-21
+### Unsloth: faster AsyncGRPO, Inkling fine-tuning, AMD NPU support · 2026-11-19 → 11-23 🆕
+- **2026-11-23 (changelog v0.1.923-beta):** AsyncGRPO runs take 40% less time, and GRPO rollouts are 2× faster on Strix Halo. Thinking Machines' Inkling models can now be fine-tuned, multi-GPU diffusion LoRA roughly doubles samples per second on two GPUs, and Inkling 2 Mini decodes up to 1.9× faster on 8–12 GB GPUs *(self-reported)*.
+- **2026-11-19:** Models converted to Q4NX can now run on AMD Ryzen AI NPUs. The release adds LoRA training for LTX-2.5 and MOSS-Image, makes diffusion LoRA up to 42% faster per step (now on T4 too), and QLoRA up to 25% faster *(self-reported)*.
+
+**Why it matters:** Existing QLoRA and async GRPO jobs get faster when you upgrade, and local video and image fine-tuning gets cheaper.
+Source: [Unsloth changelog](https://unsloth.ai/docs/new/changelog) · [PyPI](https://pypi.org/project/unsloth/) · Added: 2026-11-21 · Updated: 2026-11-25
 
 ### TRL 1.18.0 → 1.18.2: async GRPO goes stable · 2026-11-13 → 11-19 🆕
 - **1.18.0:** `AsyncGRPOTrainer` moves from `trl.experimental` to top-level `trl`. Breaking: `weight_transfer` and `rollout_worker` are removed and `max_inflight_tasks` is renamed `max_concurrent_rollouts`. MoE models saved by `SFTTrainer` from v1.7.0 to v1.17.1 keep `output_router_logits=True` in their config and need it reset by hand.

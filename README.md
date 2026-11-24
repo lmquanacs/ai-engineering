@@ -3,9 +3,9 @@
 > A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, model APIs, RAG, architecture, agentic patterns, libraries and the AI engineer career, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus the main cloud and edge platforms (AWS, Google Cloud, Azure, Vercel and Cloudflare).
 
 <!-- BADGES:START -->
-![Last updated](https://img.shields.io/badge/last%20updated-2026--11--24-2563eb)
+![Last updated](https://img.shields.io/badge/last%20updated-2026--11--25-2563eb)
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
-![Editions](https://img.shields.io/badge/daily%20editions-7-9333ea)
+![Editions](https://img.shields.io/badge/daily%20editions-8-9333ea)
 <!-- BADGES:END -->
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
@@ -15,12 +15,12 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ## 📰 Today's digest
 
 <!-- TODAY:START -->
-### [24 Nov 2026 →](daily/2026/11/2026-11-24.md)
+### [25 Nov 2026 →](daily/2026/11/2026-11-25.md)
 
-- **New categories:** [Open-weight model providers](models/open-model-providers/README.md) with a "Who serves what" table, plus [Google Cloud](platforms/google-cloud/README.md), [Azure](platforms/azure/README.md) and [Vercel & Cloudflare](platforms/vercel-cloudflare/README.md).
-- **Retirements:** Claude Opus 4.5 deprecated (retires 2027-01-22); OpenAI `/v1/prompts`, Evals and Agent Builder shut down 30 Nov, and the GPT-5/o3 family on 11 Dec. → [LLM news](models/news/README.md) · [LLM APIs](build/llm-apis/README.md)
-- **Security:** LiteLLM Proxy < 1.84.0 prompt capture, Pomerium MCP token endpoint, Hermes Agent RCE, Supergateway and FastMCP OAuth fixes. → [AI security](architecture/security/README.md) · [MCP servers](build/mcp-servers/README.md)
-- **Tools:** Claude Code 2.1.331 brings Code Mode to Bedrock, Google Cloud and Foundry; tip on sharing plugins through `.claude/settings.json`. → [Coding agents](build/coding-agents/README.md) · [Claude Code mastery](build/claude-code/README.md)
+- **Security:** LiteLLM MCP stdio and DBHub MCP 0-days with no patch, plus ECS MCP Server, browser-use and Supergateway fixes; tool-call smuggling research. → [AI security](architecture/security/README.md) · [MCP servers](build/mcp-servers/README.md)
+- **Tools:** Antigravity's Auto mode now writes outside the workspace; Codex CLI 0.172.0 starts MCP servers lazily; tip on `permissions.deny` rules for secrets. → [Coding agents](build/coding-agents/README.md) · [Claude Code mastery](build/claude-code/README.md)
+- **Platforms:** Bedrock Trusted Access API for Anthropic EFS/EDC; GPT-6.2 and Managed Compute GA in Foundry, with new retirement dates. → [AWS](platforms/aws/README.md) · [Azure](platforms/azure/README.md)
+- **Open models:** GLM-5.4 on the Coding Plan only; pin dated DeepSeek Flash IDs on hosts. → [Open-weight model providers](models/open-model-providers/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)

@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,31 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### LiteLLM, AutoGPT, ECS MCP, DBHub, browser-use: AI-tool CVE batch · published 2026-11-23 → 11-24 🆕
+- **LiteLLM** (six ZDI advisories, auth required for all): RCE via `pass_through_endpoints` (CVE-2026-136539, CVSS 7.2; fix in PR #27801), key-management endpoints missing authorization (CVE-2026-136537, fixed in 1.104.0), virtual-key model-alias privilege escalation (CVE-2026-136538), SSRF through `api_base` (CVE-2026-136536), and the OIDC secret resolver reading env vars (CVE-2026-136540, fixed in 1.84.0). The sixth, command injection through MCP stdio configs (CVE-2026-136535, CVSS 7.2), went out as a **0-day**: LiteLLM says stdio servers run admin-chosen commands by design and no patch is coming, so only proxy admins should be able to create or test MCP servers.
+- **Amazon ECS MCP Server** (`awslabs.ecs-mcp-server`) < 0.1.36: prompt injection can make the troubleshooting tool return plaintext task-definition env vars and secret references that the sensitive-data setting should redact (CVE-2026-135614). Upgrade and rotate credentials kept as plaintext env vars.
+- **Bytebase DBHub MCP**: ZDI published an unauthenticated auth bypass via crafted SQL as a **0-day** (CVE-2026-136441, CVSS 9.8, reported 2025-07). ZDI does not say whether recent releases fix it; its only advice is to restrict access to the server. This is separate from the read-only bypass fixed in 1.7.0 (below).
+- **browser-use** < 1.0.0: two `SecurityWatchdog` bypasses (backslash URL parser differential, raw `startswith()` domain match) let a prompt-injected navigate step reach blocked or private hosts (CVE-2026-136452, CVE-2026-136453). Fixed in 1.0.0; see the [1.0 migration notes](../../build/voice-and-multimodal/README.md).
+- **AutoGPT Platform**: shared or marketplace agents can capture users' saved SMTP/database logins (CVE-2026-130171) and credentials can leak through backslash redirects (CVE-2026-133449), both fixed in 0.11.0. In 0.7.1–0.8.4, `/` and `@path` text sent to the Claude Code CLI bypasses the tool allow-list and PreToolUse hooks (CVE-2026-133448), and an incomplete IPv6 blocklist allows SSRF (CVE-2026-130178).
+- Smaller: **Sim** 0.5.61 to < 0.9.41 lets write-level members make workflow MCP servers public (CVE-2026-135162). **Apache IoTDB MCP Server** ≤ 0.2.0 logs the DB password in plaintext (CVE-2026-135747; upgrade to 0.3.0). **Prismor** < 1.57.0 lets any web page turn off its agent guardrails through a wildcard-CORS local API (CVE-2026-136185). **Spring AI** 2.0.0–2.0.2: the Typesense filter converter mistranslates grouped expressions, which can break tenant filters (CVE-2026-59442), and the PDF readers can be made to run out of memory (CVE-2026-59340). Both are fixed in [2.0.3 / 2.1.0](../../build/libraries/jvm.md).
+**Why it matters:** If you run a LiteLLM proxy, upgrade to a current release and make sure only admins can define MCP servers. Don't expose DBHub to untrusted clients until Bytebase says the ZDI bug is fixed.
+Source: [ZDI-26-1084](https://www.zerodayinitiative.com/advisories/ZDI-26-1084/) · [ZDI-26-1031](https://www.zerodayinitiative.com/advisories/ZDI-26-1031/) · [ZDI-26-1082](https://www.zerodayinitiative.com/advisories/ZDI-26-1082/) · [ZDI-26-1067 (DBHub)](https://www.zerodayinitiative.com/advisories/ZDI-26-1067/) · [NVD CVE-2026-135614](https://nvd.nist.gov/vuln/detail/CVE-2026-135614) · [NVD CVE-2026-136452](https://nvd.nist.gov/vuln/detail/CVE-2026-136452) · [NVD CVE-2026-130171](https://nvd.nist.gov/vuln/detail/CVE-2026-130171) · [NVD CVE-2026-133448](https://nvd.nist.gov/vuln/detail/CVE-2026-133448) · [Spring CVE-2026-59442](https://spring.io/security/cve-2026-59442) · Added: 2026-11-25
+
+### Tool-call smuggling: the guard and the executor parse different calls · arXiv 2611.30624 · 2026-11-23 🆕
+Provider, gateway, SDK, guard and executor all re-parse a tool call's JSON, and they disagree on edge cases such as duplicate keys. The authors gave the same bytes to 17 pinned parser and validator configurations; most pairs disagreed on some inputs, including two official MCP SDKs. On τ-bench and AgentDojo tasks, attacks got guard-blocked actions executed while the audit log recorded only the approved call. A malicious server that copies a real tool's schema and adds one field got models to fill it with user data, unseen by the guard *(self-reported)*.
+**Why it matters:** If you have a tool-call guard or approval step, parse each call once, keep only the approved schema's fields, and pass that exact object (bound to its call ID) to the executor. Don't let the executor re-parse the raw text. The authors say this stopped all 7,412 crafted inputs.
+Source: [arXiv 2611.30624](https://arxiv.org/abs/2611.30624) · Added: 2026-11-25
+
+### "Compatible" MCP tool updates often widen what the agent can do · SchemaCaps · arXiv 2611.30750 · 2026-11-23 🆕
+None of 8 surveyed MCP clients and scanners re-asks for approval when a tool's input schema widens. In 604 releases of 39 public MCP servers, 412 of 580 backward-compatible schema changes widened some input, and at least 76 added or widened an authority-bearing argument (recipient, path, endpoint). The paper proposes a re-approval rule based on subschema inclusion *(self-reported)*.
+**Why it matters:** Approving a tool once is not enough. Pin MCP server versions, diff `inputSchema` on upgrade, and re-review any new or widened argument that controls where data goes.
+Source: [arXiv 2611.30750](https://arxiv.org/abs/2611.30750) · Added: 2026-11-25
+
+### Google semantic governance policies: an LLM judge checks each tool call before it runs · preview · 2026-11-20 🆕
+In Gemini Enterprise Agent Platform, Agent Gateway can now check each proposed tool call against the user's original request (on by default) and against policies written in plain English. Denied calls are replaced with a configurable message, and verdicts and rationales go to Cloud Logging. It works with the Gemini API, the Anthropic Messages API and OpenAI-compatible Chat Completions (including vLLM). It has a dry-run mode, does not evaluate streamed responses, and denies tools without descriptions by default. Google has not yet published AgentDojo results for it.
+**Why it matters:** This is a managed version of the "check intent before acting" pattern. Agent egress must go through [Agent Gateway](../../platforms/google-cloud/README.md), and because the judge is probabilistic, run dry-run first and keep deterministic controls (IAM, allowlists) in place.
+Source: [Google Developers Blog](https://developers.googleblog.com/en/check-what-your-ai-agents-do-before-they-do-it-with-semantic-governance-policies/) · Added: 2026-11-25
 
 ### MCP auth and gateway CVEs: Pomerium, LiteLLM, Hermes Agent, reference servers · published 2026-11-23 🆕
 - **Pomerium** 0.30.0 to < 0.34.0: the MCP token endpoint (`/.pomerium/mcp/token`) skips the client-secret check for `client_secret_basic` clients, so anyone holding an intercepted authorization code or refresh token can redeem it with any secret (CVE-2026-135300, CVSS 4.0 9.1). Fixed in 0.34.0.

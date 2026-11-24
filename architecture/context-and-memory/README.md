@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-25_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory and caching. Retrieval lives in [RAG & retrieval](../rag-and-retrieval/README.md). Agent quality now depends more on this than on which model you pick.
 
@@ -42,6 +42,16 @@ Source: [Slides](https://docs.google.com/presentation/d/1BVqX1h2DPyIDCEWUSNXSVFI
 ---
 
 ## 🔬 Latest evidence
+
+### Keep past attempts addressable, not summarised; delete unused lessons · arXiv 2611.28244 · 2026-11-20 🆕
+This ablation of long-running "autoresearch" harnesses on MLE-Bench and KernelBench, using gpt-oss-120b and two GPT-6 models, tested what agents keep from earlier attempts. Keeping individually retrievable records beat a rolling summary, and context folding did best in all six settings, up to 19.2% above a recency-truncation baseline. For skills and lessons, deleting ones that kept going unused beat merging them or promoting them to standing rules *(self-reported)*.
+**Why it matters:** For long agent loops, keep per-attempt records the agent can reopen instead of one ever-growing summary, and prune lessons that never get used before they pile up in `CLAUDE.md`/`AGENTS.md`-style files.
+Source: [arXiv 2611.28244](https://arxiv.org/abs/2611.28244) · Added: 2026-11-25
+
+### Compress for a small agent model, cache-friendly: DMC-5 · arXiv 2611.30412 · 2026-11-23 🆕
+A general model maintains an append-only log of the full trajectory (so its own prefix stays cacheable), and a specialised agent model acts on a compact view: the compressed history plus recent raw steps, with tool-execution state protected from lossy compression. On AppWorld, OfficeBench and a QA set, the authors report 38.5–57.0% less agent input, 14.5–28.0% lower end-to-end cost and 78–85% compressor cache hits, with task scores 1.0–5.8% higher than no compression *(self-reported)*.
+**Why it matters:** This is a pattern for agents built on fine-tuned or self-hosted models that lack cached-input discounts. It also avoids [the prefix-caching cost trap](#-latest-evidence) by never rewriting the compressor's own history.
+Source: [arXiv 2611.30412](https://arxiv.org/abs/2611.30412) · Added: 2026-11-25
 
 ### Compaction is still lossy, often by corrupting task state · CompAct-Bench · arXiv 2611.25673 · 2026-11-19 🆕
 The benchmark compacts context at points inside successful BrowseComp, SWE-bench and internal trajectories, then checks whether the agent can still finish. Claude- and GPT-family compactors did best, but accuracy still fell under aggressive compaction, and many failures came from distorted state, such as open issues summarised as settled.

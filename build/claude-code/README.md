@@ -1,32 +1,29 @@
 # Claude Code mastery
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > Tips, tricks and workflows for getting the most out of Claude Code, refreshed every day. Release notes and upgrade warnings stay in [Coding agents & IDEs](../coding-agents/README.md); this page is about *how to use it well*.
 
 ## 💡 Tip of the day
 
-### Ship your team's plugins with the repo: `extraKnownMarketplaces` + `enabledPlugins`
-Commit both keys to `.claude/settings.json`. `extraKnownMarketplaces` registers your marketplace for everyone who opens the repo and trusts the folder; `enabledPlugins` (keyed `plugin-name@marketplace-name`) turns the plugins on for the project. Enabling does **not** download a plugin, so each teammate runs the install once per clone (or `--scope user` for all projects), then `/reload-plugins`.
+### Keep secrets out of Claude's reach with `Read` deny rules
+Add `permissions.deny` rules for the files that hold keys and environment values. Claude Code then leaves them out of file discovery and search results, refuses to read them, and also blocks Edit and Write on those paths. The rules cover the built-in file tools, Bash commands it recognises (`cat`, `head`, `tail`, `sed`, `tee`) and redirection targets like `< .env`. Commit them to `.claude/settings.json` so the whole team gets them.
 ```json
 {
-  "extraKnownMarketplaces": {
-    "acme-tools": {
-      "source": { "source": "github", "repo": "acme-corp/claude-plugins" },
-      "autoUpdate": true
-    }
-  },
-  "enabledPlugins": {
-    "code-formatter@acme-tools": true
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./config/credentials.json)",
+      "Bash(curl *)"
+    ]
   }
 }
 ```
-```shell
-claude plugin install code-formatter@acme-tools --scope project
-```
-Gotchas: in an untrusted folder, including a `-p` run there, the marketplace entry is ignored without a message. Third-party marketplaces don't auto-update unless you set `"autoUpdate": true` (official Anthropic ones default to on). Project settings beat user settings, so a teammate who wants a plugin off sets it to `false` in `.claude/settings.local.json`; a `false` in managed settings blocks it everywhere. From a release on or after 2026-11-30, marketplaces listed in *managed* `extraKnownMarketplaces` will auto-update by default (2.1.331 notice), so add `"autoUpdate": false` to any you want pinned.
-**Why it matters:** the team's skills, hooks, agents and MCP config arrive with `git clone` instead of a wiki page of setup steps.
-Source: [Settings reference: extraKnownMarketplaces](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces) · [enabledPlugins](https://code.claude.com/docs/en/settings-reference#enabledplugins) · [Enabled in project settings but not installed](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed) · [Changelog 2.1.331](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · Added: 2026-11-24
+Gotchas: deny is checked before ask and allow, and an allow rule can't carve an exception out of it. Patterns use gitignore syntax, and a single leading `/` anchors at the settings source: `Read(/secrets/**)` in `~/.claude/settings.json` means `~/.claude/secrets/**`, so use `//abs/path` or `~/path` in user settings. A `.claudeignore` file does nothing; move its entries into `Read` deny rules. These rules don't stop `grep -r pattern .`, other subprocesses, or `curl` called by full path or through `sh -c`, so turn on the [sandbox](https://code.claude.com/docs/en/sandboxing) when the boundary must hold.
+**Why it matters:** `.env` contents stop turning up in transcripts, search results and the logs you share, without anyone remembering to say "don't read that".
+Source: [Settings reference: permissions.deny](https://code.claude.com/docs/en/settings-reference#permissions-deny) · [Permissions: Read and Edit](https://code.claude.com/docs/en/permissions#read-and-edit) · [How path patterns match](https://code.claude.com/docs/en/permissions#how-path-patterns-match) · Added: 2026-11-25
 
 ---
 
@@ -103,6 +100,28 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 ## 🗞️ Latest tips
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
+
+### Ship your team's plugins with the repo: `extraKnownMarketplaces` + `enabledPlugins` 🆕
+Commit both keys to `.claude/settings.json`. `extraKnownMarketplaces` registers your marketplace for everyone who opens the repo and trusts the folder; `enabledPlugins` (keyed `plugin-name@marketplace-name`) turns the plugins on for the project. Enabling does **not** download a plugin, so each teammate runs the install once per clone (or `--scope user` for all projects), then `/reload-plugins`.
+```json
+{
+  "extraKnownMarketplaces": {
+    "acme-tools": {
+      "source": { "source": "github", "repo": "acme-corp/claude-plugins" },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "code-formatter@acme-tools": true
+  }
+}
+```
+```shell
+claude plugin install code-formatter@acme-tools --scope project
+```
+Gotchas: in an untrusted folder, including a `-p` run there, the marketplace entry is ignored without a message. Third-party marketplaces don't auto-update unless you set `"autoUpdate": true` (official Anthropic ones default to on). Project settings beat user settings, so a teammate who wants a plugin off sets it to `false` in `.claude/settings.local.json`; a `false` in managed settings blocks it everywhere. From a release on or after 2026-11-30, marketplaces listed in *managed* `extraKnownMarketplaces` will auto-update by default (2.1.331 notice), so add `"autoUpdate": false` to any you want pinned.
+**Why it matters:** the team's skills, hooks, agents and MCP config arrive with `git clone` instead of a wiki page of setup steps.
+Source: [Settings reference: extraKnownMarketplaces](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces) · [enabledPlugins](https://code.claude.com/docs/en/settings-reference#enabledplugins) · [Enabled in project settings but not installed](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed) · [Changelog 2.1.331](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · Added: 2026-11-24
 
 ### Feed live data into a skill with `` !`command` `` 🆕
 In a skill's `SKILL.md`, a line with `` !`<command>` `` runs that shell command before Claude sees the skill, and the output replaces the line. Claude starts with the real diff, PR comments or test output already in its prompt instead of spending turns fetching them. Use a fenced ` ```! ` block for several commands. Add `context: fork` to run the skill in its own subagent so the bulky output stays out of your main conversation.

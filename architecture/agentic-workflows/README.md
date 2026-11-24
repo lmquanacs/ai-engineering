@@ -1,6 +1,6 @@
 # Agentic workflows: patterns and breakthroughs
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > How to structure agent systems, and what the evidence says actually works. Patterns are stable; the "latest evidence" section changes fastest.
 
@@ -23,6 +23,11 @@ Production guardrails that apply to every pattern: an iteration cap, deadlock de
 ---
 
 ## 🔬 Latest evidence: what actually moves the needle
+
+### When tools fail, agents make things up · RetryRealistic · arXiv 2611.28341 · 2026-11-20 🆕
+The authors injected 9 fault types into 8 real tools (filesystem with real permissions, SQLite, a local HTTP server, a shell) across 30 multi-step tasks and 2,100 runs. Four agents recovered correctly only 19–68% of the time, and 6–26% of runs ended in a confidently stated wrong answer. The fault type mattered more than the model: partial-data faults drove fabrication (up to 38%), while outright denials led to honest failures. A verification-first monitor that checks answers against structured tool output and sends corrective instructions instead of hard blocks raised correct recovery from 45.6% to 56.3% and cut fabrication from 17.3% to 10.8%. Removing chain-of-thought made fabrication worse *(self-reported)*. Toolkit and traces: `Kingsford-Group/RetryRealistic`.
+**Why it matters:** Make tools fail loudly. Return explicit error or truncation flags instead of partial results that look complete, and add fault-injection cases (timeouts, partial pages, permission errors) to your agent evals.
+Source: [arXiv 2611.28341](https://arxiv.org/abs/2611.28341) · Added: 2026-11-25
 
 ### Lead agents rubber-stamp their subagents · RI-Bench · arXiv 2611.27139 · 2026-11-20 🆕
 RI-Bench tests whether a "senior" agent actually weighs, verifies and relays its subordinates' reports, by perturbing that material in controlled ways and watching how the output changes. Across eight LLMs and more than 12,000 episodes, planted procedural errors were rarely adopted (2.9%), but senior agents went with a majority of low-value generic reviews in up to 71% of decisions and dropped sources' stated limitations in up to 65% of cited claims. Prompts that spell out the senior agent's obligations helped without fixing it, and changed behaviour in control runs *(self-reported)*. Code and data: `jxtse/ri-bench`.

@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-25_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -88,6 +88,15 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 
 ## 🔒 Security notes
 
+### LiteLLM MCP stdio and DBHub zero-days, plus IoTDB, AutoGPT, Sim and Chats CVEs · published 2026-11-23 → 11-24 🆕
+- **LiteLLM** (ZDI-26-1031, CVE-2026-136535, CVSS 7.2): a proxy admin can run commands through MCP stdio server configs. LiteLLM disputes that it's a vulnerability and isn't shipping a separate patch. Its suggested mitigation is v1.104.0+, which turns stdio MCP servers off unless `LITELLM_ENABLE_MCP_STDIO=true` is set in the environment, plus a strong master key.
+- **DBHub** (ZDI-26-1067, CVE-2026-136441, CVSS 9.8): an authorization bypass when the MCP server parses untrusted SQL, published as a 0-day after ZDI got no vendor fix. The advisory names no affected or fixed version. It's separate from the read-only bypass fixed in 1.7.0 below.
+- **Apache IoTDB MCP Server** ≤ 0.2.0 writes the database password to its startup log (CVE-2026-135747); fixed in 0.3.0.
+- MCP clients inside other apps: **AutoGPT** 0.6.1–0.10.0 can send a connected MCP server's credential to a third party via a crafted redirect (CVE-2026-133449, fixed in 0.11.0); **Sim** < 0.9.41 lets write-level members make workflow MCP servers public (CVE-2026-135162); **sdcb Chats** < 1.17.1 lets assigned users read other users' MCP bearer headers (CVE-2026-135432).
+
+**Do this:** On LiteLLM, upgrade to ≥ 1.104.0 and leave `LITELLM_ENABLE_MCP_STDIO` unset unless you need stdio servers. Keep DBHub on a private network with a read-only database role until Bytebase responds. Upgrade IoTDB MCP (≥ 0.3.0), AutoGPT (≥ 0.11.0), Sim (≥ 0.9.41) and Chats (≥ 1.17.1), and rotate any password IoTDB has already logged. An Amazon ECS MCP Server redaction flaw (CVE-2026-135614, fixed in `awslabs.ecs-mcp-server` 0.1.36) is written up on the [AI security page](../../architecture/security/README.md).
+Source: [ZDI-26-1031](https://www.zerodayinitiative.com/advisories/ZDI-26-1031/) · [ZDI-26-1067](https://www.zerodayinitiative.com/advisories/ZDI-26-1067/) · [NVD CVE-2026-135747](https://nvd.nist.gov/vuln/detail/CVE-2026-135747) · [GHSA-hp9v-vh5x-5jv3](https://github.com/Significant-Gravitas/AutoGPT/security/advisories/GHSA-hp9v-vh5x-5jv3) · [NVD CVE-2026-135162](https://nvd.nist.gov/vuln/detail/CVE-2026-135162) · [NVD CVE-2026-135432](https://nvd.nist.gov/vuln/detail/CVE-2026-135432) · Added: 2026-11-25
+
 ### FastMCP 4.2.5: OAuth hardening, listen streams on by default · 2026-11-23 🆕
 Security fixes: a CIMD client's metadata can no longer widen allowed scopes, redirect URIs must match an allowed pattern's query exactly (and an exact root pattern now matches only that path), reusing a rotated refresh token more than 60 s later ends the whole grant, and OpenAPI tools stop forwarding MCP transport headers to the wrapped API (new `forward_client_headers`). On 2026-07-28 connections, servers now serve `subscriptions/listen` by default, so clients hold one open stream per connection (up to 1024 per process).
 **Do this:** Upgrade, then check three things: set `valid_scopes` if you have CIMD clients (with no scopes configured they can now request none), add `/*` to root redirect patterns that need sub-paths, and pass `token_issuer` to a multi-tenant `AzureProvider`, which no longer checks the issuer. On serverless or small worker pools, consider `FASTMCP_ENABLE_SUBSCRIPTIONS_LISTEN=false`.
@@ -111,8 +120,9 @@ Source: [CVE-2026-129995](https://www.cve.org/CVERecord?id=CVE-2026-129995) · [
 ### MCP bridge and server CVE wave · Supergateway, Obot, LibreChat · 2026-11-18 → 11-20 🆕
 NVD published a batch of MCP-related CVEs: **Supergateway** cross-site WebSocket hijacking in stdio-to-WebSocket mode (CVE-2026-132121, 2.4.0–4.2.2) and a DoS in stdio-to-SSE mode (CVE-2026-131857); **Obot** < 0.27.0; **LibreChat** < 0.8.8 (MCP OAuth redirect SSRF). Upgrade lines and the AWS document-loader server are in [AI security](../../architecture/security/README.md#-recent-items).
 **Update 2026-11-24:** Supergateway **4.2.3** and **4.2.4** (2026-11-23) are on npm. In the published code, SSE sessions are now kept in a `Map` (the DoS used prototype keys), and WebSocket upgrades from a browser `Origin` not listed in `--cors` get a 403. The WebSocket check is opt-in: with neither `--cors <origins>` nor `--apiKey`, any web page can still connect, and the gateway only prints a warning. No release notes or advisory update yet.
-**Do this:** Upgrade to ≥ 4.2.4 and start stdio-to-WebSocket mode with `--cors <your origins>` or `--apiKey`.
-Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · [supergateway on npm](https://www.npmjs.com/package/supergateway?activeTab=versions) · Added: 2026-11-21 · Updated: 2026-11-24
+**Update 2026-11-25:** Supergateway **4.3.0** (npm, 2026-11-24) closes the opt-in gap for local use. Without `--apiKey`, browser requests that reach the gateway on a loopback address are refused (403) when they come through DNS rebinding (SSE, WebSocket and Streamable HTTP), or, without `--cors`, from a web page on another site over WebSocket. Pages on `localhost` and browser extensions still connect, and clients that aren't browsers are unaffected. This comes from the published package's README and code; there are still no release notes.
+**Do this:** Upgrade to ≥ 4.3.0. If other machines, containers or a proxy can reach the gateway, still set `--apiKey`. If you serve a page through a tunnel on this machine on a public name, allow it with `--cors <origin>`.
+Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · [supergateway on npm](https://www.npmjs.com/package/supergateway?activeTab=versions) · Added: 2026-11-21 · Updated: 2026-11-25
 
 ### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16 🆕
 CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-audience check), CVE-2026-116685 (credentials sent on cross-origin redirects) and CVE-2026-115563 (OAuth clients could send credentials to an authorization server the MCP server chose).

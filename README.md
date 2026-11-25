@@ -3,9 +3,9 @@
 > A field guide, refreshed every day, for software engineers building with AI. It covers agent skills, MCP servers, model APIs, RAG, architecture, agentic patterns, libraries and the AI engineer career, with a focus on **Python**, **TypeScript** and **Java/Kotlin (Spring Boot)**, plus the main cloud and edge platforms (AWS, Google Cloud, Azure, Vercel and Cloudflare).
 
 <!-- BADGES:START -->
-![Last updated](https://img.shields.io/badge/last%20updated-2026--11--25-2563eb)
+![Last updated](https://img.shields.io/badge/last%20updated-2026--11--26-2563eb)
 ![Schedule](https://img.shields.io/badge/updates-daily%20~9am%20Brisbane-16a34a)
-![Editions](https://img.shields.io/badge/daily%20editions-8-9333ea)
+![Editions](https://img.shields.io/badge/daily%20editions-9-9333ea)
 <!-- BADGES:END -->
 
 An automated research agent updates this repo every morning, around **9:00 AM Brisbane time** (AEST, UTC+10). Each run checks releases from primary sources, adds what is worth your attention to the right category, and writes a dated digest. If you only have two minutes, read the digest.
@@ -15,12 +15,13 @@ An automated research agent updates this repo every morning, around **9:00 AM Br
 ## 📰 Today's digest
 
 <!-- TODAY:START -->
-### [25 Nov 2026 →](daily/2026/11/2026-11-25.md)
+### [26 Nov 2026 →](daily/2026/11/2026-11-26.md)
 
-- **Security:** LiteLLM MCP stdio and DBHub MCP 0-days with no patch, plus ECS MCP Server, browser-use and Supergateway fixes; tool-call smuggling research. → [AI security](architecture/security/README.md) · [MCP servers](build/mcp-servers/README.md)
-- **Tools:** Antigravity's Auto mode now writes outside the workspace; Codex CLI 0.172.0 starts MCP servers lazily; tip on `permissions.deny` rules for secrets. → [Coding agents](build/coding-agents/README.md) · [Claude Code mastery](build/claude-code/README.md)
-- **Platforms:** Bedrock Trusted Access API for Anthropic EFS/EDC; GPT-6.2 and Managed Compute GA in Foundry, with new retirement dates. → [AWS](platforms/aws/README.md) · [Azure](platforms/azure/README.md)
-- **Open models:** GLM-5.4 on the Coding Plan only; pin dated DeepSeek Flash IDs on hosts. → [Open-weight model providers](models/open-model-providers/README.md)
+- **Tools:** Claude Code 2.1.332 changes `sonnet` on Foundry and Agent Platform to Sonnet 5.5 and loads skills from MCP servers (beta); on Bedrock, pin full model IDs. → [Coding agents](build/coding-agents/README.md) · [MCP servers](build/mcp-servers/README.md)
+- **Upgrade:** AI SDK stream-memory fix (`ai` 7.0.182 / 6.0.337 / 5.0.293); Pydantic AI 2.73 changes `FallbackModel` behaviour. → [Libraries](build/libraries/typescript.md)
+- **Security:** Pydantic AI Harness browser egress bypass, DeepSeek-Reasonix `git blame` RCE, pain001-mcp path traversal; LiteLLM and DBHub 0-days still unpatched. → [AI security](architecture/security/README.md)
+- **Platforms:** Workspace agents must move to MCP servers by 2027-02-01; Vercel Sandbox 5.0 is breaking; Azure `claude-opus-5-5-fast` v2 retires 2027-01-15. → [Google Cloud](platforms/google-cloud/README.md) · [Agent infrastructure](architecture/agent-infrastructure/README.md) · [Azure](platforms/azure/README.md)
+- **Models:** Gemini 4 Neon at $3/$15 per 1M tokens, ahead of Carbon's 1 Dec price rise. → [LLM news](models/news/README.md)
 <!-- TODAY:END -->
 
 📚 All past editions: [daily/](daily/README.md)

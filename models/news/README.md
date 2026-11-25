@@ -1,6 +1,6 @@
 # LLM news: models, trends, techniques
 
-_Last updated: 2026-11-24 · This page keeps about 30 days; older items move to [archive/](archive/)_
+_Last updated: 2026-11-26 · This page keeps about 30 days; older items move to [archive/](archive/)_
 
 > Only what changes a builder's decision. Every model row carries its **API ID** and a primary source. Benchmark numbers are vendor claims unless marked otherwise.
 
@@ -24,12 +24,15 @@ _Last updated: 2026-11-24 · This page keeps about 30 days; older items move to 
 
 ---
 
-## 🆕 New models (Oct → Nov 2026)
+## 🆕 New models (Nov 2026)
 
 Newest first. Status is as of release.
 
 | Date | Provider | Model | API ID | Status | Source |
 |---|---|---|---|---|---|
+| 2026-11-24 | OpenAI | Healthcare configurations: select models paired with a clinical-question harness; web search uses a dedicated index of medical sources. Pricing is in the healthcare section of OpenAI's pricing page | `gpt-6.2-astra-healthcare`, `gpt-6.2-sol-healthcare`, `gpt-6-astra-healthcare`, `gpt-6.1-sol-healthcare` | Released (Responses API only) | [Changelog](https://developers.openai.com/api/docs/changelog.md) |
+| 2026-11-20 (missed earlier) | Thinking Machines | Inkling 2 Mini, **open weights** (Apache 2.0): 26.4B total / 3.4B active (looped MoE), 1M context, text + image input. Supported in vLLM, SGLang, Ollama, llama.cpp (GGUF) and Unsloth per the lab; on AI Gateway since 11-24 | — (HF `thinkingmachines/Inkling-2-Mini`) | Open weights; API via Tinker | [Thinking Machines](https://thinkingmachines.ai/news/inkling-2-mini/) · [Hugging Face](https://huggingface.co/thinkingmachines/Inkling-2-Mini) |
+| 2026-11-18 (missed earlier) | Google | **Gemini 4 Neon**: mid tier between Hydrogen and Carbon, 1M context; $3/$15 per 1M in/out (cached $0.15); Google says 32% cheaper per task than Carbon at default effort (self-reported) | `gemini-4-neon` | Gemini API paid tier (AI Studio), Antigravity, Gemini app | [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/) · [AI Gateway](https://vercel.com/changelog/gemini-4-neon-now-available-on-ai-gateway) |
 | 2026-11-19 | OpenAI | GPT-Live-1.1: realtime voice model with better pronunciation, accent consistency and transcription in multilingual conversations | `gpt-live-1.1` | Released (Live API) | [Changelog](https://developers.openai.com/api/docs/changelog) |
 | 2026-11-17 | OpenAI | **GPT-6.2 Astra** (hardest reasoning and coding); $8/$40 per 1M in/out, cheaper than GPT-6 Astra's $10/$50; 1.05M context, 128K max output | `gpt-6.2-astra` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) |
 | 2026-11-17 | OpenAI | **GPT-6.2 Sol** (everyday coding and agents); $2/$10 per 1M in/out, same as GPT-6.1 Sol; 1.05M context, 128K max output | `gpt-6.2-sol` | Released (Responses + Chat Completions) | [Changelog](https://developers.openai.com/api/docs/changelog) · [Model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) |
@@ -38,19 +41,24 @@ Newest first. Status is as of release.
 | 2026-11-10 → 12 | Google | Gemini 4 Carbon (top model), now GA; 60.4% CursorBench (high effort, self-reported) | `gemini-4-carbon` | GA; $2/$10 per 1M in/out until Nov 30, then $4/$20 | [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/) · [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) |
 | 2026-11-09 | Anthropic | **Claude Fable 5.2**; $8/$40 per 1M in/out tokens (20% cheaper than 5.1) | `claude-fable-5-2` | GA (paid plans + API) | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) |
 | 2026-11-09 | Anthropic | Claude Mythos 5.2 (same underlying model as Fable; Fable adds extra biology and cyber safeguards) | `claude-mythos-5-2` | Restricted to verified orgs | [Release notes](https://platform.claude.com/docs/en/release-notes/overview) |
+| 2026-11-05 → 12 (missed earlier) | Thinking Machines | Inkling 2 Small: 594B total / 17B active MoE, 1M context; hosted on Tinker from 11-05, **open weights** (Apache 2.0, NVFP4 and MXFP8 repos) from 11-12 | — | Open weights; API via Tinker and third-party hosts | [Model card](https://thinkingmachines.ai/model-card/inkling-2-small/) · [Announcement](https://thinkingmachines.ai/news/inkling-2-small) |
 | 2026-11-05 | Mistral AI | Mistral Large 4, **open weights** | `mistral-large-4` | GA | [Model card](https://docs.mistral.ai/models/mistral-large-4-0.md) |
 | 2026-11-05 | Moonshot AI | Kimi K3.1 Pro, **open weights**: 2.8T MoE, 104B active, 1M context, image input; licence has conditions for large products | — | Open weights | [Hugging Face](https://huggingface.co/moonshotai/Kimi-K3.1-Pro) |
 | 2026-11-05 | Cognition | SWE-2 Flash: fast, cheap coding model at ~⅕ the cost of SWE-2 | — | Released | [Cognition blog](https://cognition.com/blog/swe-2-flash) |
 | 2026-11-05 | Ricursive | Ripple-65B Preview: dense 65B trained from scratch, Apache 2.0; 80.5% TerminalBench 2.1 (self-reported) | — | Open weights | [Blog](https://www.ricursive.com/ripple) |
 | 2026-11-05 | Tencent | Hy4: first Hy model with vision + computer use, 1M context; weights promised later | — | API (OpenRouter) | [Blog](https://hy.tencent.ai/research/hy4?langVersion=en) |
 | 2026-11-05 | OpenAI | GPT-6 Cyber: security model for the Daybreak program | `gpt-6-cyber` | Restricted | [OpenAI](https://openai.com/index/introducing-gpt-6-cyber/) |
-| 2026-10-26 | OpenAI | GPT-6.1 Terra | `gpt-6.1-terra` | Released | [Changelog](https://developers.openai.com/api/docs/changelog) |
 
 Older rows: [archive/](archive/). Trackers used: [nhimg LLM release tracker](https://nhimg.org/llm-release-tracker) · [nocode.mba November tracker](https://www.nocode.mba/ai-release-tracker/2026/11) · [ThursdAI November releases](https://thursdai.news/releases/2026-11)
 
 ---
 
 ## 📰 Launch notes
+
+### Gemini 4 Neon · Google · 2026-11-18 (missed earlier) 🆕
+Google's new mid-tier Gemini 4 model sits between Hydrogen ($1.50/$7.50) and Carbon. It costs $3/$15 per 1M tokens with cached input at $0.15, has a 1M-token window, and is on the Gemini API paid tier through AI Studio. Google reports it costs 32% less per task than Carbon at default effort *(self-reported)*. It is already the default model in Antigravity and GA in GitHub Copilot.
+**Why it matters:** Carbon doubles to $4/$20 on 2026-12-01, so Neon is the obvious model to evaluate for agentic coding before that date. The blog post doesn't say whether Neon is preview or GA, or give a Vertex date, so check before you pin it in production.
+Source: [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/) · [AI Gateway changelog](https://vercel.com/changelog/gemini-4-neon-now-available-on-ai-gateway) (`google/gemini-4-neon`) · Added: 2026-11-26
 
 ### GPT-6.2 Astra & Sol · OpenAI · 2026-11-17 🆕
 OpenAI's next point release: `gpt-6.2-astra` for demanding reasoning and coding, and `gpt-6.2-sol` for everyday coding and agent workflows. Astra drops to $8/$40 per 1M tokens (cached input $0.40), and Sol stays at $2/$10. Both have a 1.05M-token window (922K max input) and 128K max output.

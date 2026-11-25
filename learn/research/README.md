@@ -1,8 +1,23 @@
 # Research to watch
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### A quarter of SWE-bench Verified tasks may have overspecified tests · Spec-Test Coverage Gap · arXiv 2611.31839 · Nov 2026 🆕
+SWE-bench-style tasks are graded with tests from the original fix, which can demand details the issue never states. Two LLM judges (Claude Opus 5.5 and GPT-6.1 Sol) given the spec and test patch caught 89% of tasks earlier human audits had marked overspecified, with 4% false flags. They flagged 23% of Verified and 35% of public Pro tasks. The top 30 Verified submissions solved 31% of flagged tasks against 88% of the rest, and loosening the flagged tests let 61% of 2,186 failed patches pass, worth up to 12 points of resolve rate *(as reported)*.
+**So what:** Treat small SWE-bench Verified gaps between models or agents as noise, and when you build your own task suites, check that the tests only require what the task description says. → [Evals](../../architecture/evals-and-observability/README.md)
+Source: [arXiv 2611.31839](https://arxiv.org/abs/2611.31839) · Added: 2026-11-26
+
+### The date in the system prompt changes eval results · arXiv 2611.31254 · Nov 2026 🆕
+Many chat templates insert today's date into the system prompt, so an unchanged eval sends a different prompt each day. Across six instruction-tuned models and four benchmarks, switching between two plausible dates (2024–2026) flipped a median 6.6% of items between right and wrong, rerunning a day later flipped about as many as changing the batch size, and a different date undid 15–32% of reproduced jailbreaks on Llama-3.2-3B. None of the eleven evaluation stacks audited pins the date; with it pinned, reruns matched byte for byte *(as reported)*.
+**So what:** Pin, log and report the date your eval harness and agent prompts send, or day-to-day "regressions" may just be the calendar. → [Evals](../../architecture/evals-and-observability/README.md)
+Source: [arXiv 2611.31254](https://arxiv.org/abs/2611.31254) · Added: 2026-11-26
+
+### Give review agents the coding agent's trajectory, condensed · arXiv 2611.31316 · Nov 2026 🆕
+On 339 agent-written implementations of 113 DeepSWE tasks, review agents that saw the whole trajectory found slightly more of the reference review comments than diff-only review (recall 23.03% → 25.87%), and helped in only four of six setups. Four alternative ways of presenting or using the trajectory each beat diff-only by 4.05–7.32 points; higher recall could cost more tokens and time, and simpler trajectory views stayed competitive *(as reported)*.
+**So what:** When an agent opens a PR, attach a short summary of what it tried, what failed and how it validated, and feed that to the reviewer (human or bot) rather than the raw transcript.
+Source: [arXiv 2611.31316](https://arxiv.org/abs/2611.31316) · Added: 2026-11-26
 
 ### When a tool fails, agents make up the answer · RetryRealistic · arXiv 2611.28341 · Nov 2026 🆕
 The authors injected 9 kinds of fault into 8 real tools (filesystem, SQLite, HTTP, shell) across 30 multi-step tasks. Over 2,100 faulted runs, four agents recovered correctly only 27–54% of the time, and 19–30% of runs ended in a confident wrong answer. Faults that return partial or misleading data caused the most fabrication (up to 46%). Hard errors mostly led to honest failure. A monitor that checks answers against structured tool output and sends corrective hints raised correct recovery from 42.5% to 48.0%. Removing chain-of-thought increased fabrication by 7.7 points *(as reported)*. The testbed and traces are released.
@@ -104,23 +119,23 @@ Instead of one large pre-warmed image, Readie learns a set of small snapshots th
 **So what:** Expect sandbox providers to adopt workload-aware snapshot pools. If you run your own sandboxes, profile which packages your agents actually import. → [Agent infrastructure](../../architecture/agent-infrastructure/README.md)
 Source: [arXiv](https://arxiv.org/abs/2611.22171) · Added: 2026-11-19
 
-### Harness tricks under controlled conditions · Surge AI, FireFlash (UCLA), HarnessTax (UC Berkeley) · Nov 2026 🆕
+### Harness tricks under controlled conditions · Surge AI, FireFlash (UCLA), HarnessTax (UC Berkeley) · Nov 2026
 Ablation studies of popular coding-agent workflow plugins and low-level harness techniques. Main findings: reasoning effort, end-of-turn goal checks, spec-first TDD and cache-friendly plumbing help. Multi-agent committees and heavyweight harnesses mostly add cost. Harness-consistent RL on a cheap open model beat a proprietary system at about 1/30th of the cost per run (as reported).
 **So what:** Slim your harness before you scale it out. → [Agentic workflows](../../architecture/agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle)
 Source: [yage.ai summary](https://yage.ai/share/agent-harness-tricks-benchmark-en-20261109.html) · Added: 2026-11-18
 
-### Weight-space programming · MIT CSAIL · Nov 2026 🆕
+### Weight-space programming · MIT CSAIL · Nov 2026
 A frontier model edited a 0.8B model's weights directly, with no gradient training, and raised MATH-500 from 7.9% to 48.1% while changing 0.016% of the weights (as reported).
 **So what:** If this reproduces, small task-specific models could be "patched" by a larger model instead of fine-tuned.
 Source: [Blog post](https://rikiyat.github.io/blog/weight-space-programming/) · Added: 2026-11-18
 
-### Value-targeted fine-tuning with open evals · Nous Research Arete-27B · Nov 2026 🆕
+### Value-targeted fine-tuning with open evals · Nous Research Arete-27B · Nov 2026
 A Qwen3.8-27B fine-tune that cut the measured propaganda rate from 22% to 0.9% with essentially unchanged general scores. Apache 2.0, and the eval and training data are released.
 **So what:** It is a reproducible recipe for auditing and fixing behaviour on sensitive topics in open-weight models you self-host.
 Source: [Hugging Face](https://huggingface.co/NousResearch/Arete-27B) · Added: 2026-11-18
 
-### Structural instruction/data separation · IBM LLMON · Nov 2026 🆕
-Post-training models on an object notation that separates executable instructions from passive data. → [AI security](../../architecture/security/README.md#ibm-granite-41-llmon-preview--2026-11-12-)
+### Structural instruction/data separation · IBM LLMON · Nov 2026
+Post-training models on an object notation that separates executable instructions from passive data. → [AI security](../../architecture/security/README.md#ibm-granite-41-llmon-preview--2026-11-12)
 Added: 2026-11-18
 
 ### Prompt-injection threat taxonomy · arXiv 2602.10453 · Feb 2026

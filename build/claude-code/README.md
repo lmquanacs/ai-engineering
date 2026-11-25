@@ -1,29 +1,48 @@
 # Claude Code mastery
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Tips, tricks and workflows for getting the most out of Claude Code, refreshed every day. Release notes and upgrade warnings stay in [Coding agents & IDEs](../coding-agents/README.md); this page is about *how to use it well*.
 
 ## 💡 Tip of the day
 
-### Keep secrets out of Claude's reach with `Read` deny rules
-Add `permissions.deny` rules for the files that hold keys and environment values. Claude Code then leaves them out of file discovery and search results, refuses to read them, and also blocks Edit and Write on those paths. The rules cover the built-in file tools, Bash commands it recognises (`cat`, `head`, `tail`, `sed`, `tee`) and redirection targets like `< .env`. Commit them to `.claude/settings.json` so the whole team gets them.
+### Guard the shell commands skills run as they load, with a `PreSkillShellCommand` hook
+A skill's `` !`command` `` lines run while the skill loads, and `PreToolUse` hooks never see them. From 2.1.332, a `PreSkillShellCommand` hook does: it gets each command after the permission check, even in `bypassPermissions` mode, and can block it. Reuse the script you already run on `PreToolUse` (this one reads `tool_input.command` and denies `rm -rf`), match both tools that run injected commands, and set `onFailure: "block"` so a crashed or slow hook doesn't let the command through.
 ```json
 {
-  "permissions": {
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Read(./config/credentials.json)",
-      "Bash(curl *)"
+  "hooks": {
+    "PreSkillShellCommand": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh", "args": [], "onFailure": "block" }
+        ]
+      }
     ]
   }
 }
 ```
-Gotchas: deny is checked before ask and allow, and an allow rule can't carve an exception out of it. Patterns use gitignore syntax, and a single leading `/` anchors at the settings source: `Read(/secrets/**)` in `~/.claude/settings.json` means `~/.claude/secrets/**`, so use `//abs/path` or `~/path` in user settings. A `.claudeignore` file does nothing; move its entries into `Read` deny rules. These rules don't stop `grep -r pattern .`, other subprocesses, or `curl` called by full path or through `sh -c`, so turn on the [sandbox](https://code.claude.com/docs/en/sandboxing) when the boundary must hold.
-**Why it matters:** `.env` contents stop turning up in transcripts, search results and the logs you share, without anyone remembering to say "don't read that".
-Source: [Settings reference: permissions.deny](https://code.claude.com/docs/en/settings-reference#permissions-deny) · [Permissions: Read and Edit](https://code.claude.com/docs/en/permissions#read-and-edit) · [How path patterns match](https://code.claude.com/docs/en/permissions#how-path-patterns-match) · Added: 2026-11-25
+```bash
+#!/bin/bash
+# .claude/hooks/block-rm.sh
+COMMAND=$(jq -r '.tool_input.command')
+
+if echo "$COMMAND" | grep -q 'rm -rf'; then
+  jq -n '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: "Destructive command blocked by hook"
+    }
+  }'
+else
+  exit 0  # no decision; normal permission flow applies
+fi
+```
+Test it with `.claude/skills/hook-test/SKILL.md` containing only `` !`echo 'rm -rf'` ``, then type `/hook-test`: you should see `Not run in /hook-test: echo 'rm -rf' (blocked by hook: ...)`. A blocked command doesn't stop the skill; Claude reads `[not run: blocked by hook: <reason>]` in place of its output.
+Gotchas: upgrade first, because 2.1.331 and older run injected commands without calling the hook and show an `Unknown hook event` dialog at the start of every interactive terminal session (`requiredMinimumVersion` can enforce the version). The hook can only block: `ask`, `defer` or an `updatedInput` also block. Put it in a settings file or plugin, not in the skill's own frontmatter, which is skipped on first load and in subagents. Keep the script on `PreToolUse` too, since in auto mode a command that needs approval is skipped at load and Claude may run it afterwards as a normal tool call. Use a non-async `command`, `http` or `mcp_tool` hook: a `prompt` or `agent` hook on this event blocks every command it matches.
+**Why it matters:** skills from plugins and teammates can run shell commands before Claude reads a word of them, and this is the one place to log or veto those commands.
+Source: [Hooks: PreSkillShellCommand](https://code.claude.com/docs/en/hooks#preskillshellcommand) · [How a hook resolves](https://code.claude.com/docs/en/hooks#how-a-hook-resolves) · [Skills: inject dynamic context](https://code.claude.com/docs/en/skills#inject-dynamic-context) · [Changelog 2.1.332](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · Added: 2026-11-26
 
 ---
 
@@ -100,6 +119,25 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 ## 🗞️ Latest tips
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
+
+### Keep secrets out of Claude's reach with `Read` deny rules 🆕
+Add `permissions.deny` rules for the files that hold keys and environment values. Claude Code then leaves them out of file discovery and search results, refuses to read them, and also blocks Edit and Write on those paths. The rules cover the built-in file tools, Bash commands it recognises (`cat`, `head`, `tail`, `sed`, `tee`) and redirection targets like `< .env`. Commit them to `.claude/settings.json` so the whole team gets them.
+```json
+{
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./config/credentials.json)",
+      "Bash(curl *)"
+    ]
+  }
+}
+```
+Gotchas: deny is checked before ask and allow, and an allow rule can't carve an exception out of it. Patterns use gitignore syntax, and a single leading `/` anchors at the settings source: `Read(/secrets/**)` in `~/.claude/settings.json` means `~/.claude/secrets/**`, so use `//abs/path` or `~/path` in user settings. A `.claudeignore` file does nothing; move its entries into `Read` deny rules. These rules don't stop `grep -r pattern .`, other subprocesses, or `curl` called by full path or through `sh -c`, so turn on the [sandbox](https://code.claude.com/docs/en/sandboxing) when the boundary must hold.
+**Why it matters:** `.env` contents stop turning up in transcripts, search results and the logs you share, without anyone remembering to say "don't read that".
+Source: [Settings reference: permissions.deny](https://code.claude.com/docs/en/settings-reference#permissions-deny) · [Permissions: Read and Edit](https://code.claude.com/docs/en/permissions#read-and-edit) · [How path patterns match](https://code.claude.com/docs/en/permissions#how-path-patterns-match) · Added: 2026-11-25
 
 ### Ship your team's plugins with the repo: `extraKnownMarketplaces` + `enabledPlugins` 🆕
 Commit both keys to `.claude/settings.json`. `extraKnownMarketplaces` registers your marketplace for everyone who opens the repo and trusts the folder; `enabledPlugins` (keyed `plugin-name@marketplace-name`) turns the plugins on for the project. Enabling does **not** download a plugin, so each teammate runs the install once per clone (or `--scope user` for all projects), then `/reload-plugins`.

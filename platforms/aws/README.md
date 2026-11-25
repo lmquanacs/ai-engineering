@@ -1,6 +1,6 @@
 # AWS for AI engineering
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Everything on AWS that matters to AI engineers: Bedrock models, AgentCore (the agent runtime platform), Strands Agents, Kiro, AWS MCP servers, and how they connect to Spring, Python and TypeScript apps. **re:Invent 2026 runs 30 Nov – 4 Dec**, so expect a large wave of launches.
 
@@ -38,7 +38,7 @@ Both have a 1.05M context and 128K output. `bedrock-runtime` has no in-Region op
 **Why it matters:** You can run OpenAI's newest models behind your existing Bedrock IAM, logging and billing. Re-run your evals before you switch any GPT-6 workloads.
 Sources: [AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/openai-gpt-6-2-astra-sol-amazon-bedrock/) · [Model card: GPT-6.2 Astra](https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-openai-gpt-6-2-astra.html) · [Model card: GPT-6.2 Sol](https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-openai-gpt-6-2-sol.html) · Added: 2026-11-19 · Updated: 2026-11-20
 
-### Claude Fable 5.2 on Bedrock · 2026-11-09 🆕
+### Claude Fable 5.2 on Bedrock · 2026-11-09
 Available through **US Geo and Global cross-region inference profiles**; the Global profile ID is `global.anthropic.claude-fable-5-2`. The `bedrock-runtime` endpoint supports server-side compaction (betas `compact-2026-09-04`, `compact-2026-01-12`). Classmethod reports Global pricing 20% below Fable 5.1. The AWS ML blog (as summarised) says zero data retention is offered through 2027-06-30. Earliest EOL is 2027-11-09.
 **Why it matters:** You can use the top Anthropic model inside your AWS account boundary and IAM. Call it with the Converse API or the Anthropic Messages API on Bedrock.
 Sources: [Bedrock model card](https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-fable-5-2.html) · [Classmethod hands-on](https://dev.classmethod.jp/en/articles/bedrock-claude-fable-5-2/) · [TechBytes summary of AWS ML blog](https://techbytes.app/posts/introducing-claude-fable-52-on-aws/) · Added: 2026-11-18
@@ -55,6 +55,7 @@ A managed platform for running agents in production: **Runtime** (serverless age
 
 | Date | What shipped | Why it matters |
 |---|---|---|
+| 2026-11-23 | **Runtime Instances in AWS GovCloud (US-West):** instances, volumes and session data stay in GovCloud | Agents on EC2-backed sessions for regulated US workloads |
 | 2026-11-20 | **Gateway streaming response interceptors:** set `responseInterceptionMode: STREAM` and your interceptor Lambda gets each batch of SSE or event-stream events (batch size via `responseStreamingConfiguration.maxEventsPerInvocation`) to redact, change or drop | PII filtering on model output without losing streaming |
 | 2026-11-20 | **Runtime Instances on EC2 G7** (`g7.2xlarge`–`g7.48xlarge`, NVIDIA RTX PRO 4500 Blackwell): add them to the capacity provider's allowed types; drivers are installed, sessions up to 14 days; 8 Regions incl. ap-southeast-2 | A GPU per agent session for vision models or rendering |
 | 2026-11-20 | **Agent Registry:** verify a domain and publish agents and tools for discovery by any AWS-authenticated user (no extra charge for now); new WebBotAuth record type that works with WAF Bot Control | Check who owns an agent before yours connects to it |
@@ -76,7 +77,7 @@ A managed platform for running agents in production: **Runtime** (serverless age
 | Sep 2026 | Evaluations support **TypeScript** frameworks as well as Python | Eval TS agents natively |
 | Aug 2026 | **Amazon Agent Registry GA** (auto-detection, CMK encryption) | A catalogue of every agent in the organisation |
 
-Sources: [AgentCore release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html) · [What's New: Marketplace agentic payments](https://aws.amazon.com/about-aws/whats-new/2026/11/marketplace-agentic-payments-agentcore/) · [What's New: Memory full session summaries](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-full-session-summaries/) · [What's New: 10-year retention](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-10-year-retention/) · [What's New: OAuth 2.0 discovery](https://aws.amazon.com/about-aws/whats-new/2026/11/bedrock-agentcore-oauth2-discovery/) · [What's New: next-generation runtime is the default](https://aws.amazon.com/about-aws/whats-new/2026/11/new-agentcore-runtime-default/) · [Unite.AI on Runtime V2 expansion](https://www.unite.ai/?p=516062) · [AWS ML blog, October recap](https://aws.amazon.com/blogs/machine-learning/icymi-what-landed-for-ai-builders-in-october-2026/) · Added: 2026-11-18
+Sources: [AgentCore release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html) · [What's New: Instances in GovCloud](https://aws.amazon.com/about-aws/whats-new/2026/11/agentcore-runtime-instances-govcloud) · [What's New: Marketplace agentic payments](https://aws.amazon.com/about-aws/whats-new/2026/11/marketplace-agentic-payments-agentcore/) · [What's New: Memory full session summaries](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-full-session-summaries/) · [What's New: 10-year retention](https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-bedrock-agentcore-memory-10-year-retention/) · [What's New: OAuth 2.0 discovery](https://aws.amazon.com/about-aws/whats-new/2026/11/bedrock-agentcore-oauth2-discovery/) · [What's New: next-generation runtime is the default](https://aws.amazon.com/about-aws/whats-new/2026/11/new-agentcore-runtime-default/) · [Unite.AI on Runtime V2 expansion](https://www.unite.ai/?p=516062) · [AWS ML blog, October recap](https://aws.amazon.com/blogs/machine-learning/icymi-what-landed-for-ai-builders-in-october-2026/) · Added: 2026-11-18
 
 **JVM note:** Spring AI has an **AgentCore SDK** for deploying Spring AI agents to AgentCore Runtime (1.0 in April 2026). ([This Week in Spring, 28 Apr 2026](https://spring.io/blog/2026/04/28/this-week-in-spring-april-28-2026))
 
@@ -93,8 +94,8 @@ strands-decider serve StrandsAgents/strands-decider-E4B-gemma4-v2-2611 --port 80
 **Why it matters:** Cheap, self-hostable routing and guard checks inside an agent loop, instead of asking a frontier model to choose. Validate the router's cost/quality trade-off on your own traffic.
 Sources: [Strands blog: Decider v2](https://strandsagents.com/blog/introducing-strands-decider-v2/) · [SiliconANGLE](https://siliconangle.com/2026/11/23/aws-is-making-ai-agents-more-decisive-and-secure-with-its-latest-strands-updates/) · Added: 2026-11-24
 
-### Strands Harness SDK + Strands harness 🆕
-A model-driven agent SDK for **Python and TypeScript** (Apache-2.0), now described as an "agent harness" with behavioural middleware and sandboxed execution. **Strands harness** (released 2026-09-21) is a ready-made, general-purpose agent built on the SDK. Latest versions: `strands-agents` 1.66.0 (2026-11-23), `@strands-agents/sdk` 1.26.0 (2026-11-19), `strands-harness` 0.5.0 (2026-11-23) and `strands-decider` 0.4.0 (2026-11-20), checked on PyPI and npm on 2026-11-24.
+### Strands Harness SDK + Strands harness
+A model-driven agent SDK for **Python and TypeScript** (Apache-2.0), now described as an "agent harness" with behavioural middleware and sandboxed execution. **Strands harness** (released 2026-09-21) is a ready-made, general-purpose agent built on the SDK. Latest versions: `strands-agents` 1.67.0 (2026-11-25), `@strands-agents/sdk` 1.26.0 (2026-11-19), `strands-harness` 0.5.0 (2026-11-23) and `strands-decider` 0.4.0 (2026-11-20), checked on PyPI and npm on 2026-11-26.
 ```bash
 pip install strands-agents strands-agents-tools   # SDK
 pip install strands-harness                       # assembled agent
@@ -131,11 +132,11 @@ Source: [Kiro IDE 1.4.236 changelog](https://kiro.dev/changelog/ide/1-4-236/) ·
 **Why it matters:** You can now enforce team policy on tool calls in scripts, for example denying writes outside the repo, and stop separate browser logins for every internal MCP server.
 Sources: [Kiro CLI 3.4 changelog](https://kiro.dev/changelog/cli/3-4/) · [Kiro CLI 3.5 changelog](https://kiro.dev/changelog/cli/3-5/) · [Kiro changelog](https://kiro.dev/changelog/index) · Added: 2026-11-19
 
-### Kiro bots, GA in Kiro Crew · 2026-11-05 🆕
+### Kiro bots, GA in Kiro Crew · 2026-11-05
 Named, long-running agents, each with its own memory, chat and sessions. They can run sessions in parallel, follow schedules and work within per-bot permissions.
 Source: [Let's Data Science](https://letsdatascience.com/news/aws-launches-kiro-bots-for-coordinating-parallel-ai-coding-a-e78ec0ae) · Added: 2026-11-18
 
-### Kiro CLI 3.0 + October changes 🆕
+### Kiro CLI 3.0 + October changes
 November brought Kiro CLI 3.0.0–3.1.0. October added a **local command sandbox** (off by default; it blocks network access and stops the agent reading `~/.aws/credentials`), Memory, Workflows, Workspace trust and Markdown Review. Claude Opus 5.5 and Sonnet 5.5 (1M context) are now in Kiro, including GovCloud, and **Claude Sonnet 4 reached end of life in Kiro on 2026-10-14**.
 **Why it matters:** Turn on the sandbox for any repo you don't fully trust.
 Sources: [Kiro changelog](https://kiro.dev/changelog/dev-server-and-spec-workflows/) · [AWS Japan SA deck, Oct](https://speakerdeck.com/inariku/kiro-update-2026-10-en) · [Nov deck](https://speakerdeck.com/inariku/kiro-update-2026-11-en) · Added: 2026-11-18
@@ -193,6 +194,11 @@ uvx awslabs.iam-mcp-server@latest
 ```
 **Guardrail:** give the MCP role read-only IAM permissions first, and use the MCP condition keys to block mutating calls that an agent starts.
 Sources: [MCP Directory: AWS MCP Server guide](https://mcp.directory/blog/aws-mcp-server-complete-guide-2026) · [dev.to: CloudWatch + IAM via MCP](https://dev.to/jangwook_kim_e31e7291ad98/aws-mcp-server-ga-practical-guide-connecting-cloudwatch-iam-to-your-ai-coding-agent-3d79) · [Developers Digest](https://www.developersdigest.tech/mcp-servers/aws-mcp-server) · Added: 2026-11-18
+
+### AWS WAF AI Security: find and guard LLM, MCP and A2A endpoints · 2026-11-23 🆕
+Two pieces (missed earlier). The API Gateway **API Portal** finds AI endpoints across your AWS Organization from traffic logs and service configuration, including undocumented public MCP servers, with no agents or log forwarding; it covers endpoints behind API Gateway, Application Load Balancers and CloudFront. The new **AWS WAF AI Security** managed rule group blocks malformed MCP and A2A messages. With content inspection turned on, it calls the Bedrock Guardrails `InvokeGuardrailsCheck` API to check requests for prompt injection, jailbreaks and harmful content, and responses for sensitive data. AI Security runs in us-east-1, us-east-2, us-west-2, London, Stockholm, Tokyo and Sydney; the API Portal is in 32 Regions. WAF fees apply, and Bedrock bills the inspection calls separately.
+**Why it matters:** A quick way to find shadow MCP servers your teams exposed and put a protocol-aware filter in front of them without writing rules. Guardrails calls on every request add cost and latency, so measure both before you turn on content inspection everywhere. Patterns: [AI security](../../architecture/security/README.md).
+Source: [AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/waf-ai-endpoint-discovery-protection/) · Added: 2026-11-26
 
 ### Amazon Cognito: client ID metadata documents (CIMD) for MCP clients · 2026-11-19 🆕
 A client can use an HTTPS URL as its client ID and publish a JSON metadata document there; Cognito validates it at sign-in, and CIMD policies map URL patterns to your app clients, limiting scopes and grant types to what both allow. Needs the Essentials or Plus plan.

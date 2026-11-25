@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory and caching. Retrieval lives in [RAG & retrieval](../rag-and-retrieval/README.md). Agent quality now depends more on this than on which model you pick.
 
@@ -42,6 +42,11 @@ Source: [Slides](https://docs.google.com/presentation/d/1BVqX1h2DPyIDCEWUSNXSVFI
 ---
 
 ## 🔬 Latest evidence
+
+### Anthropic: the components of agent memory, and "dreaming" · 2026-11-06 (missed earlier) 🆕
+Anthropic's write-up of its agent-memory evals. Telling Claude what a memory folder is for, but not how to use it, worked best for recent models; a fixed rule such as "record only failures" removed much of the gain for Opus 5 and Opus 4.7, while older models (Sonnet 4.6) needed explicit prompting to read memory before answering. "Dreaming" is an offline pass in which the agent checks its notes against the original transcripts, corrects wrong notes, builds linked wiki pages and promotes key notes into what loads at session start. On a 350,000-file internal corpus, wiki plus search scored 61% against 53% for search alone and used about 20,000 fewer tokens per question; on multi-document merger questions the wiki scored 87% against 73%, but it gave no clear gain where one document held the answer *(self-reported)*.
+**Why it matters:** For memory files (including `CLAUDE.md`/`AGENTS.md`-style notes), state the purpose and let strong models judge salience instead of prescribing rules. Add a periodic pass that re-checks notes against transcripts, and build a linked summary layer only for corpora where answers span several documents.
+Source: [Anthropic Engineering: The components of agent memory](https://www.anthropic.com/research/components-of-agent-memory) · Added: 2026-11-26
 
 ### Keep past attempts addressable, not summarised; delete unused lessons · arXiv 2611.28244 · 2026-11-20 🆕
 This ablation of long-running "autoresearch" harnesses on MLE-Bench and KernelBench, using gpt-oss-120b and two GPT-6 models, tested what agents keep from earlier attempts. Keeping individually retrievable records beat a rolling summary, and context folding did best in all six settings, up to 19.2% above a recency-truncation baseline. For skills and lessons, deleting ones that kept going unused beat merging them or promoting them to standing rules *(self-reported)*.

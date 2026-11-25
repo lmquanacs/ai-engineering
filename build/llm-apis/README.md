@@ -1,6 +1,6 @@
 # LLM APIs & structured output
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > The provider API features you write code against: structured outputs, tool calling, streaming, batch and files, and the breaking changes between versions. Model launches live in [LLM news](../../models/news/README.md); prices in [Inference & cost](../../models/cost-and-serving/README.md).
 
@@ -77,7 +77,7 @@ Requests that declare the older `computer_20251124` tool now return 400 on every
 **Why it matters:** Computer-use integrations stop working until migrated. → [Voice & multimodal](../voice-and-multimodal/README.md)
 Source: [Claude docs: migrate from computer_20251124](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#migrate-from-computer-20251124) · Added: 2026-11-20
 
-Library check (PyPI, 2026-11-25): no new releases of Instructor (1.17.0), Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window. No new entries since 2026-11-23 in the Anthropic, OpenAI, Gemini API, Mistral, xAI or DeepSeek changelogs; xAI retired `grok-build-0.1` on 2026-11-19.
+Library check (PyPI, 2026-11-26): no new releases of Instructor (1.17.0), Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window. No new API-feature entries through 2026-11-25 in the Anthropic, Gemini API, Mistral, xAI or DeepSeek changelogs; OpenAI's 2026-11-24 entries (healthcare model configurations, a `chat-latest` update) are model news → [LLM news](../../models/news/README.md). xAI retired `grok-build-0.1` on 2026-11-19.
 
 ## 📚 Reference
 

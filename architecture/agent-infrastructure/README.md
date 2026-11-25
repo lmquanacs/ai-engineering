@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-26_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -56,6 +56,16 @@ A TypeScript API that starts a sandbox with a coding-agent harness (for example 
 Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best-sandbox-providers-for-ai-agents) · Added: 2026-11-18
 
 ## 📰 Recent releases
+
+### Vercel Workflow SDK 5.8: speculative execution may re-run steps · 2026-11-24 → 11-25 🆕
+`workflow@5.8.0` runs on a new engine. Vercel reports p75 step-to-step overhead down from 85 ms to 7 ms against 5.2.0, and a five-turn streaming agent loop adding 0.9 s of overhead instead of 3.0 s *(self-reported)*. Much of the speed comes from **speculatively executing retryable steps**. New runs use the new engine by default, and runs already in flight stay on their old version.
+**Why it matters:** A step that isn't idempotent (sending an email, charging a card, a non-idempotent tool call) can now run more than once. Before upgrading, pass `getStepMetadata().stepId` as the idempotency key on side-effecting calls, or set `maxRetries = 0` on steps that must run at most once.
+Source: [Vercel changelog: Workflow SDK 5.8](https://vercel.com/changelog/workflows-speculative-execution) · `workflow` 5.8.0 on npm (2026-11-24) · Added: 2026-11-26
+
+### Vercel Sandbox SDK 5.0: own-project-only sandbox proxy, `runtime` removed · 2026-11-24 → 11-25 🆕
+`@vercel/sandbox` 5.0.0 (2026-11-25) is breaking. `defineSandboxProxy` now accepts only sandboxes from its own project (read from `VERCEL_PROJECT_ID`) unless you pass an `allow` callback, a proxy with no project ID rejects every sandbox, and the second argument is now an options object (`onInvalidRequest`). The `runtime` option and `--runtime` flag are gone: use `image` (for example `vercel/sandbox/node:al-24` to stay on Amazon Linux, or `vercel/sandbox/node:24` for Ubuntu). It also adds `getAuthHeaders` for DPoP-style auth and a session-expiry webhook lead time. Separately (2026-11-24), all Sandbox runtimes now use Vercel Managed Images; rolling tags such as `universal:latest` pick up OS, dependency and coding-agent updates nightly.
+**Why it matters:** The proxy change stops sandboxes from other projects using your proxy, but a proxy hosted outside Vercel stops working until you add `allow`. Pin an image digest when sandboxes must be reproducible, because `latest` now changes nightly.
+Source: [@vercel/sandbox CHANGELOG](https://raw.githubusercontent.com/vercel/sandbox/main/packages/vercel-sandbox/CHANGELOG.md) · [Vercel changelog: Managed Images](https://vercel.com/changelog/all-sandbox-runtimes-now-use-vercel-managed-images) · Added: 2026-11-26
 
 ### Strands Box CLI: run Claude Code, Codex or Kiro CLI inside a policy sandbox · 2026-11-23 🆕
 Box is AWS's open-source (Apache-2.0, Rust) sandbox for agents, first previewed in October; the new `box` CLI wraps an agent you already have installed. `box profile create claude --with bedrock`, then `box run claude` in the project folder, and the agent keeps its normal interface. Shell commands, file access, outbound requests and MCP calls are checked against default-deny Dogwood `permit`/`forbid` rules outside the model, and an egress gateway adds real API keys or SigV4 signatures only to requests the policy allows, so the agent never holds the secrets. Box 0.3.0; still a preview; macOS 15+ on Apple silicon and Linux (ARM64, x86-64).

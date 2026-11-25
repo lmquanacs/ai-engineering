@@ -25,17 +25,17 @@ Highlights: AMQP 1.0 support (generic and RabbitMQ-specific), opt-in OpenTelemet
 **Why it matters:** Spring AI 2.1 needs it, and the `RestTemplate` deprecation is worth planning for now.
 Sources: [Spring Boot 4.2.0 available now](https://spring.io/blog/2026/11/19/spring-boot-4-2-0-available-now) · [Spring Boot 4.2 release notes](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.2-Release-Notes) · Added: 2026-11-21
 
-### Spring AI 2.0: a rebuilt foundation on Boot 4 🆕
+### Spring AI 2.0: a rebuilt foundation on Boot 4
 GA on 2026-06-12. It needs Spring Boot 4.0/4.1 and Spring Framework 7. MCP annotations (`@McpTool`, `@McpResource`, `@McpPrompt`) and the WebMVC/WebFlux MCP transports moved into core, and tool calling became composable. Teams staying on Boot 3.x keep receiving patches on the 1.1.x line.
 **Why it matters:** The upgrade path is Boot 4 first, then Spring AI 2.0.
 Sources: [Spring AI 2.0.0 GA](https://spring.io/blog/2026/06/12/spring-ai-2-0-0-GA-available-now/) · [Visual Studio Magazine](https://visualstudiomagazine.com/articles/2026/06/29/spring-ai-2-0-goes-ga-giving-java-developers-a-more-mature-ai-app-stack.aspx) · Added: 2026-11-18
 
-### Spring AI Agents: planned for early December 2026 🆕
+### Spring AI Agents: planned for early December 2026
 The 2.1.0 GA post (2026-11-20) moves the date to **early December**: Spring AI Agent will ship under Spring Projects Experimental, built on Spring AI 2.1. The 2.1.0-M1 notes had said **November 2026** as a separate Spring Projects Experimental project, with a plan to merge it into **Spring AI 3.0** in mid-2027.
 **Why it matters:** Watch this for a Spring-native way to orchestrate agent CLIs such as Claude Code and Codex. The daily job will flag the release.
 Sources: [Spring AI 2.1.0 GA](https://spring.io/blog/2026/11/20/spring-ai-2-1-0-GA-available-now) · [Spring AI 2.1.0-M1](https://spring.io/blog/2026/09/25/spring-ai-2-1-0-M1-available-now/) · Added: 2026-11-18
 
-### Spring Boot 4.1 → 4.2 🆕
+### Spring Boot 4.1 → 4.2
 Boot 4.1 (2026-06-10) added gRPC auto-configuration, HTTP-client SSRF mitigation, OpenTelemetry environment-variable support and a **Kotlin 2.3** baseline. **Boot 4.2 is expected in November 2026** with the AMQP 1.0 module, and Kotlin 2.4 is expected as its baseline. **4.2.0 GA** shipped on 2026-11-19 (see above).
 Sources: [Maven Central: spring-boot](https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/maven-metadata.xml) · [InfoQ: Spring Boot 4.1](https://infoq.com/news/2026/06/spring-boot-4-1) · [Spring I/O slides (Kotlin baselines)](https://2026.springio.net/slides/idiomatic-kotlin-applications-with-spring-boot-4-springio16.pdf) · Added: 2026-11-18
 

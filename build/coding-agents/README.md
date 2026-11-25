@@ -1,6 +1,6 @@
 # Coding agents & IDEs
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Release notes that change how you work in Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin and Kiro. Only items worth acting on are included.
 
@@ -25,6 +25,9 @@ _Last updated: 2026-11-25_
 | now | Antigravity CLI 1.5.16 / App 2.35.0: Auto mode now writes files outside the workspace inside any Git/Jujutsu/Mercurial repo, and reads outside the project, without asking | Add `ask` or `deny` rules for sibling repos and paths it shouldn't touch |
 | now | Copilot CLI 1.0.115: `--available-tools=` with an empty value now gives the model no tools (before: all tools) | Check scripts that pass an empty or computed `--available-tools` |
 | now | Codex CLI 0.172.0: optional stdio MCP servers with cached tool lists start on first tool call | If a job expects a server to be up at session start, mark it required |
+| now | Claude Code 2.1.332 on Microsoft Foundry: the default model is now Sonnet 5.5, and `sonnet`/`opus` mean Sonnet 5.5/Opus 5.5 there and on Google Cloud's Agent Platform | Deploy `claude-sonnet-5-5` on Foundry or set `ANTHROPIC_DEFAULT_SONNET_MODEL`; on Agent Platform set `VERTEX_REGION_CLAUDE_5_5_SONNET` if you pinned a region for the 4.5 variable |
+| now | Claude Code 2.1.332: terminal and VS Code sessions on Sonnet 5/5.5 via Bedrock Mantle, Agent Platform or Foundry start in auto mode when no mode is set | Set `disableAutoMode` to `"disable"` if you don't want that |
+| now | Claude Code 2.1.332: desktop Code tab OpenTelemetry `service.name` is now `claude-code-desktop`; self-hosted runner OAuth tokens may start `oat02-` | Update dashboards keyed on `claude-code` (or set `OTEL_SERVICE_NAME`) and proxy rules or log scrubbers that match only `oat01-` |
 | **2026-11-26** | Kiro enterprise daily metrics move to 00:30 UTC | Shift any job that reads the daily metrics export |
 | on/after **2026-11-30** | Claude Code: marketplaces in managed `extraKnownMarketplaces` start auto-updating by default (2.1.331 notice) | Set `"autoUpdate": false` on any managed marketplace you want to keep pinned |
 | by **2026-11-30** | Claude Sonnet 4.5 retires | Update `model` settings, `CLAUDE.md` and CI configs that pin it |
@@ -33,6 +36,11 @@ _Last updated: 2026-11-25_
 | **Feb 2027** | Copilot in VS Code: the Local harness is removed | Move remaining workflows to the Copilot harness (already the default for new sessions) |
 
 ## 🗞️ Latest releases
+
+### Claude Code 2.1.332: skills from MCP servers, a hook for skill shell commands, new cloud defaults · 2026-11-24 🆕
+Claude Code can now load skills that MCP servers serve (beta), shown as `server:skill` in the `/` menu; see [MCP servers](../mcp-servers/README.md#-protocol-news-the-2026-07-28-spec-mcp-goes-stateless) for the approval and admin rules. A new `PreSkillShellCommand` hook event can block the `` !`command` `` lines a skill runs while it loads, which `PreToolUse` never saw (how-to in [Claude Code mastery](../claude-code/README.md#-tip-of-the-day)). Cloud model changes: Foundry's default becomes Sonnet 5.5, `sonnet` on Agent Platform and Foundry means Sonnet 5.5 and Foundry's `opus` Opus 5.5, while `sonnet` on Amazon Bedrock stays at Sonnet 4.5; `sonnet` on Bedrock Mantle no longer resolves to Haiku 4.5. `computer-use` becomes a reserved skill name on Macs with computer use on. Many freeze fixes (hooks or local MCP servers flooding output, named pipes such as a locked `.env`, long wildcard rules), and SSE MCP servers recover after their stream drops.
+**Why it matters:** Foundry and Agent Platform users get a different model, and possibly auto mode, without changing anything, and Bedrock's `sonnet` alias still points at Sonnet 4.5, so pin full model IDs. Add `PreSkillShellCommand` to any hook that guards shell commands.
+Source: [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · release date from [npm](https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions) · Added: 2026-11-26
 
 ### Antigravity CLI 1.5.16 + App 2.35: Auto mode asks less, `~/.agents/skills` · 2026-11-23 → 11-24 🆕
 **CLI 1.5.16** (11-24): Auto mode, the default agent mode, no longer asks before creating or editing files outside the workspace when they sit inside a version-controlled repo, or when the change only adds content. Overwrites outside a repo, hidden paths, `.git` and hook metadata, and system folders still ask. Skills in `~/.agents/skills` are now discovered (those in `~/.gemini` win on name clashes), `agy -r <id>` resumes a conversation, and `pluginControls.pluginsDisabled` now leaves built-in plugins on. **CLI 1.5.15** (11-23) adds `AGY_CLI_AUTO_COMPACT_OVERRIDE` for all eligible models (token count, `800K` or `80%`) and stops pruning saved conversations after 500. **App 2.35.0** (11-23): Auto mode now reads files outside the project without asking (sensitive config folders stay protected), and a Conversation Management API lets agents and scripts create, list and delete local conversations.
@@ -116,7 +124,7 @@ Source: [Gemini CLI release notes](https://raw.githubusercontent.com/google-gemi
 **Why it matters:** CI, `-p` and scheduled runs that worked under 2.1.325 may now stop at a prompt or get refused. Run them once after upgrading and add explicit allow rules where needed.
 Source: [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · release dates from [npm](https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions) · Added: 2026-11-20
 
-### Claude Code 2.1.317 → 2.1.325 · 2026-11-02 → 11-13 🆕
+### Claude Code 2.1.317 → 2.1.325 · 2026-11-02 → 11-13
 - **2.1.325:** security fixes for zstd response decoding, a Bash allow rule that could run a different program than the one it names, compound commands that ran without asking, and subagents changing external artifacts without asking. **Behaviour change:** sandboxed Bash commands now go through the normal permission prompt (`sandbox.autoAllowBashIfSandboxed: true` restores the old behaviour). Scheduled tasks and `/loop` ask before running skills that declare `allowed-tools` or hooks, and `-p`/SDK runs only apply `.claude/settings.local.json` allow rules in trusted folders.
 - **2.1.323:** experimental opt-in **Code Mode** (Claude writes JavaScript to call its tools); `engines["claude-code"]` in `plugin.json` pins plugins to a version range. Fixes Bash deny/ask rules missed through `sudo`/`env` wrappers and Write/Edit ignoring `Read` deny rules. Unrecognised model IDs now assume a 1M context window (`CLAUDE_CODE_DISABLE_1M_CONTEXT=1` keeps 200K).
 - **2.1.321:** **Claude Fable 5.2** (`claude-fable-5-2`) becomes the default Fable model; saved Fable 5.1 selections move to `fable` (`/model claude-fable-5-1` to switch back). Fixes MCP OAuth sending refresh tokens to another host on redirect, read-only Bash running outside the sandbox without a prompt, and deny rules not covering `cp`/`mv` destinations.
@@ -127,7 +135,7 @@ Source: [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/cla
 **Why it matters:** Three releases in a row close permission and sandbox gaps, and 2.1.325 changes a sandbox default that unattended runs may depend on.
 Source: [Claude Code CHANGELOG (v2.1.325 tag)](https://raw.githubusercontent.com/anthropics/claude-code/v2.1.325/CHANGELOG.md) · Added: 2026-11-18 · Updated: 2026-11-19
 
-### Codex CLI 0.167 → 0.170 + GPT-6.2 Astra/Sol · 2026-11-17 → 11-18 🆕
+### Codex CLI 0.167 → 0.170 + GPT-6.2 Astra/Sol · 2026-11-17 → 11-18
 - **GPT-6.2 Astra and GPT-6.2 Sol** (2026-11-17) are available in Codex: Astra for the hardest projects, Sol for everyday coding. OpenAI says Sol completes more tasks than GPT-6.1 Sol on the same paid plan *(self-reported)*.
 - **0.170.0** (2026-11-18): MCP OAuth credential race fixes, experimental support for identically named MCP servers across environments, and an HTTP fallback for oversized WebSocket requests.
 - **0.169.0** (2026-11-13): `codex exec` keeps project config and MCP servers disabled in untrusted directories unless you pass `--trust`. Adds multiple side-chat tabs and custom model providers configurable from the terminal.
@@ -156,20 +164,20 @@ Source: [GitHub changelog: Copilot weekly releases, November 9](https://github.b
 **Why it matters:** Platform teams can now enforce a sandbox and central MCP auth for Kiro rather than relying on each developer's settings.
 Source: [Kiro changelog](https://kiro.dev/changelog/index) · [IDE 1.4.236](https://kiro.dev/changelog/ide/1-4-236/) · Added: 2026-11-19 · Updated: 2026-11-20
 
-### Cursor: voice chat + live app hosting · week of 2026-11-02 🆕
+### Cursor: voice chat + live app hosting · week of 2026-11-02
 - **Realtime voice** with coding agents in the Agents Window, IDE, web and iOS; zero data retention in Privacy Mode.
 - **Build live apps:** cloud agents scaffold a web app, provision Postgres, add Cursor SSO and deploy to your domain. Exposed-secret checks must pass first.
 Sources: [voice chat](https://cursor.com/changelog/voice-chat) · [build live apps](https://cursor.com/changelog/build-live-apps) · Added: 2026-11-18
 
-### Google Antigravity `/swarm` · 2026-11-12 🆕
+### Google Antigravity `/swarm` · 2026-11-12
 A multi-agent `/swarm` command and an orchestrator mode for planning parallel work.
 Source: [ThursdAI November releases](https://thursdai.news/releases/2026-11) · Added: 2026-11-18
 
-### Devin: enterprise governance · 2026-10-30 → 11-06 🆕
+### Devin: enterprise governance · 2026-10-30 → 11-06
 Self-serve SSO, hierarchical budgets, default PAT approval, session-sharing controls, sign-out everywhere, a 1,000-repo multi-repo scan cap, and OAuth discovery when an MCP server returns 401 mid-session.
 Source: [Devin release notes](https://docs.devin.ai/release-notes/overview#november-6-2026) · Added: 2026-11-18
 
-### DeepSeek Harness: Creator Mode · 2026-11-05 🆕
+### DeepSeek Harness: Creator Mode · 2026-11-05
 Turns chat prompts into installable coding-harness plugins.
 Source: [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) · Added: 2026-11-18
 

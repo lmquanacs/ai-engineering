@@ -1,6 +1,6 @@
 # Open-weight model providers
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Where to call GLM, DeepSeek, Kimi, Qwen, MiniMax and MiMo models: the labs' own APIs and coding plans, OpenAI- and Anthropic-compatible base URLs, which third-party hosts serve which model (and at what precision), routers, and how to wire them into AI SDK, Pydantic AI, Spring AI and LangChain4j. Launches and benchmarks are in [LLM news](../news/README.md). Frontier prices and self-hosting are in [Inference, cost & serving](../cost-and-serving/README.md). DeepSeek API feature changes are in [LLM APIs](../../build/llm-apis/README.md). Bedrock availability is in [AWS](../../platforms/aws/README.md).
 
@@ -68,7 +68,7 @@ More libraries: [Libraries](../../build/libraries/README.md).
 <!-- newest first -->
 
 ### GLM-5.4 ships on the GLM Coding Plan first; API comes later · 2026-11-23 🆕
-Z.ai's newest model is available on all GLM Coding Plan tiers (Lite, Pro, Max), with 1M context and 128K max output. Its pay-as-you-go Model API will follow "upon completion of the security assessment", with no date given. In coding tools, use `glm-5.4`, or `glm-5.4[1m]` for the full 1M window. Weekly-quota plans get 1.5× their GLM-5.3 quota, and Z.ai quotes up to 200 tok/s off-peak and 70–80 tok/s at peak *(self-reported)*. As of 2026-11-25, Z.ai's pages don't mention open weights, and OpenRouter doesn't list the model.
+Z.ai's newest model is available on all GLM Coding Plan tiers (Lite, Pro, Max), with 1M context and 128K max output. Its pay-as-you-go Model API will follow "upon completion of the security assessment", with no date given. In coding tools, use `glm-5.4`, or `glm-5.4[1m]` for the full 1M window. Weekly-quota plans get 1.5× their GLM-5.3 quota, and Z.ai quotes up to 200 tok/s off-peak and 70–80 tok/s at peak *(self-reported)*. As of 2026-11-26 there is still no pay-as-you-go API: Z.ai's model guide lists only `glm-5.3`, its pages don't mention open weights, and OpenRouter's Z.ai list doesn't include the model.
 **Why it matters:** Coding-plan users can switch now. API, router and third-party-host users stay on `glm-5.3` until the API and weights land. If Claude Code says the `[1m]` model doesn't exist, update Claude Code. Confirm the switch with `/status`.
 ```json
 {

@@ -1,6 +1,6 @@
 # Evals & observability
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > You can't improve an agent you can't see. This page covers tracing, evals, benchmarks and the standards underneath them.
 
@@ -35,8 +35,19 @@ Comparison sources: [benchlm.ai](https://www.benchlm.ai/blog/posts/best-llm-obse
 | **FrontierHarness Eval** | Cost and pass rate of coding *harnesses* with the model held fixed | Runta; v1.1 covers open models only |
 
 ⚠️ Most launch numbers are **self-reported** and many depend on the harness. Treat them as hints and run your own evals on your own tasks.
+SWE-bench scores also carry test noise: a 2026-11-24 study flags 23% of Verified and 35% of Pro tasks as having overspecified tests → [Research](../../learn/research/README.md).
 
 ## 📰 Recent releases & results
+
+### Braintrust Patterns GA; Patterns and Loop start using credits on 2026-12-07 · 2026-11-23 (missed earlier) 🆕
+Patterns, which mines agent traces and logs for recurring problems (user frustration, unfinished workflows, unnecessary model calls, cost or latency shifts) even when calls succeed, is now generally available. Loop's GitHub and external MCP integrations are GA too. Model credits are renamed **Braintrust credits**, one balance for Patterns, Loop, Topics and built-in inference; Starter includes 10 a month and Pro 100. With your own provider key, the provider bills inference but Braintrust still charges credits for its own work.
+**Why it matters:** **Billing for Patterns and Loop starts 2026-12-07** on Starter and Pro with no action needed. Enterprise admins must accept the updated terms in Billing by the end of 2026-12-06 to opt in. Check scheduled Patterns rules before then if you don't want them drawing credits.
+Source: [Braintrust blog: Patterns](https://www.braintrust.dev/blog/patterns) · [Braintrust pricing](https://www.braintrust.dev/pricing) · Added: 2026-11-26
+
+### Agent security benchmark verdicts move with the hash seed and tool order · TARE · arXiv 2611.30259 · 2026-11-23 🆕
+On Agent Security Bench, changing only the Python hash seed changed up to 17% of an agent's verdicts. The seed acts through tool order, and sorting the tool list instead of reverse-sorting it raised attack success by up to 19 points, because the benchmark's naming puts attacker tools first. Reordering the same evidence flipped six of seven LLM judges' decisions on 17–91% of 98 proposed actions. Across 18 agent–defence pairs, the authors' worst-case test could attribute effects to only two of three defences, one of them in opposite directions on two agents. In those decreases, 35–69% of the "stopped" attacks simply ended without any tool call *(self-reported)*.
+**Why it matters:** Before trusting a "defence X cuts ASR by N points" claim, or your own, rerun it with shuffled tool and evidence order and different seeds, and report the spread.
+Source: [arXiv 2611.30259](https://arxiv.org/abs/2611.30259) · Added: 2026-11-26
 
 ### Langfuse Topics (public beta): cluster production traces by intent, sentiment, outcome and issue · 2026-11-24 🆕
 Topics summarises each finished trace from four angles (intent, sentiment, outcome, issues), embeds the summaries, and clusters and names them. You can run it as daily-rebuilt live maps over filtered, sampled traffic, or as one-off snapshots, for example to compare dataset coverage with production. Agents can query topics through the API, MCP and CLI. It runs on models from your own LLM connections, and each facet summary is one billable unit. It is available on Langfuse Cloud and self-hosted Langfuse v4.

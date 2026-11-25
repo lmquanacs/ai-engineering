@@ -1,6 +1,6 @@
 # Google Cloud for AI engineering
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-26_
 
 > What matters on Google Cloud if you build AI systems: **Gemini Enterprise Agent Platform** (formerly Vertex AI), with model availability and retirements, Model Garden's third-party and open models, Agent Runtime (formerly Agent Engine), sessions and Memory Bank, plus the Agent Development Kit (ADK), Google Cloud MCP servers and Spring AI on Google Cloud. New Gemini models are covered in [LLM news](../../models/news/README.md), Gemini Developer API features in [LLM APIs](../../build/llm-apis/README.md), and Gemini CLI and Antigravity in [Coding agents](../../build/coding-agents/README.md).
 
@@ -12,7 +12,9 @@ _Last updated: 2026-11-24_
 | **2026-12-13** | `gemini-live-2.5-flash-native-audio` retires on the platform | Move live voice agents to `gemini-3.8-live`. See [Voice & multimodal](../../build/voice-and-multimodal/README.md). ([model versions](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions)) |
 | **2027-01-12** | Cache writes start being billed for Gemini 4 Hydrogen and later models | Check how often you write to the context cache. ([release notes, 2026-11-18](https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes)) |
 | **2027-01-28** | `gemini-3.7-flash` retires | Pin `gemini-3.8-flash` and re-run your evals. ([model versions](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions)) |
+| **2027-02-01** | Google Workspace enforcement starts: AI agents calling Workspace REST APIs directly are held to Standard-tier quotas whatever tier the project pays for | Move agents that touch Gmail, Drive, Calendar and other Workspace data to the Workspace MCP servers or CLI (see Latest). ([usage model](https://developers.google.com/workspace/tools-safety)) |
 | **2027-03-15** | `gemini-2.5-flash-image` retires | Move to `gemini-3.1-flash-lite-image`, the recommended upgrade. ([model versions](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions)) |
+| **2027-04-01** | Scaled-tier billing for Workspace APIs begins; Gmail, Calendar and Drive MCP usage on that tier is billed from the first request | Estimate request volume before opting a project into the Scaled tier. ([usage model](https://developers.google.com/workspace/tools-safety)) |
 | **2027-04-01** | `text-embedding-005`, `text-embedding-004`, `text-multilingual-embedding-002` and `multimodalembedding@001` retire. The table names no replacement | Vectors from different models don't mix, so plan a full re-embed and reindex of affected vector stores. ([model versions](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions)) |
 
 Retirement dates come from the model versions page (last updated 2026-11-19). It also lists `veo-3.1-*`, `gemini-3.1-flash-lite`, `gemini-3.5-flash` and several image models as retiring "on or after" dates from May to June 2027.
@@ -27,7 +29,7 @@ Google announced Agent Platform on 2026-04-22 as the successor to Vertex AI. All
 Sources: [Google Cloud blog: introducing Agent Platform](https://cloud.google.com/blog/products/ai-machine-learning/introducing-gemini-enterprise-agent-platform) · [Agent Runtime SDK migration guide](https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime/sdk-migration) · [Vertex AI SDK migration guide](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/deprecations/genai-vertexai-sdk) · Added: 2026-11-24
 
 ### Agent Development Kit (ADK) · Google's agent framework 🆕
-ADK is Google's open-source, code-first agent framework, available for Python, Java, TypeScript/JS and Go. It is the framework most tightly integrated with Agent Runtime: Python agents deploy with the `adk` CLI and Go agents with `adkgo`. The Python package is at **2.15.0**, released 2026-11-20 on PyPI. The breaking changes in that release are covered on the [Python libraries](../../build/libraries/python.md) page, and the Java version is listed under [JVM libraries](../../build/libraries/jvm.md).
+ADK is Google's open-source, code-first agent framework, available for Python, Java, TypeScript/JS and Go. It is the framework most tightly integrated with Agent Runtime: Python agents deploy with the `adk` CLI and Go agents with `adkgo`. The Python package is at **2.15.1** (a patch released 2026-11-25 on PyPI). The breaking changes in 2.15.0 (2026-11-20) are covered on the [Python libraries](../../build/libraries/python.md) page, and the Java version is listed under [JVM libraries](../../build/libraries/jvm.md).
 ```bash
 pip install google-adk
 ```
@@ -55,6 +57,11 @@ Sources: [MCP overview](https://docs.cloud.google.com/mcp/overview) · [Supporte
 
 <!-- newest first -->
 
+### Google Workspace MCP servers and Workspace CLI GA, with agent quotas and a REST cut-off · 2026-11-25 🆕
+Google made its remote Workspace MCP servers (Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Tasks and others, at `https://<product>mcp.googleapis.com/mcp/v1`) and the Workspace CLI generally available. They add permission and DLP checks, human confirmation for sensitive actions, and Model Armor screening. Agents need a dedicated OAuth client (a Web application client marked for use by an AI agent) with least-privilege scopes. Under the new Workspace AI Tools Addendum, agents must use the MCP servers or CLI instead of REST. From **2027-02-01**, agents that call REST directly are held to Standard-tier quotas. The free Standard tier allows 5,000 MCP requests per day, per project, per product. Billing for the Scaled tier starts **2027-04-01**, and on that tier Gmail, Calendar and Drive MCP calls are billed from the first request. The same post describes Agent Gateway for LLM, MCP and A2A traffic, which checks agent identities against Agent Registry and applies default-deny egress.
+**Why it matters:** Any agent that reads mail, files or calendars through Workspace REST APIs needs a migration plan before February, and high-volume agents need a budget before April. Traditional, non-agent apps stay on REST. Some MCP tools count as several requests, so measure your real usage. More servers: [MCP servers](../../build/mcp-servers/README.md).
+Sources: [Google Cloud blog](https://cloud.google.com/blog/products/identity-security/deploying-agents-safely-in-your-enterprise) · [Workspace usage model for agents](https://developers.google.com/workspace/tools-safety) (updated 2026-11-24) · [Configure the Workspace MCP servers](https://developers.google.com/workspace/guides/configure-mcp-servers) · Added: 2026-11-26
+
 ### Deferred tier for agents and the Interactions API · 2026-11-16 🆕
 Background work can now opt into a cheaper Deferred service tier, now GA. In ADK, set `ServiceTier.DEFERRED` in `RunConfig` (this needs `google-adk` v2.10.0 or later). In the Interactions API, pass `service_tier="deferred"` on the `global` endpoint. It covers `gemini-4-carbon`, `gemini-4-argon`, the Gemini 3.x Flash models and `gemini-3.1-pro-preview`. The release notes say Deferred is billed at a 50% discount.
 **Why it matters:** Batch-like agent jobs such as nightly triage, backfills and evals can run at half price without being rewritten for a batch API.
@@ -77,10 +84,10 @@ Source: [Agent Platform release notes](https://docs.cloud.google.com/gemini-ente
 **Why it matters:** You can call Anthropic, xAI, Meta and DeepSeek models under the same IAM, billing and VPC-SC as Gemini. Compare with [Bedrock](../aws/README.md) if you run on both clouds. Model details are in [LLM news](../../models/news/README.md).
 Source: [Agent Platform release notes](https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes) · Added: 2026-11-24
 
-### Tuned Gemini 3.x models: global serving and Provisioned Throughput · 2026-10-19 → 11-04 🆕
-Supervised fine-tuning went GA for `gemini-3.5-flash-lite`, `gemini-3.5-flash` and `gemini-3.1-flash-lite` on 2026-10-19 (in the `us` and `eu` multi-regions, with CMEK). Tuned Gemini 3.x models can be served on `global` endpoints from 2026-11-02, after you copy them with Model Registry `models:copy`. Provisioned Throughput for fine-tuned models went GA on 2026-11-04.
+### Tuned Gemini 3.x models: Gemini 3.8 Flash tuning GA, global serving and Provisioned Throughput · 2026-10-19 → 11-20 🆕
+Supervised fine-tuning went GA for `gemini-3.5-flash-lite`, `gemini-3.5-flash` and `gemini-3.1-flash-lite` on 2026-10-19 (in the `us` and `eu` multi-regions, with CMEK). Tuned Gemini 3.x models can be served on `global` endpoints from 2026-11-02, after you copy them with Model Registry `models:copy`. Provisioned Throughput for fine-tuned models went GA on 2026-11-04. On 2026-11-20, supervised fine-tuning, continuous tuning and tuning checkpoints went GA for `gemini-3.8-flash`, with tuning jobs in `us` and `eu` and serving in `us`, `eu` or `global`.
 **Why it matters:** A tuned model can now run in production with reserved capacity and global routing, which removes the main reason to avoid tuning for latency-critical paths. Note that `gemini-3.5-flash` and `gemini-3.1-flash-lite` are scheduled to retire on or after May 2027. See [Fine-tuning](../../models/fine-tuning/README.md).
-Source: [Agent Platform release notes](https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes) · Added: 2026-11-24
+Source: [Agent Platform release notes](https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes) · Added: 2026-11-24 · Updated: 2026-11-26
 
 ---
 

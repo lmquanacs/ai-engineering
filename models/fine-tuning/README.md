@@ -1,6 +1,6 @@
 # Fine-tuning & post-training
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Adapting open-weight models: LoRA/QLoRA, preference tuning, RL with verifiable rewards, distillation and the data behind them. Lower priority unless you train models, but this is where open models get specialised.
 
@@ -29,6 +29,11 @@ Sources: [Fine-tuning guide (Jose Nobile)](https://josenobile.pages.dev/guides/f
 Sources: [Hugging Face: TRL v1.0](https://huggingface.co/blog/trl-v1) · [Unsloth on PyPI](https://pypi.org/project/unsloth/2026.8.1/) · [Open RLHF toolchain 2026](https://presenc.ai/research/open-rlhf-finetuning-toolchain-2026) · Added: 2026-11-18
 
 ## 🗞️ Releases
+
+### TRL 1.19.0: multi-teacher distillation, packed SFT fix for SDPA · 2026-11-25 🆕
+`DistillationTrainer` can now take a dict of teacher models, and a `teacher_id` column picks the teacher for each example. It also accepts an `environment_factory`, so you can distil against stateful environments. In SFT with BFD packing, packed examples now stay as separate rows, so SDPA attention no longer spans the whole packed batch. The release notes say this roughly halves step time, and flash-attention runs are unaffected *(self-reported)*.
+**Why it matters:** If you pack SFT data on SDPA (no flash attention), upgrade for the speed-up and re-run a short eval to compare against your earlier checkpoints. Routing each example to its own teacher makes it easier to distil several specialist models into one student. No breaking changes are listed.
+Source: [PyPI trl 1.19.0](https://pypi.org/project/trl/) · [release notes (releases.sh mirror)](https://releases.sh/hugging-face/fine-tuning) · [release PR #8587](https://github.com/huggingface/trl/pull/8587) · Added: 2026-11-26
 
 ### PEFT 0.22.0: Python 3.11+, stricter `modules_to_save`, new PaCA method · 2026-11-19 🆕
 PEFT now needs Python 3.11 or newer. The release adds PaCA (Partial Connection Adaptation), which tunes selected input columns of the existing weights instead of adding adapter layers, plus Astra and NoRA initialisations for LoRA. Two changes can break existing setups. `modules_to_save` now matches whole sub-module names rather than suffixes. A fix to the OFT Conv2d forward pass can also change outputs from existing Conv2d OFT checkpoints. 0.21.3 (2026-11-13) made `save_pretrained` on tensor-parallel (DTensor) models gather only the adapter weights.
@@ -72,11 +77,11 @@ TRL's v1.0 notes say that for math, code and tool use, rewards increasingly come
 **Why it matters:** If you can write a test for the task, you can probably RL-tune a small open model on it.
 Source: [Hugging Face: TRL v1.0](https://huggingface.co/blog/trl-v1) · Added: 2026-11-18
 
-### Harness-consistent RL beats bigger proprietary systems on cost · Nov 2026 🆕
+### Harness-consistent RL beats bigger proprietary systems on cost · Nov 2026
 FireFlash (UCLA) reported that RL with unit tests matching the eval harness lifted an open Flash-class model to 46.2 on Terminal-Bench 4.0 at $0.72 per run, ahead of a proprietary system at 44.5 for $22.02 per run *(as reported)*.
 **Why it matters:** Train in the same harness you deploy in.
 Source: [yage.ai summary](https://yage.ai/share/agent-harness-tricks-benchmark-en-20261109.html) · Added: 2026-11-18
 
-### Open data for behaviour fine-tunes · Nous Arete-27B · Nov 2026 🆕
+### Open data for behaviour fine-tunes · Nous Arete-27B · Nov 2026
 A Qwen3.8-27B fine-tune with the eval and training data released under Apache 2.0. It is a template for auditing and fixing behaviour in self-hosted models. → [Research to watch](../../learn/research/README.md)
 Added: 2026-11-18

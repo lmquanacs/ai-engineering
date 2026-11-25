@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -13,6 +13,10 @@ The largest revision since launch. It is now the current spec and supersedes 202
 - **Auth:** remote servers are formally OAuth 2.1 resource servers.
 - **SDKs:** the TypeScript, Python, Go and C# Tier 1 SDKs supported it on launch day. Codex CLI opts in per server with `protocol_version = "2026-07-28"`.
 - **Spring AI 2.0:** `spring.ai.mcp.server.protocol=STATELESS`.
+
+**Skills over MCP reaches Claude Code (2026-11-24):** the official Skills extension (`io.modelcontextprotocol/skills`, SEP-2640, now Final) lets a server list and serve `SKILL.md` skills through `skills/list`, `skills/get` and `resources/read` on 2026-07-28 connections. Claude Code 2.1.332 loads them in public beta as `<server>:<skill>`. In auto mode a classifier decides whether a skill loads without a prompt; Anthropic scans skills only from some connectors, not from servers you add with `claude mcp add`. Control them with permission rules such as `Skill(mcp__docs__*)` (deny, ask or allow) or turn them off on managed devices with `disableDirectMcpSkills`. They don't work in `claude -p`, cloud sessions, the Agent SDK or through cloud providers. ([Claude Code: use skills from MCP servers](https://code.claude.com/docs/en/mcp#use-skills-from-mcp-servers) · [MCP Skills extension](https://modelcontextprotocol.io/extensions/skills/overview) · [SEP-2640](https://modelcontextprotocol.io/seps/2640-skills-extension))
+
+**FastMCP 4.2.6 (2026-11-25):** adds an experimental client-side `CodeModeClient` that chains tools across servers in one `execute` block. Two breaking changes: Authlib is no longer installed with fastmcp, so declare it yourself if your code imports it, and the experimental events API moved to a separate `fastmcp-events` package (`pip install "fastmcp[events]"`) with Pydantic-model event types. ([FastMCP changelog](https://raw.githubusercontent.com/PrefectHQ/fastmcp/main/docs/changelog.mdx))
 
 **Spring AI 2.1 (2026-11-20)** speaks 2026-07-28 on both sides: set `spring.ai.mcp.server.protocol=MODERN` and existing `@McpTool`/`@McpResource`/`@McpPrompt` beans are served statelessly on WebMVC, WebFlux or STDIO, and clients can mix legacy and modern Streamable HTTP connections. ([Spring AI 2.1.0 GA](https://spring.io/blog/2026/11/20/spring-ai-2-1-0-GA-available-now) · details in [JVM libraries](../libraries/jvm.md))
 
@@ -87,6 +91,15 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 - **Let the agent do it:** the `mcp-builder` skill from [anthropics/skills](https://github.com/anthropics/skills).
 
 ## 🔒 Security notes
+
+### GitLab MCP OAuth SSRF, Electerm MCP widget RCE, another AutoGPT MCP credential bug · published 2026-11-24 → 11-25 🆕
+- **GitLab EE** 18.10 to before 19.4.11, 19.5 before 19.5.9 and 19.6 before 19.6.2: an authenticated user can make the MCP server's OAuth token endpoint send requests to internal hosts (CVE-2026-135221, CVSS 6.3).
+- **Electerm** < 5.9.0: a web page can use DNS rebinding to reach its unauthenticated MCP Server widget on port 30837 and run commands locally and in open SSH sessions (CVE-2026-136630, CVSS 4.0 7.7).
+- **AutoGPT** 0.6.49 to < 0.11.0: a shared agent's `MCPToolBlock` could use the runner's own connected MCP credentials for any read, write or delete (CVE-2026-133462).
+- **pain001-mcp** 0.0.72 to < 0.0.80: path traversal in `commit_payment_batch` (CVE-2026-136620, CVSS 7.1).
+
+**Do this:** Self-managed GitLab EE to 19.6.2 / 19.5.9 / 19.4.11; Electerm to ≥ 5.9.0 (or keep its MCP widget off); AutoGPT ≥ 0.11.0 (already required by yesterday's entry); pain001-mcp ≥ 0.0.80. Write-ups belong in [AI security](../../architecture/security/README.md).
+Source: [GitLab patch release 19.6.2](https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-6-2-released/) · [NVD CVE-2026-135221](https://nvd.nist.gov/vuln/detail/CVE-2026-135221) · [NVD CVE-2026-136630](https://nvd.nist.gov/vuln/detail/CVE-2026-136630) · [NVD CVE-2026-133462](https://nvd.nist.gov/vuln/detail/CVE-2026-133462) · [NVD CVE-2026-136620](https://nvd.nist.gov/vuln/detail/CVE-2026-136620) · Added: 2026-11-26
 
 ### LiteLLM MCP stdio and DBHub zero-days, plus IoTDB, AutoGPT, Sim and Chats CVEs · published 2026-11-23 → 11-24 🆕
 - **LiteLLM** (ZDI-26-1031, CVE-2026-136535, CVSS 7.2): a proxy admin can run commands through MCP stdio server configs. LiteLLM disputes that it's a vulnerability and isn't shipping a separate patch. Its suggested mitigation is v1.104.0+, which turns stdio MCP servers off unless `LITELLM_ENABLE_MCP_STDIO=true` is set in the environment, plus a strong master key.

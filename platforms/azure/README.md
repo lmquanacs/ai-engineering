@@ -1,12 +1,12 @@
 # Azure for AI engineering
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > What matters on Azure for AI engineers: Microsoft Foundry (models, Foundry Agent Service and hosted agents, Foundry IQ, evaluation and observability), Microsoft Agent Framework for Python and .NET (the successor to Semantic Kernel and AutoGen), the Azure MCP Server, and Spring AI and LangChain4j on Azure. **Microsoft Ignite 2026 ran 17–20 Nov** in San Francisco; the developer-relevant announcements are in the section below. OpenAI model launches live in [LLM news](../../models/news/README.md), non-Azure API features in [LLM APIs](../../build/llm-apis/README.md), and GitHub Copilot in [Coding agents](../../build/coding-agents/README.md).
 
 ## ⚡ Action items & dates
 
-Retirement dates come from Microsoft's model retirement schedule (re-checked 2026-11-25; the page shows 2026-11-18). Check the [schedule](https://learn.microsoft.com/en-sg/Azure/foundry/concepts/model-lifecycle-retirement) before you plan, because dates move.
+Retirement dates come from Microsoft's model retirement schedule (re-checked 2026-11-26; the page shows 2026-11-18, its metadata 2026-11-24). Check the [schedule](https://learn.microsoft.com/en-sg/Azure/foundry/concepts/model-lifecycle-retirement) before you plan, because dates move.
 
 | When | What | Do this |
 |---|---|---|
@@ -16,11 +16,14 @@ Retirement dates come from Microsoft's model retirement schedule (re-checked 202
 | **2026-12-03 → 12-08** | Preview retirements: `DeepSeek-V4-Flash-0731` (12-03), `MAI-Transcribe-2-Streaming` (12-04), `gpt-chat-latest` 2026-05-28 (12-08) | Pin newer versions (for example `DeepSeek-V4.1-Flash-1017`, which retires 2027-03-06) or move off. |
 | **2026-12-09** | `Ministral-3B` → `ministral-ministral-4b-instruct`; `mistral-medium-2505` → `mistral-medium-3-5` (Marketplace) | Switch deployments. |
 | **2026-12-15** | `whisper` 001, `tts` 001 and `tts-hd` 001 retire, plus DeepSeek-V4-Pro-0813, DeepSeek-V4.1-Flash (preview) and Cohere-parse-v5 (preview) | Move speech workloads to the `gpt-4o-*-transcribe`/`-tts` family or newer; note those retire in 2027 too (below). |
+| **2027-01-05 → 01-15** | `FLUX-1.1-pro` and `FLUX.1-Kontext-pro` (01-05); `gpt-chat-latest` 2026-08-06 preview (01-12); **`claude-opus-5-5-fast` version 2 (01-15)**, no replacement listed | Check fast-mode Opus deployments now; the schedule gives no successor. |
 | **2027-01-14** | `gpt-4o` 2024-05-13 retires; replacement `gpt-5.1` 2025-11-13. Global Standard and Data Zone Standard deployments auto-upgrade; **Provisioned deployments do not**, and Global Batch is not auto-upgraded | Migrate provisioned and batch deployments by hand. Deployments set to `NoAutoUpgrade` stop working at retirement. |
 | **2027-01-17** | Phi-4 family (Phi-4, -mini-instruct, -mini-reasoning, -multimodal-instruct, -reasoning) retires from Marketplace; listed replacement `microsoft--phi-4` on Foundry Managed Compute | Plan the move to Managed Compute. |
 | **2027-01-20** | `gpt-realtime-2` 2026-05-06 (preview) → `gpt-realtime-2.1`; `gpt-4o-mini-transcribe` and `gpt-4o-mini-tts` 2025-03-20 retire | Update voice agents. |
 | **2027-01-27** | `model-router` versions 2025-05-19 and 2025-08-07 (preview) retire | Move to a current model-router version. |
+| **2027-01-26 → 02-03** | `Kimi-K2.5` preview (01-26); `grok-4` and `grok-code-fast-1` (01-31); `claude-opus-4-6` (02-02); `Llama-3.3-70B-Instruct`, `Llama-4-Maverick-17B-128E-Instruct-FP8` and `Llama-4-Scout-17B-16E-Instruct` (02-03). No replacements listed | Pick successors and re-run evals. |
 | **2027-02-09** | `gpt-5` and `gpt-5-nano` 2025-08-07 retire | Plan the upgrade and re-run evals. |
+| **2027-02-10 → 02-15** | `claude-sonnet-4-6` (02-10); `Cohere-rerank-v5-fast`/`-pro` previews (02-12); on 02-15 `Cohere-embed-v3-english`/`-multilingual` (→ `Cohere-embed-v5-fast`/`-pro`), `cohere-command-a`, `Codestral-2501` (→ `mistral-large-4-latest`), `mistral-small-2503` and `mistral-document-ai-2512` (→ `mistral-ocr-4-0`) | Embedding changes mean a re-embed and reindex. |
 | **2027-02-22** | `claude-opus-4-5` (listed replacement `claude-opus-5-5`) and `claude-haiku-4-5` (→ `claude-haiku-5-5`) retire on Foundry, per the schedule. Anthropic's own notice gives **2027-01-22** for Opus 4.5 | Plan for the earlier date until Microsoft confirms. |
 | **2027-04-14** | `gpt-4o` 2024-08-06 and 2024-11-20, `gpt-4o-mini` 2024-07-18, and `gpt-4.1` / `-mini` / `-nano` 2025-04-14 retire (`gpt-5.1` listed for the `gpt-4o` versions) | Inventory deployments now; fine-tuning *training* on these ends no earlier than 2027-04-01 / 04-14. |
 
@@ -91,6 +94,11 @@ Sources: [Ignite 2026 Book of News](https://news.microsoft.com/events/ignite/202
 ## 🗞️ Latest
 
 <!-- newest first -->
+
+### Foundry Ignite recap: details that change your code · 2026-11-24 🆕
+Microsoft's Ignite roundup (most launches are covered above) adds a few practical details. The **model router** accepts `model="auto"` on the Responses API without deploying a router first (preview). When a **budget block** stops a non-streaming request, Foundry returns HTTP 429 with `x-ms-budget-cause: budget_exceeded`, and the post says not to retry it as a transient rate limit. Registering an **external agent** with `ExternalAgentDefinition` needs `azure-ai-projects` 2.11.0 or later, a connected Application Insights resource, and a `gen_ai.agent.id` attribute on the top-level `invoke_agent` span. The **Foundry Dev Pack** is GA. It installs the `azd ai` CLI, a skill, the VS Code toolkit and a GitHub Copilot plugin in one step (`winget install Microsoft.FoundryDevPack` on Windows). Using Microsoft-Decision-1 as an evaluation judge needs `azure-ai-evaluation` 1.18.12 or later.
+**Why it matters:** Generic retry-on-429 code will hammer a budget that is already exhausted. Check the header and fail fast or alert. Recovery in resilient hosted agents reruns your handler, so make side effects idempotent.
+Source: [Foundry blog: What's new in Microsoft Foundry, Ignite 2026](https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-ignite-2026/) · Added: 2026-11-26
 
 ### Foundry Managed Compute GA: open models on dedicated GPUs · 2026-11-20 🆕
 Managed Compute, in preview since Build 2026, is now GA. Foundry provisions the GPUs and runs the serving containers for open models from the Hugging Face collection in Foundry, which has more than 150 models. Microsoft licence-reviews each model, screens it for untrusted code and stages the weights in Azure. Deployment types are Global and US or EU Data Zone. GPUs are NVIDIA A100, H100 and H200 or AMD MI300X, depending on the model, billed per accelerator-hour. A deployment template fixes context length, serving runtime and GPU count. You scale by raising `capacity` behind one endpoint, and call it with the OpenAI client at `https://<account>.services.ai.azure.com/openai/v1/`. In the blog's SDK example (`azure-mgmt-cognitiveservices`), the SKU is `GlobalManagedCompute`. LoRA adapters from Foundry fine-tuning can share a base deployment (preview), and bring-your-own-weights is in limited preview.

@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -28,6 +28,25 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 
 ## 🚨 Recent items
 
+### Pydantic AI Harness browser egress, DeepSeek-Reasonix, Kiro Web, AutoGPT: agent-tool CVE batch · published 2026-11-24 → 11-25 🆕
+- **Pydantic AI Harness** `PlaywrightBrowser`: the egress policy covered HTTP requests and page WebSockets but not WebRTC (STUN/TURN), WebTransport, `WebSocketStream` or FedCM requests, so a page the agent opens could reach hosts the allowlist refuses, including private addresses, and read `WebSocketStream` replies (CVE-2026-136641, CVSS 6.8). `pydantic-ai-harness` **0.74.0** removes those APIs from pages and turns off FedCM and `WebSocketStream`. Some paths stay open (WebTransport from workers, some `cdp_url` setups), so the advisory also recommends a network egress filter that covers UDP.
+- **DeepSeek-Reasonix** < 2.53.0: its shell-safety classifier treated `git blame` and `git whatchanged` as read-only and ran them without approval, and a textconv driver planted in `.gitattributes` and `.git/config` turns them into arbitrary commands, which exposes stored provider keys (CVE-2026-137056, CVSS 8.8).
+- **Kiro Web** (AWS, hosted): tool-call markup inside a file or web page the agent read could be repeated by some models (DeepSeek v3.2, GLM-5, MiniMax M2.1/M2.5, Qwen3-coder-next) and run as a command in the hosted environment without a consent prompt, from 2026-05-18 to 2026-10-30 (CVE-2026-136267). AWS fixed it on the service side; no customer action is needed.
+- **AutoGPT Platform** < 0.11.0: a shared agent's `MCPToolBlock` could use the runner's own connected MCP credentials for any read, write or delete and send results to the author's host (CVE-2026-133462, CVSS 8.7). Also fixed in 0.11.0: E2B code blocks leaving sandboxes running on the operator's E2B key for up to 24 h (CVE-2026-132260), and unbounded sandbox file extraction exhausting the shared executor's memory (CVE-2026-132265).
+- MCP-related: Electerm < 5.9.0 MCP widget (DNS rebinding to command execution), `pain001-mcp` < 0.0.80 path traversal, and a GitLab EE MCP OAuth SSRF. Details are on the [MCP servers page](../../build/mcp-servers/README.md).
+**Why it matters:** These are the same two lessons again. A command classifier that calls git "read-only" is not a boundary, because repository config can make git run programs. And a browser has more ways out than HTTP, so put agent browsers behind a network-level egress filter. Kiro Web also shows that weaker models can echo injected tool-call syntax as a real call, so a consent prompt has to sit between parsed calls and execution.
+Source: [NVD CVE-2026-136641](https://nvd.nist.gov/vuln/detail/CVE-2026-136641) · [NVD CVE-2026-137056](https://nvd.nist.gov/vuln/detail/CVE-2026-137056) · [AWS security bulletin 2026-202](https://aws.amazon.com/security/security-bulletins/2026-202-aws/) · [NVD CVE-2026-133462](https://nvd.nist.gov/vuln/detail/CVE-2026-133462) · [NVD CVE-2026-132260](https://nvd.nist.gov/vuln/detail/CVE-2026-132260) · Added: 2026-11-26
+
+### Permission replies can delete your deny rules · arXiv 2611.32195 · 2026-11-24 🆕
+Claude Code lets plugins and remote relays answer permission prompts and documents that those answers can't override the operator's deny rules. The authors show that a reply can carry a policy update that *removes* a deny rule, because only added or replaced allow rules are checked. In their example a remote service approves an unrelated command, deletes the rule protecting the project's secrets, and the agent reads them in that session and the next, even under the strict sandbox. The deletion looks the same as a local edit by the operator. The same model correctly predicted whether restrictions survive in 13 permission designs across 10 agent systems, including Codex, Gemini CLI, opencode and Goose. Only 2 of 2,227 marketplace plugins they fetched send policy updates *(self-reported)*.
+**Why it matters:** Whoever can answer a permission prompt (a remote-approval relay, a plugin's permission hook) can effectively edit your policy. Keep critical deny rules in managed or read-only settings, don't wire untrusted services into approvals, and check settings files for rules that quietly disappeared.
+Source: [arXiv 2611.32195](https://arxiv.org/abs/2611.32195) · Added: 2026-11-26
+
+### Context compaction breaks request-derived authorization · arXiv 2611.32194 · 2026-11-24 🆕
+Defences such as Progent derive what an agent may do from the user's request. At every automatic compaction the authors observed, Claude Code and Codex inserted the model-written summary as a *user* message, so text quoted from documents or injected content then reads as the user speaking. When an attacker's notice named another bank account as plain data and the user asked to pay the rent, the policy derived from a frontier compactor's summary allowed the attacker's account in 91% of cases, against none when derived from the user's own words. Their fix carries the user's authenticated original words verbatim across compaction for the authorizer while the agent still reads the summary; in 40 attacked AgentDojo episodes no attacker action completed *(self-reported)*.
+**Why it matters:** If your guardrail or approval logic reads "the user's request" from the conversation, it may be reading a compaction summary. Keep the original user turns out of band and authorize against those.
+Source: [arXiv 2611.32194](https://arxiv.org/abs/2611.32194) · Added: 2026-11-26
+
 ### LiteLLM, AutoGPT, ECS MCP, DBHub, browser-use: AI-tool CVE batch · published 2026-11-23 → 11-24 🆕
 - **LiteLLM** (six ZDI advisories, auth required for all): RCE via `pass_through_endpoints` (CVE-2026-136539, CVSS 7.2; fix in PR #27801), key-management endpoints missing authorization (CVE-2026-136537, fixed in 1.104.0), virtual-key model-alias privilege escalation (CVE-2026-136538), SSRF through `api_base` (CVE-2026-136536), and the OIDC secret resolver reading env vars (CVE-2026-136540, fixed in 1.84.0). The sixth, command injection through MCP stdio configs (CVE-2026-136535, CVSS 7.2), went out as a **0-day**: LiteLLM says stdio servers run admin-chosen commands by design and no patch is coming, so only proxy admins should be able to create or test MCP servers.
 - **Amazon ECS MCP Server** (`awslabs.ecs-mcp-server`) < 0.1.36: prompt injection can make the troubleshooting tool return plaintext task-definition env vars and secret references that the sensitive-data setting should redact (CVE-2026-135614). Upgrade and rotate credentials kept as plaintext env vars.
@@ -36,6 +55,7 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - **AutoGPT Platform**: shared or marketplace agents can capture users' saved SMTP/database logins (CVE-2026-130171) and credentials can leak through backslash redirects (CVE-2026-133449), both fixed in 0.11.0. In 0.7.1–0.8.4, `/` and `@path` text sent to the Claude Code CLI bypasses the tool allow-list and PreToolUse hooks (CVE-2026-133448), and an incomplete IPv6 blocklist allows SSRF (CVE-2026-130178).
 - Smaller: **Sim** 0.5.61 to < 0.9.41 lets write-level members make workflow MCP servers public (CVE-2026-135162). **Apache IoTDB MCP Server** ≤ 0.2.0 logs the DB password in plaintext (CVE-2026-135747; upgrade to 0.3.0). **Prismor** < 1.57.0 lets any web page turn off its agent guardrails through a wildcard-CORS local API (CVE-2026-136185). **Spring AI** 2.0.0–2.0.2: the Typesense filter converter mistranslates grouped expressions, which can break tenant filters (CVE-2026-59442), and the PDF readers can be made to run out of memory (CVE-2026-59340). Both are fixed in [2.0.3 / 2.1.0](../../build/libraries/jvm.md).
 **Why it matters:** If you run a LiteLLM proxy, upgrade to a current release and make sure only admins can define MCP servers. Don't expose DBHub to untrusted clients until Bytebase says the ZDI bug is fixed.
+**Update 2026-11-26:** Still no fix for either 0-day. ZDI-26-1031 lists no patch, only LiteLLM's mitigation (≥ 1.104.0 with `LITELLM_ENABLE_MCP_STDIO` unset, and no default master key). DBHub's latest npm release is still 2.1.0 (2026-11-21), and ZDI's only advice is still to restrict access.
 Source: [ZDI-26-1084](https://www.zerodayinitiative.com/advisories/ZDI-26-1084/) · [ZDI-26-1031](https://www.zerodayinitiative.com/advisories/ZDI-26-1031/) · [ZDI-26-1082](https://www.zerodayinitiative.com/advisories/ZDI-26-1082/) · [ZDI-26-1067 (DBHub)](https://www.zerodayinitiative.com/advisories/ZDI-26-1067/) · [NVD CVE-2026-135614](https://nvd.nist.gov/vuln/detail/CVE-2026-135614) · [NVD CVE-2026-136452](https://nvd.nist.gov/vuln/detail/CVE-2026-136452) · [NVD CVE-2026-130171](https://nvd.nist.gov/vuln/detail/CVE-2026-130171) · [NVD CVE-2026-133448](https://nvd.nist.gov/vuln/detail/CVE-2026-133448) · [Spring CVE-2026-59442](https://spring.io/security/cve-2026-59442) · Added: 2026-11-25
 
 ### Tool-call smuggling: the guard and the executor parse different calls · arXiv 2611.30624 · 2026-11-23 🆕
@@ -150,16 +170,16 @@ Two malicious releases of Microsoft Agent Framework's PyPI meta-package, **1.26.
 **Why it matters:** Any CI runner or dev box that resolved an unpinned `agent-framework` during that window should be treated as compromised. Pin to 1.26.0, check site-packages for those `.pth` files, search egress logs for webhook.site, rotate every secret on affected hosts, and review Entra ID federated credentials and sign-in logs. Rotating stored secrets alone is not enough, because the malware minted new tokens.
 Sources: [Wiz](https://www.wiz.io/blog/malicious-version-of-microsofts-agent-framework-published-to-pypi) · [StepSecurity](https://www.stepsecurity.io/blog/microsoft-agent-framework-pypi-package-compromised) · Added: 2026-11-19
 
-### Claude Code 2.1.319 → 2.1.325 security fixes · Nov 2026 🆕
+### Claude Code 2.1.319 → 2.1.325 security fixes · Nov 2026
 **2.1.319** fixes a sandbox escape during worktree creation and a Bash permission bypass using crafted environment prefixes, and auto mode now fails closed when the server-side check is unavailable. **2.1.321** fixes MCP OAuth requests sending secrets such as refresh tokens to another host after a server redirect, a read-only Bash command running outside the sandbox without a prompt, and deny rules not applying to the target of `cp`/`mv` into a directory. **2.1.325** fixes zstd response decoding, a Bash allow rule that could run a different program than it names, and compound commands running without asking; sandboxed Bash now prompts by default. **Upgrade to ≥ 2.1.325.** Details: [Coding agents](../../build/coding-agents/README.md).
 Sources: [Claude Code changelog](https://code.claude.com/docs/en/changelog#2-1-319) · [Claude Code CHANGELOG (v2.1.325 tag)](https://raw.githubusercontent.com/anthropics/claude-code/v2.1.325/CHANGELOG.md) · Added: 2026-11-18 · Updated: 2026-11-19
 
-### IBM Granite 4.1 LLMON preview · 2026-11-12 🆕
+### IBM Granite 4.1 LLMON preview · 2026-11-12
 3B and 8B preview models post-trained on **LLMON (LLM Object Notation)** to enforce a structural separation between executable instructions and passive data. Claims are self-reported in an IBM preprint.
 **Why it matters:** It tries to give LLMs the "this is data" channel that fixed SQL injection. Worth tracking, but not yet proven against adaptive attacks.
 Source: [techjacksolutions release tracker](https://techjacksolutions.com/ai-news/technology/?per=100&tag=neocloud) · Added: 2026-11-18
 
-### AI-found vulnerabilities at scale · OpenAI, Nov 2026 🆕
+### AI-found vulnerabilities at scale · OpenAI, Nov 2026
 One autonomous agent run produced **948 working Linux kernel root exploits** (about $1.2M in API credits), and humans reviewed the reports before disclosure. GPT-6 Cyber reports 81 new high-severity Firefox bugs.
 **Why it matters:** Discovery is getting cheaper for everyone, so patch velocity and dependency hygiene matter more.
 Sources: [OpenAI: a thousand fewer paths to root](https://openai.com/index/a-thousand-fewer-paths-to-root/) · [GPT-6 Cyber](https://openai.com/index/introducing-gpt-6-cyber/) · Added: 2026-11-18

@@ -1,6 +1,6 @@
 # Inference, cost & serving
 
-_Last updated: 2026-11-23_
+_Last updated: 2026-11-26_
 
 > What models cost, how to pay less, and how to serve open models yourself. Prices are list prices in USD per 1M tokens unless stated, and they change often, so check the provider's page before you budget.
 
@@ -30,6 +30,7 @@ _Last updated: 2026-11-23_
 | GPT-6 Luna | $0.10 | $0.01 | $0.50 | — |
 | Gemini 4 Carbon | $2 | $0.10 | $10 | Batch/Flex −50% · ⚠️ rises to $4/$20 Dec 1 |
 | Gemini 4 Argon | $2 | $0.10 | $10 | Batch/Flex −50% · ⚠️ rises to $4/$20 Dec 1 |
+| Gemini 4 Neon | $3 | $0.15 | $15 | Google says 32% cheaper per task than Carbon *(self-reported)* |
 | Gemini 4 Hydrogen | $1.50 | $0.075 | $7.50 | Batch/Flex −50% · cache writes billed from 2027-01-12 |
 | Gemini 3.8 Flash | $0.75 | $0.075 | $3.75 | Batch/Flex −50% · ⚠️ rises Jan 1 |
 | Grok 4.7 | $2 | $0.50 | $6 | Batch −20%; 200K+ prompts double |
@@ -38,7 +39,7 @@ _Last updated: 2026-11-23_
 | Qwen4-Max (`qwen4-max`, international) | $1.50 | $0.075 (cache hit) | $4.50 | Explicit cache writes cost extra |
 | Mistral Large 4 | $0.70 | $0.07 | $2.10 | Batch −50% (the pricing page also shows $0.50/$1.50, so confirm for your ID) |
 
-Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15; GPT-6.2 rows from [OpenAI pricing](https://developers.openai.com/api/docs/pricing) on 2026-11-19; DeepSeek-V4-Pro from [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) and Qwen4-Max from [Model Studio pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) on 2026-11-20. Gemini 4 Carbon and Hydrogen rows from [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) (global endpoint) on 2026-11-23. GPT-6 Sol is not yet in the table.
+Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read from provider pages on 2026-11-15; GPT-6.2 rows from [OpenAI pricing](https://developers.openai.com/api/docs/pricing) on 2026-11-19; DeepSeek-V4-Pro from [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) and Qwen4-Max from [Model Studio pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing) on 2026-11-20. Gemini 4 Carbon and Hydrogen rows from [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) (global endpoint) on 2026-11-23. Gemini 4 Neon from the [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/) on 2026-11-26. GPT-6 Sol is not yet in the table.
 
 **More trackers:** [getdeploying.com/llms](https://getdeploying.com/llms) (199 models, hand-checked) · [benchlm.ai cost ledger](https://benchlm.ai/llm-pricing) (217 models, with value-for-money scores)
 
@@ -74,7 +75,7 @@ PyPI shows v0.34.0 uploaded on 2026-11-16. A copy of the release notes lists bre
 **Why it matters:** This looks like an upgrade that changes memory behaviour. Read the GitHub release notes and test on staging before rolling it out.
 Source: [vLLM on PyPI](https://pypi.org/project/vllm/) · [GitHub release v0.34.0](https://github.com/vllm-project/vllm/releases/tag/v0.34.0) · Added: 2026-11-20
 
-### vLLM v0.33.0 · 2026-11-01 🆕
+### vLLM v0.33.0 · 2026-11-01
 Faster speculative decoding on NVIDIA and AMD, a ROCm decode path, new model support, and a `/v1/decisions` endpoint. **Breaking changes:** official builds are now **CUDA 13.0 only** (no more 12.9 wheels or images) and move to PyTorch 2.14. The LM Format Enforcer structured-output backend is deprecated: opt-in in v0.34, removed in v0.35.
 **Why it matters:** Check GPU drivers before upgrading, and plan a move off LM Format Enforcer if you use it.
 ```bash
@@ -91,9 +92,9 @@ Source: [vLLM blog](https://vllm.ai/blog/2026-09-10-tiered-kv-offloading) · Add
 **Why it matters:** It is the easiest route to offline or private coding-agent runs with open models.
 Source: [Unsloth on PyPI](https://pypi.org/project/unsloth/2026.8.1/) · Added: 2026-11-18
 
-### inferd · Incept5 · 2026-11-05 🆕
+### inferd · Incept5 · 2026-11-05
 An Apache-2.0 inference engine for Macs, built to serve many concurrent agents (128 in their demo).
 Source: [GitHub](https://github.com/Incept5-AI/inferd) · Added: 2026-11-18
 
 ## 🧩 Open-weight models worth serving
-See [LLM news](../news/README.md): Kimi K3.1 Pro (2.8T MoE), Mistral Large 4, Ripple-65B (Apache 2.0) and Meta Muse Spark Open. Check each licence before commercial use.
+See [LLM news](../news/README.md): Kimi K3.1 Pro (2.8T MoE), Mistral Large 4, Ripple-65B (Apache 2.0), Meta Muse Spark Open, and Thinking Machines' Inkling 2 Small (594B MoE) and Inkling 2 Mini (26.4B looped MoE, 1M context; both Apache 2.0). The lab lists Inkling 2 Mini support in vLLM, SGLang, Ollama and llama.cpp GGUF builds. Check each licence before commercial use.

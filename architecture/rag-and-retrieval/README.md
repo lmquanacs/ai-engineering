@@ -1,6 +1,6 @@
 # RAG & retrieval
 
-_Last updated: 2026-11-24_
+_Last updated: 2026-11-26_
 
 > Getting the right facts from your own data into the model: chunking, search, reranking and the models and databases behind them. For what happens to context once it's in the window, see [Context engineering & memory](../context-and-memory/README.md).
 
@@ -26,12 +26,22 @@ _Last updated: 2026-11-24_
 
 <!-- newest first: retrieval patterns with evidence, vector DB releases, RAG eval methods -->
 
+### Run agentic RAG evals more than once · arXiv 2611.31266 🆕
+A study of a deployed agentic RAG system for product-documentation questions ran each of 739 questions ten times. The correct page was retrieved in at least one run 69.4% of the time but in all ten runs only 50.9% of the time. Retrieval caused most run-to-run divergence (43.9%), and the number of parallel searches the agent chose at its first step alone explained 20.1% of divergent pairs, while answers stayed similar in meaning (BERTScore 0.90) *(self-reported; NeurIPS 2026 workshop paper)*.
+**Why it matters:** A single-run retrieval score overstates how reliable an agentic RAG system is. Report "found in every run" alongside "found in any run", and consider fixing or bounding the agent's first search fan-out.
+Source: [arXiv 2611.31266](https://arxiv.org/abs/2611.31266) · Added: 2026-11-26
+
+### SOARS: a fast model reranks inside the search loop · arXiv 2611.32917 · 2026-11-24 🆕
+A training-free method for deep-search agents: at each step a fast "System One" model picks the relevant passages from long documents and reranks candidates in one call, using both the original question and the agent's sub-query. Across six backbones on BrowseComp-Plus and WebShaper, the authors report better accuracy and evidence recall with fewer search calls; on BrowseComp-Plus GPT-5.4 Mini went from 73.9% to 84.7% while search calls fell from 23 to 14 *(self-reported)*.
+**Why it matters:** If your agent calls search many times, a cheap per-step rerank that also sees the original question can cut both steps and cost; a full cross-encoder at every step is often too slow.
+Source: [arXiv 2611.32917](https://arxiv.org/abs/2611.32917) · Added: 2026-11-26
+
 ### OpenSearch 3.10: per-query hybrid fusion, template-based agentic search · 2026-11-17 🆕
 The `hybrid` query gains a fusion mode: normalisation and combination are set in the query body instead of a search pipeline, fused hybrid queries can nest inside `bool` or `dis_max`, and a `weights` parameter sets subquery weights per request (min-max, z-score, L2 and RRF remain). `half_float` vectors add 2-bit and 4-bit scalar quantisation. Experimental: search templates for agentic search, where the LLM fills in a registered template rather than writing the whole query, and an Intel SVS engine that OpenSearch reports at 2.6× Faiss HNSW-fp16 throughput at 0.95 recall *(self-reported)*.
 **Why it matters:** Hybrid weights become a per-request knob you can tune and A/B, and template-based agentic search bounds what an LLM-written query can do.
 Source: [OpenSearch blog: Explore OpenSearch 3.10](https://opensearch.org/blog/explore-opensearch-3-10/) · Added: 2026-11-20
 
-Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01) and now has `pg19` images. **Weaviate 1.41.0:** a `1.41.0` image (also tagged `latest`) appeared on Docker Hub on 2026-11-23, but as of 2026-11-24 GitHub still lists only `v1.41.0-rc.1` and the docs' release notes stop at 1.40, so wait for the release notes before upgrading. The RC lists namespaces with RF=3, a lower-memory HNSW node format, semi-automatic shard rebalancing (preview) and reranking with decision models.
+Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01) and now has `pg19` images. **Weaviate 1.41.0:** a `1.41.0` image (also tagged `latest`) appeared on Docker Hub on 2026-11-23, and as of 2026-11-26 the [docs' release table](https://docs.weaviate.io/weaviate/release-notes) lists v1.41.0 (2026-11-23) as the latest release, but with no highlights and no matching client library versions yet, so wait for the release notes before upgrading. The RC lists namespaces with RF=3, a lower-memory HNSW node format, semi-automatic shard rebalancing (preview) and reranking with decision models.
 
 **On AWS:** Amazon Textract Insights (GA 2026-11-20) extracts schema-defined fields from mixed document packets with a confidence score and page/bounding-box grounding per value. → [AWS](../../platforms/aws/README.md)
 
@@ -44,13 +54,13 @@ Google's open embedding model (740M parameters, built on Gemma 4) maps text, cod
 **Why it matters:** A commercially usable, self-hostable model for multimodal RAG that is small enough for CPUs and phones. Benchmark it against your current embedder on your own queries before re-indexing.
 Sources: [Google blog: EmbeddingGemma 2](https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/) · [Technical report overview](https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2-technical-report/) · Added: 2026-11-24
 
-### NVIDIA Nemotron 3.5 Embed / Rerank / Parse · 2026-10-21 🆕
+### NVIDIA Nemotron 3.5 Embed / Rerank / Parse · 2026-10-21
 Five open, commercially usable retrieval models: Embed (8B and 1B, plus a 1B NVFP4 variant), an 8B reranker and a 631M document parser. NVIDIA reports first place among dense retrievers on ViDoRe v3.1 (61.17 nDCG@10) and top reranker scores as of Oct 20 *(self-reported)*. Available on Hugging Face and as NIM.
 **Why it matters:** These are strong open models for multimodal retrieval over PDFs, charts and tables, and NVIDIA pitches better retrieval as a way to cut agent token spend.
 Licence: OpenMDW-1.1.
 Sources: [NVIDIA on Hugging Face](https://huggingface.co/blog/nvidia/nemotron-retriever-world-class-agentic-retrieval) · [Nemotron-3.5-Embed-8B model card](https://huggingface.co/nvidia/Nemotron-3.5-Embed-8B-BF16) · [Nemotron-3.5-Parse model card](https://huggingface.co/nvidia/Nemotron-3.5-Parse) · Added: 2026-11-18 · Updated: 2026-11-20
 
-### Cohere Embed 5 + Rerank 5 (Context Focus) · Sep–Nov 2026 🆕
+### Cohere Embed 5 + Rerank 5 (Context Focus) · Sep–Nov 2026
 Rerank 5 adds an optional **Context Focus** mode that returns the relevant text spans along with document scores. Both models have been on OpenRouter since 2026-11-04, so existing OpenRouter keys work.
 **Why it matters:** Returning spans means you pass less text to the generator, which saves context and cost.
 Embed 5 (Pro and Fast) launched 2026-09-30 and Rerank 5 (Pro and Fast, with calibrated relevance scores) on 2026-10-21.

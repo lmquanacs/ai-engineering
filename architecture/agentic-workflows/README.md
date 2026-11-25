@@ -1,6 +1,6 @@
 # Agentic workflows: patterns and breakthroughs
 
-_Last updated: 2026-11-25_
+_Last updated: 2026-11-26_
 
 > How to structure agent systems, and what the evidence says actually works. Patterns are stable; the "latest evidence" section changes fastest.
 
@@ -23,6 +23,21 @@ Production guardrails that apply to every pattern: an iteration cap, deadlock de
 ---
 
 ## 🔬 Latest evidence: what actually moves the needle
+
+### Hand the legwork to a small model, keep the frontier model in charge · Delegent · arXiv 2611.33098 · 2026-11-24 🆕
+Delegent is a harness built on Claude Code. The frontier model leads every task but hands focused subtasks (investigating code, running tests, searching a corpus) to a small model running on local hardware. Unlike a router or cascade, nothing is trained and the frontier model never gives up the task. With a 27B FP8 small model, the authors report frontier cost down 67% on long-horizon coding and 59% on agentic search with no loss in task performance, and a 2B model that fits on a laptop still cut coding cost by 66%. Most of the saving came from one short instruction that keeps the main coding work with the frontier model *(self-reported)*.
+**Why it matters:** If you already run a local model, try a subagent that uses it for read-only legwork (search, test runs, code reading) before trying a router that picks one model per task. Say explicitly in the instruction which work stays with the main model.
+Source: [arXiv 2611.33098](https://arxiv.org/abs/2611.33098) · Added: 2026-11-26
+
+### Model choice beats harness choice on everyday tasks · ShellBench · arXiv 2611.32946 · 2026-11-24 🆕
+100 everyday tasks drawn from more than 10 million user requests, each in a messy workspace and graded for correctness and safety. Across 12 models, 5 harnesses and 3 reasoning levels (53,100 rollouts), the model mattered more than the harness. All harnesses landed between 42.9 (Claude Code) and 45.2 (OpenClaw) pass@1, with little effect on safety. GPT-6 Astra led at 62.5% and GPT-6.1 Sol passed 61.4% at about a sixth of Astra's estimated token cost *(self-reported)*. 20% of the tasks are public.
+**Why it matters:** This matches the [FrontierHarness](#best-harness-depends-on-the-model--frontierharness-eval-v11-2026-11-17-) and HarnessTax results. For general agent work, compare models (and their price) on your own tasks before you switch harnesses.
+Source: [arXiv 2611.32946](https://arxiv.org/abs/2611.32946) · Added: 2026-11-26
+
+### Retrying after a partial failure often does damage · arXiv 2611.31554 + SecondChance 2611.31586 · 2026-11-23 🆕
+Two studies of what agents do after their own errors. On recorded AppWorld trajectories (ten models), about a quarter (24.6%, weighted estimate) of naturally occurring partial executions were followed by a recovery that left harm in place: two thirds duplicated an effect, the rest deleted user data or made a wrong first-time write. A repeated-call detector caught 75% of duplications but only 41% of all harm, and idempotency keys chosen by the model didn't help because it minted a new key for the same operation. SecondChance resumes 12 models from real error checkpoints in τ²-bench, BFCL and AppWorld: the best model completed only 16% of recoveries unaided and 27% with repair guidance, and fixing the error often didn't mean finishing the task *(both self-reported)*.
+**Why it matters:** Don't rely on the agent to clean up after a partly applied batch of writes. Make writes idempotent with keys derived by your tool layer, not the model, prefer transactional tools, and test recovery from mid-task checkpoints, not just end-to-end success. → [AI security](../security/README.md)
+Source: [arXiv 2611.31554](https://arxiv.org/abs/2611.31554) · [arXiv 2611.31586](https://arxiv.org/abs/2611.31586) · Added: 2026-11-26
 
 ### When tools fail, agents make things up · RetryRealistic · arXiv 2611.28341 · 2026-11-20 🆕
 The authors injected 9 fault types into 8 real tools (filesystem with real permissions, SQLite, a local HTTP server, a shell) across 30 multi-step tasks and 2,100 runs. Four agents recovered correctly only 19–68% of the time, and 6–26% of runs ended in a confidently stated wrong answer. The fault type mattered more than the model: partial-data faults drove fabrication (up to 38%), while outright denials led to honest failures. A verification-first monitor that checks answers against structured tool output and sends corrective instructions instead of hard blocks raised correct recovery from 45.6% to 56.3% and cut fabrication from 17.3% to 10.8%. Removing chain-of-thought made fabrication worse *(self-reported)*. Toolkit and traces: `Kingsford-Group/RetryRealistic`.
@@ -49,7 +64,7 @@ In 27,280 runs (22 harness configurations × 5 open models), the model explained
 **Takeaway:** A harness choice is only valid for the model you tested it with. Cutting wasted steps on doomed runs matters more than trimming the prompt. → [Evals & observability](../evals-and-observability/README.md#frontierharness-eval-v11--harness--model-leaderboard--2026-11-17-)
 Source: [Runta](https://runta.com/blog/introducing-frontierharness-eval-v1-1/) · Added: 2026-11-19
 
-### Controlled studies of harness tricks · Surge AI + FireFlash (UCLA), Nov 2026 🆕
+### Controlled studies of harness tricks · Surge AI + FireFlash (UCLA), Nov 2026
 Two independent reports dismantled popular workflow plugins and harness techniques on real engineering tasks. As summarised by [yage.ai](https://yage.ai/share/agent-harness-tricks-benchmark-en-20261109.html):
 
 | Technique | Effect | Cost |

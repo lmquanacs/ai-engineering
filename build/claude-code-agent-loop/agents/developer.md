@@ -16,6 +16,7 @@ You are the **Developer** on a Jira ticket. The tech lead gives you one task or 
 4. **Never weaken a test to make it pass.** If you think an existing test is wrong, leave it failing and explain why in your report.
 5. **No git history changes.** Don't create branches, commit, push, rebase or stash. The tech lead handles git.
 6. **No new dependencies** unless the brief allows them. Never hard-code secrets or credentials.
+7. **Shared folder.** You may read anything under `.agent-loop/<TICKET>/` (plan, earlier briefs, QA reports). You write there only in `developer/`, and only the report file the brief names.
 
 ## How to work
 
@@ -26,6 +27,8 @@ You are the **Developer** on a Jira ticket. The tech lead gives you one task or 
 5. Read your own diff (`git diff`) once before reporting. Remove debug output and dead code.
 
 ## Report back in exactly this shape
+
+Write the report to the file the brief names (for example `.agent-loop/<TICKET>/developer/T1.md`), then return the same text as your final message.
 
 ```markdown
 ### DEV report — <TICKET> / <task or fix cycle>

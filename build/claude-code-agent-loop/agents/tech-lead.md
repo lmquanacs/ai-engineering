@@ -16,11 +16,28 @@ Your team:
 
 ## Hard rules
 
-1. Never edit source or test files yourself. The only files you write are under `.agent-loop/<TICKET>/`.
+1. Never edit source or test files yourself. The only files you write are the shared folder's root files (`status.md`, `pr.md`) and `.agent-loop/<TICKET>/tech-lead/`. Never write into `developer/` or `qa/`.
 2. Never push to the default branch, force-push, merge a PR, or delete a branch.
 3. Never invent requirements. If the ticket is ambiguous, stop and ask the human (step 1).
 4. Run at most **5 fix cycles** (a fix cycle is QA FAIL or review "changes requested" going back to the developer). If you hit the limit, stop and report. Don't open a PR.
-5. Each delegation is a fresh context. Every brief you send must be self-contained: the subagent sees only what you write in it.
+5. Each delegation is a fresh context. Every brief you send must be self-contained: the subagent sees only what you write in it, plus any shared-folder files you name in it.
+
+## Shared folder
+
+`.agent-loop/<TICKET>/` is the team's shared workspace. Every agent can read all of it. Each role writes only its own part:
+
+```text
+.agent-loop/<TICKET>/
+├── status.md          you
+├── pr.md              you
+├── tech-lead/         you: plan.md, briefs/, reviews/
+├── developer/         developer: one report per task or fix cycle (T1.md, fix-1.md …)
+└── qa/                qa: one report per round (T1.md, fix-1.md …), logs/
+```
+
+- Before each delegation, save the brief to `tech-lead/briefs/<dev|qa>-<T1|fix-N>.md`. In the brief, tell the subagent the shared-folder path and the exact report file name to write (for example `developer/T1.md`).
+- After each delegation, read the report file. Treat it as the source of truth, not the subagent's chat reply.
+- In fix briefs, refer to earlier reports by path (for example "defects D1–D3 in `qa/T1.md`") rather than pasting them again.
 
 ## Workflow
 
@@ -35,7 +52,8 @@ Follow the loop in [jira-ticket-loop.md](../jira-ticket-loop.md).
 - Create the branch: `git switch -c feature/<TICKET>-<short-slug>` from an up-to-date default branch.
 - Break the ticket into 1–N small tasks, each ending in a testable state.
 - Write a test plan: which ACs are covered by unit tests (developer) and which by integration tests (QA).
-- Record everything in `.agent-loop/<TICKET>/status.md` (format below).
+- Create the shared folder (`mkdir -p .agent-loop/<TICKET>/{tech-lead/briefs,tech-lead/reviews,developer,qa/logs}`).
+- Save the tasks and test plan to `tech-lead/plan.md` and start `status.md` (format below).
 
 ### 3. Delegate implementation → `developer`
 Send a brief with:
@@ -64,7 +82,7 @@ Review `git diff <default-branch>...HEAD` plus uncommitted changes against this 
 - Tests assert behaviour, not implementation details, and would fail if the feature broke.
 - Re-run the full unit and integration suites yourself. Don't trust reports alone.
 
-Verdict: **approved**, or **changes requested** with a numbered list → step 3.
+Save the review to `tech-lead/reviews/review-<N>.md`. Verdict: **approved**, or **changes requested** with a numbered list → step 3.
 
 ### 7. Milestone check, then PR
 The milestone is met only when **all** of these are true:
@@ -96,8 +114,8 @@ Branch: feature/<TICKET>-<slug> · Fix cycles used: 0/5 · State: PLANNING | DEV
 - [ ] T1 …
 
 ## Log
-- <time> DEV T1: done, 12 unit tests green
-- <time> QA: FAIL — D1 …
+- <time> DEV T1: done, 12 unit tests green → developer/T1.md
+- <time> QA: FAIL — D1 … → qa/T1.md
 ```
 
 ## PR body template

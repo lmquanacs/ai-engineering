@@ -1,48 +1,26 @@
 # Claude Code mastery
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Tips, tricks and workflows for getting the most out of Claude Code, refreshed every day. Release notes and upgrade warnings stay in [Coding agents & IDEs](../coding-agents/README.md); this page is about *how to use it well*.
 
 ## 💡 Tip of the day
 
-### Guard the shell commands skills run as they load, with a `PreSkillShellCommand` hook
-A skill's `` !`command` `` lines run while the skill loads, and `PreToolUse` hooks never see them. From 2.1.332, a `PreSkillShellCommand` hook does: it gets each command after the permission check, even in `bypassPermissions` mode, and can block it. Reuse the script you already run on `PreToolUse` (this one reads `tool_input.command` and denies `rm -rf`), match both tools that run injected commands, and set `onFailure: "block"` so a crashed or slow hook doesn't let the command through.
+### Decide which MCP servers may hand Claude skills: `Skill(mcp__<server>__*)` rules
+From 2.1.331, an MCP server can serve skills as well as tools (public beta). They show up in `/` and `/skills` as `<server>:<skill>`, for example `/docs:pdf report.pdf` for a `pdf` skill on a server named `docs`; connector and plugin servers get a prefix such as `claude_ai_Docs:pdf`. In auto mode the classifier decides whether a skill loads without you seeing it, and the server can change the skill at any time, so set a rule per server. Run `/permissions`, or add to settings:
 ```json
 {
-  "hooks": {
-    "PreSkillShellCommand": [
-      {
-        "matcher": "Bash|PowerShell",
-        "hooks": [
-          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh", "args": [], "onFailure": "block" }
-        ]
-      }
-    ]
+  "permissions": {
+    "allow": ["Skill(mcp__docs__*)"],
+    "ask":   ["Skill(mcp__vendor__*)"],
+    "deny":  ["Skill(mcp__scratch__*)", "Skill(docs:pdf)"]
   }
 }
 ```
-```bash
-#!/bin/bash
-# .claude/hooks/block-rm.sh
-COMMAND=$(jq -r '.tool_input.command')
-
-if echo "$COMMAND" | grep -q 'rm -rf'; then
-  jq -n '{
-    hookSpecificOutput: {
-      hookEventName: "PreToolUse",
-      permissionDecision: "deny",
-      permissionDecisionReason: "Destructive command blocked by hook"
-    }
-  }'
-else
-  exit 0  # no decision; normal permission flow applies
-fi
-```
-Test it with `.claude/skills/hook-test/SKILL.md` containing only `` !`echo 'rm -rf'` ``, then type `/hook-test`: you should see `Not run in /hook-test: echo 'rm -rf' (blocked by hook: ...)`. A blocked command doesn't stop the skill; Claude reads `[not run: blocked by hook: <reason>]` in place of its output.
-Gotchas: upgrade first, because 2.1.331 and older run injected commands without calling the hook and show an `Unknown hook event` dialog at the start of every interactive terminal session (`requiredMinimumVersion` can enforce the version). The hook can only block: `ask`, `defer` or an `updatedInput` also block. Put it in a settings file or plugin, not in the skill's own frontmatter, which is skipped on first load and in subagents. Keep the script on `PreToolUse` too, since in auto mode a command that needs approval is skipped at load and Claude may run it afterwards as a normal tool call. Use a non-async `command`, `http` or `mcp_tool` hook: a `prompt` or `agent` hook on this event blocks every command it matches.
-**Why it matters:** skills from plugins and teammates can run shell commands before Claude reads a word of them, and this is the one place to log or veto those commands.
-Source: [Hooks: PreSkillShellCommand](https://code.claude.com/docs/en/hooks#preskillshellcommand) · [How a hook resolves](https://code.claude.com/docs/en/hooks#how-a-hook-resolves) · [Skills: inject dynamic context](https://code.claude.com/docs/en/skills#inject-dynamic-context) · [Changelog 2.1.332](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · Added: 2026-11-26
+`allow` approves every version of a server's skills, but only works in user or managed settings and only for servers you added at user or local scope or managed servers (not connectors, `.mcp.json` or plugin servers). `ask` prompts each time, even in auto and `bypassPermissions` mode. `deny` also blocks typed commands; deny `mcp__<server>` to block its tools too. Org admins turn skills on for other servers with `disableDirectMcpSkills: false` in managed settings, or keep them off with `true`.
+Gotchas: MCP skills don't load in `claude -p`, cloud sessions, GitHub Actions, the Agent SDK, or through cloud providers, a custom `ANTHROPIC_BASE_URL`, `apiKeyHelper` or `ANTHROPIC_AUTH_TOKEN`. They get no `allowed-tools` grant, and a `deny` rule still lets Claude read the server's resources (deny `ReadMcpResourceTool` for that). If a skill is missing, check `claude --debug=mcp`.
+**Why it matters:** a skill is instructions plus code that can steer Claude, coming from a server that can change it without telling you. One line per server decides whether that happens silently, with a prompt, or never. Pair it with yesterday's `PreSkillShellCommand` hook, below.
+Source: [MCP: use skills from MCP servers](https://code.claude.com/docs/en/mcp#use-skills-from-mcp-servers) · [Skills: skills from MCP servers](https://code.claude.com/docs/en/skills#skills-from-mcp-servers) · Added: 2026-11-27
 
 ---
 
@@ -119,6 +97,44 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 ## 🗞️ Latest tips
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
+
+### Guard the shell commands skills run as they load, with a `PreSkillShellCommand` hook 🆕
+A skill's `` !`command` `` lines run while the skill loads, and `PreToolUse` hooks never see them. From 2.1.332, a `PreSkillShellCommand` hook does: it gets each command after the permission check, even in `bypassPermissions` mode, and can block it. Reuse the script you already run on `PreToolUse` (this one reads `tool_input.command` and denies `rm -rf`), match both tools that run injected commands, and set `onFailure: "block"` so a crashed or slow hook doesn't let the command through.
+```json
+{
+  "hooks": {
+    "PreSkillShellCommand": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh", "args": [], "onFailure": "block" }
+        ]
+      }
+    ]
+  }
+}
+```
+```bash
+#!/bin/bash
+# .claude/hooks/block-rm.sh
+COMMAND=$(jq -r '.tool_input.command')
+
+if echo "$COMMAND" | grep -q 'rm -rf'; then
+  jq -n '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: "Destructive command blocked by hook"
+    }
+  }'
+else
+  exit 0  # no decision; normal permission flow applies
+fi
+```
+Test it with `.claude/skills/hook-test/SKILL.md` containing only `` !`echo 'rm -rf'` ``, then type `/hook-test`: you should see `Not run in /hook-test: echo 'rm -rf' (blocked by hook: ...)`. A blocked command doesn't stop the skill; Claude reads `[not run: blocked by hook: <reason>]` in place of its output.
+Gotchas: upgrade first, because 2.1.331 and older run injected commands without calling the hook and show an `Unknown hook event` dialog at the start of every interactive terminal session (`requiredMinimumVersion` can enforce the version). The hook can only block: `ask`, `defer` or an `updatedInput` also block. Put it in a settings file or plugin, not in the skill's own frontmatter, which is skipped on first load and in subagents. Keep the script on `PreToolUse` too, since in auto mode a command that needs approval is skipped at load and Claude may run it afterwards as a normal tool call. Use a non-async `command`, `http` or `mcp_tool` hook: a `prompt` or `agent` hook on this event blocks every command it matches.
+**Why it matters:** skills from plugins and teammates can run shell commands before Claude reads a word of them, and this is the one place to log or veto those commands.
+Source: [Hooks: PreSkillShellCommand](https://code.claude.com/docs/en/hooks#preskillshellcommand) · [How a hook resolves](https://code.claude.com/docs/en/hooks#how-a-hook-resolves) · [Skills: inject dynamic context](https://code.claude.com/docs/en/skills#inject-dynamic-context) · [Changelog 2.1.332](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · Added: 2026-11-26
 
 ### Keep secrets out of Claude's reach with `Read` deny rules 🆕
 Add `permissions.deny` rules for the files that hold keys and environment values. Claude Code then leaves them out of file discovery and search results, refuses to read them, and also blocks Edit and Write on those paths. The rules cover the built-in file tools, Bash commands it recognises (`cat`, `head`, `tail`, `sed`, `tee`) and redirection targets like `< .env`. Commit them to `.claude/settings.json` so the whole team gets them.

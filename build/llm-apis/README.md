@@ -1,6 +1,6 @@
 # LLM APIs & structured output
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > The provider API features you write code against: structured outputs, tool calling, streaming, batch and files, and the breaking changes between versions. Model launches live in [LLM news](../../models/news/README.md); prices in [Inference & cost](../../models/cost-and-serving/README.md).
 
@@ -24,6 +24,11 @@ _Last updated: 2026-11-26_
 ## 🗞️ Latest
 
 <!-- newest first: new API features, breaking changes, migration guides -->
+
+### Instructor 1.18.0: strict OpenAI batch schemas, failed batch items returned, unknown tool calls raise · 2026-11-26 🆕
+Published to PyPI on 2026-11-26 (the changelog heading says 2026-09-26). Upgrade notes that change behaviour: completed batch retrieval now returns failed requests as `BatchError` records; OpenAI batch schemas use strict structured outputs, so every named field is required (use nullable fields) and arbitrary-key mappings are rejected; unknown parallel tool calls raise `ResponseParsingError` and go through your retry policy instead of being dropped; incomplete non-streaming OpenAI Responses raise `IncompleteOutputException` and aren't cached; streamed JSON over 1 MiB or 128 levels deep raises `ValueError`. Security: remote-media URLs that use IPv6 transition addresses (NAT64, 6to4, Teredo) to reach private IPv4 are rejected. New and opt-in: `Mode.DECISIONS` for typed choice, predicate and score questions, and optional custom IDs for batch requests.
+**Why it matters:** batch jobs and parallel-tool code that relied on silent drops will now see errors. Check models with defaulted fields before you upgrade OpenAI batch pipelines.
+Source: [Instructor CHANGELOG](https://raw.githubusercontent.com/567-labs/instructor/main/CHANGELOG.md) · [PyPI 1.18.0](https://pypi.org/project/instructor/1.18.0/) · Added: 2026-11-27
 
 ### Anthropic: Enterprise Frontier Safeguards (beta) and storage webhooks · 2026-11-23 🆕
 Enterprise Frontier Safeguards (EFS) is now in beta on Claude Platform, Claude Platform on AWS and Claude Models on Google Cloud (Anthropic managed). Eligible organizations get Zero Data Retention while encrypted copies of prompts and responses ("Sealed Safety Data") are written to a bucket in their own cloud account; workspaces left on Anthropic-managed storage are not covered. Two new organization webhook events, `external_storage.failed` and `external_storage.recovered`, fire when that bucket fails or passes Anthropic's daily check.
@@ -77,7 +82,7 @@ Requests that declare the older `computer_20251124` tool now return 400 on every
 **Why it matters:** Computer-use integrations stop working until migrated. → [Voice & multimodal](../voice-and-multimodal/README.md)
 Source: [Claude docs: migrate from computer_20251124](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#migrate-from-computer-20251124) · Added: 2026-11-20
 
-Library check (PyPI, 2026-11-26): no new releases of Instructor (1.17.0), Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window. No new API-feature entries through 2026-11-25 in the Anthropic, Gemini API, Mistral, xAI or DeepSeek changelogs; OpenAI's 2026-11-24 entries (healthcare model configurations, a `chat-latest` update) are model news → [LLM news](../../models/news/README.md). xAI retired `grok-build-0.1` on 2026-11-19.
+Library check (PyPI, 2026-11-27): Instructor 1.18.0 is above; no new releases of Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window. No new API-feature entries through 2026-11-25 in the Anthropic, Gemini API, Mistral, xAI or DeepSeek changelogs; OpenAI's 2026-11-24 entries (healthcare model configurations, a `chat-latest` update) are model news → [LLM news](../../models/news/README.md). xAI retired `grok-build-0.1` on 2026-11-19.
 
 ## 📚 Reference
 

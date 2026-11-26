@@ -1,6 +1,6 @@
 # Fine-tuning & post-training
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Adapting open-weight models: LoRA/QLoRA, preference tuning, RL with verifiable rewards, distillation and the data behind them. Lower priority unless you train models, but this is where open models get specialised.
 
@@ -29,6 +29,16 @@ Sources: [Fine-tuning guide (Jose Nobile)](https://josenobile.pages.dev/guides/f
 Sources: [Hugging Face: TRL v1.0](https://huggingface.co/blog/trl-v1) · [Unsloth on PyPI](https://pypi.org/project/unsloth/2026.8.1/) · [Open RLHF toolchain 2026](https://presenc.ai/research/open-rlhf-finetuning-toolchain-2026) · Added: 2026-11-18
 
 ## 🗞️ Releases
+
+### Training multi-agent teams with GRPO on two GPUs · Hugging Face "Swarms, Flocks, Gangs" · 2026-11-26 🆕
+The first post in a Hugging Face series trains four agents that share one model with a team reward, using the TRL example `examples/async_grpo_s3_aggregation` on Hugging Face Jobs. The run takes about five hours on two H200s, roughly $50. Training success rose from 6.6% to 82.3% over 75 steps, the team solved 26 of 32 held-out problems, and it used 37.4% fewer tokens per attempt *(self-reported)*. The post's script falls back to a TRL pull request if the example isn't on `main` yet.
+**Why it matters:** a cheap, reproducible starting point if you want to test whether training (rather than prompting) makes a multi-agent setup worth its cost. The post also asks the right control question: did cooperation help, or did you just spend more tokens?
+Source: [Hugging Face blog](https://huggingface.co/blog/training-swarms) · Added: 2026-11-27
+
+### Nemotron 3.5 Parse: open synthetic document datasets and the SFT → GRPO recipe · 2026-11-26 🆕
+NVIDIA published the data and method behind its document parser: synthetic chart, table and multilingual-OCR datasets on Hugging Face (`nvidia/Synthetic-Charts-V1`, `nvidia/Synthetic-Tables-V1`, `nvidia/OCR-Synthetic-Multilingual-v2`), and a recipe of SFT followed by RL with verifiable rewards using GRPO. The rewards score extraction quality and penalise repetition loops. On development checkpoints, loop-flagged pages fell from 126 to 29 and the overall score rose from 66.24 to 71.38 *(self-reported)*. The parser model itself is covered in [RAG & retrieval](../../architecture/rag-and-retrieval/README.md).
+**Why it matters:** if an open parser fails on your document types, this is a template for adapting it: synthetic pages for SFT, then GRPO with rewards that check structure and stop looping. Check each dataset's licence on its card before you train on it.
+Source: [Hugging Face blog](https://huggingface.co/blog/nvidia/building-on-nemotron-35-parse-open-data-fine-tunin) · [Synthetic-Charts-V1](https://huggingface.co/datasets/nvidia/Synthetic-Charts-V1) · Added: 2026-11-27
 
 ### TRL 1.19.0: multi-teacher distillation, packed SFT fix for SDPA · 2026-11-25 🆕
 `DistillationTrainer` can now take a dict of teacher models, and a `teacher_id` column picks the teacher for each example. It also accepts an `environment_factory`, so you can distil against stateful environments. In SFT with BFD packing, packed examples now stay as separate rows, so SDPA attention no longer spans the whole packed batch. The release notes say this roughly halves step time, and flash-attention runs are unaffected *(self-reported)*.

@@ -1,8 +1,23 @@
 # Research to watch
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
+
+### How much do coding agents over-edit? About 11% of patch code is unneeded · arXiv 2611.34875 · Nov 2026 🆕
+The authors replayed 7,660 resolved GitHub Copilot CLI trajectories from 18 models, reverted each block of the final patch and re-ran the tests to see whether it was needed. Most extra lines on SWE-bench Verified were tests and docs, and agents' code was on average at least as necessary as developers' (0.887 vs 0.864). Still, 11% of an agent patch's code units were unneeded, and 89% of those changed behaviour. Pruning with only the tests the agent can see removed most of it (67% recall, 46% precision) and 89% of pruned patches still passed; asking the agent to audit its own diff was more precise but caught less (36% recall, 66% precision).
+**So what:** unneeded edits are small but usually change behaviour, so a "revert each hunk and re-run tests" pass before review is worth automating. → [Agentic workflows](../../architecture/agentic-workflows/README.md)
+Source: [arXiv 2611.34875](https://arxiv.org/abs/2611.34875) · Added: 2026-11-27
+
+### An AI code reviewer is not a merge gate, even at high effort · arXiv 2611.33639 · Nov 2026 🆕
+Claude Opus, Sonnet and Haiku 5.5 reviewed 90 agent-written Django patches (55 of them wrong under stronger tests) at low, medium and high effort. Higher effort accepted fewer wrong patches (Opus .45 at high vs .67 at low), and Opus at medium was within the non-inferiority margin of high at 20% less cost. But every setting accepted at least 45% of the wrong patches.
+**So what:** use an AI reviewer to add findings, not to approve merges, and medium effort is a reasonable default for Opus. → [Evals](../../architecture/evals-and-observability/README.md)
+Source: [arXiv 2611.33639](https://arxiv.org/abs/2611.33639) · Added: 2026-11-27
+
+### SkillsBench's "skills hurt this task" cells are noise · arXiv 2611.33943 · Nov 2026 🆕
+An audit of SkillsBench's code and 7,554 public trials found grader dependence, placeholder skill folders and a harness that added 48 built-in skills to most runs. After multiple-testing correction, no per-task drop from skills was significant, since cells had at most three runs. A gating strategy that looked 2–3 points better also "improved" 4–7 points with shuffled labels.
+**So what:** don't remove or gate skills based on a few negative per-task deltas; run enough repeats to separate the effect from noise. → [Agent skills](../../build/agent-skills/README.md)
+Source: [arXiv 2611.33943](https://arxiv.org/abs/2611.33943) · Added: 2026-11-27
 
 ### A quarter of SWE-bench Verified tasks may have overspecified tests · Spec-Test Coverage Gap · arXiv 2611.31839 · Nov 2026 🆕
 SWE-bench-style tasks are graded with tests from the original fix, which can demand details the issue never states. Two LLM judges (Claude Opus 5.5 and GPT-6.1 Sol) given the spec and test patch caught 89% of tasks earlier human audits had marked overspecified, with 4% false flags. They flagged 23% of Verified and 35% of public Pro tasks. The top 30 Verified submissions solved 31% of flagged tasks against 88% of the rest, and loosening the flagged tests let 61% of 2,186 failed patches pass, worth up to 12 points of resolve rate *(as reported)*.
@@ -99,22 +114,22 @@ Four frontier coding agents, asked for a compelling finding on simulated data wi
 **So what:** Treat agent-run data or eval analysis as a search over analyses, and check its findings on held-out data. → [Evals](../../architecture/evals-and-observability/README.md)
 Source: [arXiv 2611.23174](https://arxiv.org/abs/2611.23174) · Added: 2026-11-20
 
-### Context trimming vs prefix caching · arXiv 2611.22238 · Nov 2026 🆕
+### Context trimming vs prefix caching · arXiv 2611.22238 · Nov 2026
 Over more than 20,000 open-model coding-agent runs, removing old tool output or adding retrieved code made runs **more** expensive (+38–116% and +33–42%) once cached input was priced at a tenth of uncached input, with no gain in resolve rate (as reported).
 **So what:** Context hacks have to be judged on cost per resolved task with real cache pricing. → [Context engineering](../../architecture/context-and-memory/README.md#-latest-evidence)
 Source: [arXiv](https://arxiv.org/abs/2611.22238) · Added: 2026-11-19
 
-### Minimal RAG memory is often enough · "RAG in a Trenchcoat" · arXiv 2611.22179 · Nov 2026 🆕
+### Minimal RAG memory is often enough · "RAG in a Trenchcoat" · arXiv 2611.22179 · Nov 2026
 A deliberately simple RAG memory (BRIDGE) matches prior state of the art on LongMemEval-S and BEAM within confidence intervals, beats the best baseline on EverMemBench by 5.7–6.3 points, and uses one LLM call per ingest or query. New probes that require *applying* a remembered rule or pattern show no design wins everywhere (as reported; authors include Dawn Song and Ce Zhang).
 **So what:** Start agent memory with plain retrieval over well-chunked notes, and evaluate on the behaviour you need (rule application, pattern induction), not on recall benchmarks alone.
 Source: [arXiv](https://arxiv.org/abs/2611.22179) · Added: 2026-11-19
 
-### Reversibility classes for agent tool calls · arXiv 2611.22075 · Nov 2026 🆕
+### Reversibility classes for agent tool calls · arXiv 2611.22075 · Nov 2026
 Proposes labelling each tool action on a five-level "can it be undone?" scale, with argument-sensitive rules and a contract to capture prior state. A registry covers 536 tools across 20 MCP servers. A session guard built on it gated all 29 attributable attack runs (versus 18 for a plain read/write split) while adding nine approval prompts over 1,209 benign runs (as reported; the authors say registry-wide accuracy is not established).
 **So what:** "Read vs write" is too coarse for approval gates. Gating on irreversibility is a cheap upgrade to human-in-the-loop policies. → [AI security](../../architecture/security/README.md)
 Source: [arXiv](https://arxiv.org/abs/2611.22075) · Added: 2026-11-19
 
-### Faster sandbox cold starts with learned snapshot sets · Readie · arXiv 2611.22171 · Nov 2026 🆕
+### Faster sandbox cold starts with learned snapshot sets · Readie · arXiv 2611.22171 · Nov 2026
 Instead of one large pre-warmed image, Readie learns a set of small snapshots that together cover most agent-generated scripts. On 15K scripts it cut startup latency 3–22× and end-to-end runtime 1.3–3.3× at the same storage budget (as reported).
 **So what:** Expect sandbox providers to adopt workload-aware snapshot pools. If you run your own sandboxes, profile which packages your agents actually import. → [Agent infrastructure](../../architecture/agent-infrastructure/README.md)
 Source: [arXiv](https://arxiv.org/abs/2611.22171) · Added: 2026-11-19

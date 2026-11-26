@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,15 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### A second Pydantic AI Harness browser bypass, markdownify-mcp SSRF, and recovery that drops security steps · 2026-11-25 → 11-26 🆕
+- **Pydantic AI Harness** `PlaywrightBrowser` (CVE-2026-136638, CVSS 5.9): the egress policy treated any URL containing a backslash as host-less and let it through, so a page script could reach private addresses and hosts outside `allowed_domains` (or inside `blocked_domains`) with fetch, XHR, `sendBeacon`, WebSocket or asset requests. Fixed in the same `pydantic-ai-harness` **0.74.0** as yesterday's WebRTC bypass, so one upgrade covers both.
+- **markdownify-mcp** < 1.2.0 (CVE-2026-137308, CVSS 4.0 8.3): its URL check could be bypassed with DNS names, bracketed IPv6 or IPv4-mapped IPv6, so a prompt-injected URL could fetch loopback services and cloud metadata. Upgrade to 1.2.0.
+- Smaller: **Coder** let a prompt-injected agent set an app-status link that renders as phishing or a non-web URL (CVE-2026-137548; fixed in 2.29.27, 2.34.19, 2.37.11 and 2.38.7). **SiYuan** 3.7.0 to < 3.8.11 rendered model replies in its AI chat panel as unsanitised HTML, so an injected reply could run script and, in desktop local-kernel mode, OS commands (CVE-2026-137469).
+- **LiteLLM MCP stdio and DBHub 0-days:** still no confirmed fix on 2026-11-27. DBHub's npm `latest` is still 2.1.0, and LiteLLM's 1.108.19 notes don't mention stdio, so keep the mitigations from the 11-24 entry below.
+- **Research: "The Detour Is the Danger"** (arXiv 2611.33605): when a tool call fails and an agent replans, the new plan often keeps the task working but silently skips the security steps the original workflow required. The authors show this with fault injection across seven LLMs in an MCP and Skills environment. Their ARGUS framework checks recovery plans in isolation and enforces the obligations at execution time, and it stopped every observed protection-loss event in 864 runs *(self-reported)*.
+**Why it matters:** URL allowlists keep failing on parser edge cases, so put agent browsers and fetch tools behind a network-level egress filter as well. And make security steps (approval, scanning, redaction) part of the tool layer, not steps in a plan the model can rewrite after an error.
+Source: [NVD CVE-2026-136638](https://nvd.nist.gov/vuln/detail/CVE-2026-136638) · [NVD CVE-2026-137308](https://nvd.nist.gov/vuln/detail/CVE-2026-137308) · [NVD CVE-2026-137548](https://nvd.nist.gov/vuln/detail/CVE-2026-137548) · [NVD CVE-2026-137469](https://nvd.nist.gov/vuln/detail/CVE-2026-137469) · [arXiv 2611.33605](https://arxiv.org/abs/2611.33605) · Added: 2026-11-27
 
 ### Pydantic AI Harness browser egress, DeepSeek-Reasonix, Kiro Web, AutoGPT: agent-tool CVE batch · published 2026-11-24 → 11-25 🆕
 - **Pydantic AI Harness** `PlaywrightBrowser`: the egress policy covered HTTP requests and page WebSockets but not WebRTC (STUN/TURN), WebTransport, `WebSocketStream` or FedCM requests, so a page the agent opens could reach hosts the allowlist refuses, including private addresses, and read `WebSocketStream` replies (CVE-2026-136641, CVSS 6.8). `pydantic-ai-harness` **0.74.0** removes those APIs from pages and turns off FedCM and `WebSocketStream`. Some paths stay open (WebTransport from workers, some `cdp_url` setups), so the advisory also recommends a network egress filter that covers UDP.
@@ -160,12 +169,12 @@ Sandboxed commands write to fewer home folders, sign-in files are write-protecte
 **Why it matters:** Re-test unattended jobs. Details → [Coding agents](../../build/coding-agents/README.md)
 Added: 2026-11-20
 
-### Reference Git MCP server: command-execution advisories · 2026-11-18 🆕
+### Reference Git MCP server: command-execution advisories · 2026-11-18
 The MCP project published a batch of advisories against `mcp-server-git`. In each one, attacker-controlled Git configuration in the repository the agent operates on can make the server run a program. Triggers include a config include created by a merged branch (`git_merge`, GHSA-9vjp-x34c-xg6v), a promisor setting during a lazy fetch (GHSA-87qg-cmw8-jc5m) and a submodule's own config on `git_diff`, `git_checkout` and `git_add` (GHSA-8wv7-r664-7594). All are fixed in `mcp-server-git` **2026.11.18** (repo release v2.5.0). The same release fixes an SSRF-guard gap in `server-everything` 2.3.1 (GHSA-38j4-j742-j7r3), and two earlier `mcp-server-git` advisories were fixed in v2.4.0 on 2026-11-11.
 **Why it matters:** The Git server is in most "core six" MCP setups. Pointing an agent at an untrusted clone or branch was enough to get code execution. **Upgrade now**, and don't run it against untrusted repositories outside a sandbox.
 Sources: [GHSA-9vjp-x34c-xg6v (#5575)](https://github.com/modelcontextprotocol/servers/issues/5575) · [GHSA-87qg-cmw8-jc5m (#5574)](https://github.com/modelcontextprotocol/servers/issues/5574) · [GHSA-8wv7-r664-7594 (#5578)](https://github.com/modelcontextprotocol/servers/issues/5578) · [GHSA-38j4-j742-j7r3 (#5579)](https://github.com/modelcontextprotocol/servers/issues/5579) · Added: 2026-11-19
 
-### Microsoft `agent-framework` PyPI compromise · 2026-11-17 🆕
+### Microsoft `agent-framework` PyPI compromise · 2026-11-17
 Two malicious releases of Microsoft Agent Framework's PyPI meta-package, **1.26.1 and 1.26.2**, were uploaded on 2026-11-17 between about 20:35 and 21:08 UTC and were quarantined within the hour. Each drops a `.pth` file (`agent_framework_meta.pth` or `af_runtime_diag.pth`), so the stealer runs on **every Python start**, even if nothing imports the package. It takes secret-looking environment variables, credential files (Azure CLI, npm, pip, netrc, git, Docker, Hugging Face) and freshly minted Azure managed-identity and Azure DevOps OIDC tokens. 1.26.2 also takes GitHub Actions OIDC tokens. The data goes to a webhook.site URL. The last clean version is **1.26.0**. How the attacker got publishing access is not yet known.
 **Why it matters:** Any CI runner or dev box that resolved an unpinned `agent-framework` during that window should be treated as compromised. Pin to 1.26.0, check site-packages for those `.pth` files, search egress logs for webhook.site, rotate every secret on affected hosts, and review Entra ID federated credentials and sign-in logs. Rotating stored secrets alone is not enough, because the malware minted new tokens.
 Sources: [Wiz](https://www.wiz.io/blog/malicious-version-of-microsofts-agent-framework-published-to-pypi) · [StepSecurity](https://www.stepsecurity.io/blog/microsoft-agent-framework-pypi-package-compromised) · Added: 2026-11-19

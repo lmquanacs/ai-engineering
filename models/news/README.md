@@ -8,7 +8,7 @@ _Last updated: 2026-11-26 · This page keeps about 30 days; older items move to 
 
 | Deadline | What | Do this |
 |---|---|---|
-| **2026-11-30** | Claude Sonnet 4.5 retirement | Move pinned `claude-sonnet-4-5*` IDs to `claude-sonnet-5-5` or `claude-haiku-5-5` and re-run your evals. ([release notes](https://platform.claude.com/docs/en/release-notes/overview)) |
+| **2026-11-30** | Claude Sonnet 4.5 retirement | Move pinned `claude-sonnet-4-5*` IDs to `claude-sonnet-5-5` or `claude-haiku-5-5` and re-run your evals. On Amazon Bedrock the model stays available until **2027-04-08** ([AWS](../../platforms/aws/README.md)). ([release notes](https://platform.claude.com/docs/en/release-notes/overview)) |
 | **2026-11-30** | Claude Opus 4.8 fast mode removed | Requests to `claude-opus-4-8` with `speed: "fast"` will error; use Claude Opus 5.5 for fast mode. ([release notes](https://platform.claude.com/docs/en/release-notes/overview)) |
 | **2026-11-30** | OpenAI shuts down `/v1/prompts` (reusable prompt objects), the Evals dashboard/API/graders and Agent Builder (announced 2026-06-03) | Move prompt content into your code, evals to another tool (OpenAI suggests Promptfoo), and Agent Builder flows to the Agents SDK or ChatKit. ([OpenAI deprecations](https://developers.openai.com/api/docs/deprecations)) |
 | **2026-12-01** | OpenAI shuts down `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-1.5-2025-12-16` and `chatgpt-image-latest` | Move to `gpt-image-2.6-sunburst` or `gpt-image-2.6-flare`. ([OpenAI deprecations](https://developers.openai.com/api/docs/deprecations)) |
@@ -60,7 +60,7 @@ Google's new mid-tier Gemini 4 model sits between Hydrogen ($1.50/$7.50) and Car
 **Why it matters:** Carbon doubles to $4/$20 on 2026-12-01, so Neon is the obvious model to evaluate for agentic coding before that date. The blog post doesn't say whether Neon is preview or GA, or give a Vertex date, so check before you pin it in production.
 Source: [Google blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/) · [AI Gateway changelog](https://vercel.com/changelog/gemini-4-neon-now-available-on-ai-gateway) (`google/gemini-4-neon`) · Added: 2026-11-26
 
-### GPT-6.2 Astra & Sol · OpenAI · 2026-11-17 🆕
+### GPT-6.2 Astra & Sol · OpenAI · 2026-11-17
 OpenAI's next point release: `gpt-6.2-astra` for demanding reasoning and coding, and `gpt-6.2-sol` for everyday coding and agent workflows. Astra drops to $8/$40 per 1M tokens (cached input $0.40), and Sol stays at $2/$10. Both have a 1.05M-token window (922K max input) and 128K max output.
 **Why it matters:** Astra-class work gets 20% cheaper. It is not a drop-in swap, though: reasoning effort `none` is rejected, tool calling needs the Responses API, and reasoning-preservation and `instructions` behaviour change. Re-run your evals and follow the migration quickstart. Also on Bedrock → [AWS](../../platforms/aws/README.md).
 Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Astra model page](https://developers.openai.com/api/docs/models/gpt-6.2-astra) · [Sol model page](https://developers.openai.com/api/docs/models/gpt-6.2-sol) · Added: 2026-11-19

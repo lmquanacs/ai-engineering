@@ -1,6 +1,6 @@
 # Coding agents & IDEs
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Release notes that change how you work in Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin and Kiro. Only items worth acting on are included.
 
@@ -28,9 +28,9 @@ _Last updated: 2026-11-26_
 | now | Claude Code 2.1.332 on Microsoft Foundry: the default model is now Sonnet 5.5, and `sonnet`/`opus` mean Sonnet 5.5/Opus 5.5 there and on Google Cloud's Agent Platform | Deploy `claude-sonnet-5-5` on Foundry or set `ANTHROPIC_DEFAULT_SONNET_MODEL`; on Agent Platform set `VERTEX_REGION_CLAUDE_5_5_SONNET` if you pinned a region for the 4.5 variable |
 | now | Claude Code 2.1.332: terminal and VS Code sessions on Sonnet 5/5.5 via Bedrock Mantle, Agent Platform or Foundry start in auto mode when no mode is set | Set `disableAutoMode` to `"disable"` if you don't want that |
 | now | Claude Code 2.1.332: desktop Code tab OpenTelemetry `service.name` is now `claude-code-desktop`; self-hosted runner OAuth tokens may start `oat02-` | Update dashboards keyed on `claude-code` (or set `OTEL_SERVICE_NAME`) and proxy rules or log scrubbers that match only `oat01-` |
-| **2026-11-26** | Kiro enterprise daily metrics move to 00:30 UTC | Shift any job that reads the daily metrics export |
 | on/after **2026-11-30** | Claude Code: marketplaces in managed `extraKnownMarketplaces` start auto-updating by default (2.1.331 notice) | Set `"autoUpdate": false` on any managed marketplace you want to keep pinned |
-| by **2026-11-30** | Claude Sonnet 4.5 retires | Update `model` settings, `CLAUDE.md` and CI configs that pin it |
+| by **2026-11-30** | Claude Sonnet 4.5 retires on Anthropic's API (on Amazon Bedrock it is Legacy, with end of life **2027-04-08**) | Update `model` settings, `CLAUDE.md` and CI configs that pin it |
+| now | Kiro Enterprise: GPT 6.2 Astra (preview) costs 7.2× credits, 14.4× over 272K tokens | Set `credit_pool.usage_limit` before you enable it ([AWS › Kiro](../../platforms/aws/README.md)) |
 | **2026-12-14** | Copilot retires Claude Fable 5, Claude Haiku 4.5, Gemini 3.8 Flash, Gemini 4 Argon, Grok 4.6 and Kimi K3 | Move to Fable 5.2, Haiku 5.5, Gemini 4 Hydrogen, Gemini 4 Carbon and Grok 4.7 (no Kimi replacement announced yet) |
 | **2026-12-18** | Copilot retires MAI-Code-1.1-Flash | Switch to the latest MAI Code Flash model (MAI-Code-2-Flash is in the Copilot CLI picker from 1.0.115) |
 | **Feb 2027** | Copilot in VS Code: the Local harness is removed | Move remaining workflows to the Copilot harness (already the default for new sessions) |
@@ -38,7 +38,7 @@ _Last updated: 2026-11-26_
 ## 🗞️ Latest releases
 
 ### Claude Code 2.1.332: skills from MCP servers, a hook for skill shell commands, new cloud defaults · 2026-11-24 🆕
-Claude Code can now load skills that MCP servers serve (beta), shown as `server:skill` in the `/` menu; see [MCP servers](../mcp-servers/README.md#-protocol-news-the-2026-07-28-spec-mcp-goes-stateless) for the approval and admin rules. A new `PreSkillShellCommand` hook event can block the `` !`command` `` lines a skill runs while it loads, which `PreToolUse` never saw (how-to in [Claude Code mastery](../claude-code/README.md#-tip-of-the-day)). Cloud model changes: Foundry's default becomes Sonnet 5.5, `sonnet` on Agent Platform and Foundry means Sonnet 5.5 and Foundry's `opus` Opus 5.5, while `sonnet` on Amazon Bedrock stays at Sonnet 4.5; `sonnet` on Bedrock Mantle no longer resolves to Haiku 4.5. `computer-use` becomes a reserved skill name on Macs with computer use on. Many freeze fixes (hooks or local MCP servers flooding output, named pipes such as a locked `.env`, long wildcard rules), and SSE MCP servers recover after their stream drops.
+Claude Code can now load skills that MCP servers serve (beta), shown as `server:skill` in the `/` menu; see [MCP servers](../mcp-servers/README.md#-protocol-news-the-2026-07-28-spec-mcp-goes-stateless) for the approval and admin rules. A new `PreSkillShellCommand` hook event can block the `` !`command` `` lines a skill runs while it loads, which `PreToolUse` never saw (how-to in [Claude Code mastery](../claude-code/README.md#-tip-of-the-day)). Cloud model changes: Foundry's default becomes Sonnet 5.5, `sonnet` on Agent Platform and Foundry means Sonnet 5.5 and Foundry's `opus` Opus 5.5, while `sonnet` on Amazon Bedrock stays at Sonnet 4.5 (Legacy on Bedrock since 2026-10-08, end of life 2027-04-08, so it keeps working after Anthropic's own 30 Nov retirement); `sonnet` on Bedrock Mantle no longer resolves to Haiku 4.5. `computer-use` becomes a reserved skill name on Macs with computer use on. Many freeze fixes (hooks or local MCP servers flooding output, named pipes such as a locked `.env`, long wildcard rules), and SSE MCP servers recover after their stream drops.
 **Why it matters:** Foundry and Agent Platform users get a different model, and possibly auto mode, without changing anything, and Bedrock's `sonnet` alias still points at Sonnet 4.5, so pin full model IDs. Add `PreSkillShellCommand` to any hook that guards shell commands.
 Source: [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · release date from [npm](https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions) · Added: 2026-11-26
 
@@ -145,7 +145,7 @@ Source: [Claude Code CHANGELOG (v2.1.325 tag)](https://raw.githubusercontent.com
 **Why it matters:** CI jobs that run `codex exec` in a fresh checkout may silently lose repo config and MCP servers after 0.169.0.
 Source: [Codex changelog](https://learn.chatgpt.com/codex/changelog) · Added: 2026-11-18 · Updated: 2026-11-19
 
-### GitHub Copilot: Fable 5.2, Gemini 4 Carbon, Local harness retiring · 2026-11-16 🆕
+### GitHub Copilot: Fable 5.2, Gemini 4 Carbon, Local harness retiring · 2026-11-16
 - **Claude Fable 5.2** and **Gemini 4 Carbon** are available on Copilot Pro+, Max, Business and Enterprise. Fable 5.2's policy is **off by default** for Business and Enterprise, so an admin must enable it.
 - The Copilot app re-authenticates MCP servers in place when they require sign-in again, and GitHub Enterprise Server support is GA in the app (cloud sessions are not supported for GHES).
 - VS Code 1.146: the **Local harness is scheduled for removal in February 2027**; the Copilot harness is already the default for new sessions.
@@ -154,7 +154,7 @@ Source: [Codex changelog](https://learn.chatgpt.com/codex/changelog) · Added: 2
 **Why it matters:** Org admins need to flip a policy before developers can use Fable 5.2, and teams on the Local harness have a migration deadline.
 Source: [GitHub changelog: Copilot weekly releases, November 9](https://github.blog/changelog/2026-11-16-github-copilot-weekly-releases-november-9) · [Copilot CLI changelog](https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md) · Added: 2026-11-19 · Updated: 2026-11-20
 
-### Kiro: admin-enforced sandboxing and org sign-in for MCP · 2026-11-16 → 11-18 🆕
+### Kiro: admin-enforced sandboxing and org sign-in for MCP · 2026-11-16 → 11-18
 - **Local Sandbox Controls:** admins can require sandboxing for commands and local stdio MCP servers, and developers can't turn it off in client settings.
 - **CLI 3.5.0:** organisation sign-in for MCP servers, so one identity-provider login covers every server set to use it.
 - **CLI 3.4.0:** hooks can rewrite tool inputs and answer permission prompts; a `deny` from any hook overrides an `allow`.

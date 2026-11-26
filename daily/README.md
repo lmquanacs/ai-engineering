@@ -7,6 +7,7 @@ Newest first. Each edition is written by the scheduled research agent at about 9
 
 ### November
 
+- [Fri 27 Nov 2026](2026/11/2026-11-27.md): Correction: Sonnet 4.5 stays on Bedrock until 2027-04-08 · Agent Framework repo offline, hold at 1.26.0 · AI SDK follow-up fix for image streams · Instructor 1.18.0 behaviour changes · WordPress MCP plugin CVEs · Lambda MicroVMs for agent code
 - [Thu 26 Nov 2026](2026/11/2026-11-26.md): Claude Code 2.1.332 changes cloud model aliases and adds skills over MCP · AI SDK stream-memory fix · Workspace agents must move to MCP by 2027-02-01 · Vercel Sandbox 5.0 breaking · Gemini 4 Neon before Carbon's price rise · new agent-tool CVEs
 - [Wed 25 Nov 2026](2026/11/2026-11-25.md): LiteLLM and DBHub MCP 0-days (no patch) · Antigravity Auto mode now writes outside the workspace · Bedrock Trusted Access API for Anthropic EFS/EDC · GLM-5.4 on the Coding Plan only · tool-call smuggling and fabrication-under-tool-failure papers
 - [Tue 24 Nov 2026](2026/11/2026-11-24.md): New categories: Open-weight model providers, Google Cloud, Azure, Vercel & Cloudflare · Claude Opus 4.5 deprecated (retires 2027-01-22) · OpenAI /v1/prompts, Evals and Agent Builder shut down 30 Nov · LiteLLM, Pomerium and Hermes Agent CVEs · Claude Code 2.1.331

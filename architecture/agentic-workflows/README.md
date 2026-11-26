@@ -1,6 +1,6 @@
 # Agentic workflows: patterns and breakthroughs
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > How to structure agent systems, and what the evidence says actually works. Patterns are stable; the "latest evidence" section changes fastest.
 
@@ -24,6 +24,11 @@ Production guardrails that apply to every pattern: an iteration cap, deadlock de
 
 ## 🔬 Latest evidence: what actually moves the needle
 
+### Delegate recurring subtasks, guided by your own traces · Partial routing · arXiv 2611.33402 · 2026-11-24 🆕
+Instead of routing a whole task to one model, a frontier "lead" model hands suitable subtasks to a cheaper worker during the run. The guidance comes from both models' past runs: find the subtasks that recur, measure each model's quality and cost on them, and tell the lead which ones to delegate (a parameter δ sets how much). Neither model is trained. At δ = 0.75 the lead's ViBench score rose from 70.2 to 78.5 at 19% lower cost, and its Terminal-Bench 4.0 pass rate from 54% to 61% at similar cost. Giving the lead only the subtask breakdown, with no worker, also cut cost *(self-reported)*.
+**Why it matters:** this is the same direction as Delegent below, with a recipe for deciding what to hand off: mine your agent traces for recurring subtasks before you build a per-task router.
+Source: [arXiv 2611.33402](https://arxiv.org/abs/2611.33402) · Added: 2026-11-27
+
 ### Hand the legwork to a small model, keep the frontier model in charge · Delegent · arXiv 2611.33098 · 2026-11-24 🆕
 Delegent is a harness built on Claude Code. The frontier model leads every task but hands focused subtasks (investigating code, running tests, searching a corpus) to a small model running on local hardware. Unlike a router or cascade, nothing is trained and the frontier model never gives up the task. With a 27B FP8 small model, the authors report frontier cost down 67% on long-horizon coding and 59% on agentic search with no loss in task performance, and a 2B model that fits on a laptop still cut coding cost by 66%. Most of the saving came from one short instruction that keeps the main coding work with the frontier model *(self-reported)*.
 **Why it matters:** If you already run a local model, try a subagent that uses it for read-only legwork (search, test runs, code reading) before trying a router that picks one model per task. Say explicitly in the instruction which work stays with the main model.
@@ -31,7 +36,7 @@ Source: [arXiv 2611.33098](https://arxiv.org/abs/2611.33098) · Added: 2026-11-2
 
 ### Model choice beats harness choice on everyday tasks · ShellBench · arXiv 2611.32946 · 2026-11-24 🆕
 100 everyday tasks drawn from more than 10 million user requests, each in a messy workspace and graded for correctness and safety. Across 12 models, 5 harnesses and 3 reasoning levels (53,100 rollouts), the model mattered more than the harness. All harnesses landed between 42.9 (Claude Code) and 45.2 (OpenClaw) pass@1, with little effect on safety. GPT-6 Astra led at 62.5% and GPT-6.1 Sol passed 61.4% at about a sixth of Astra's estimated token cost *(self-reported)*. 20% of the tasks are public.
-**Why it matters:** This matches the [FrontierHarness](#best-harness-depends-on-the-model--frontierharness-eval-v11-2026-11-17-) and HarnessTax results. For general agent work, compare models (and their price) on your own tasks before you switch harnesses.
+**Why it matters:** This matches the [FrontierHarness](#best-harness-depends-on-the-model--frontierharness-eval-v11-2026-11-17) and HarnessTax results. For general agent work, compare models (and their price) on your own tasks before you switch harnesses.
 Source: [arXiv 2611.32946](https://arxiv.org/abs/2611.32946) · Added: 2026-11-26
 
 ### Retrying after a partial failure often does damage · arXiv 2611.31554 + SecondChance 2611.31586 · 2026-11-23 🆕
@@ -59,9 +64,9 @@ On Vibe Code Bench (50 full-stack apps), Vals compared one agent against a lead 
 **Takeaway:** Try more effort on one agent before adding subagents.
 Source: [Vals AI: Do agent teams pay off?](https://www.vals.ai/blog/multi-agent-vibe-code-bench) · Added: 2026-11-20
 
-### Best harness depends on the model · FrontierHarness Eval v1.1, 2026-11-17 🆕
+### Best harness depends on the model · FrontierHarness Eval v1.1, 2026-11-17
 In 27,280 runs (22 harness configurations × 5 open models), the model explained most of the cost, but with the model fixed the harness still changed cost per task by about 1.8–5×. Rankings reshuffled between models, and 64.5% of spend went to failed runs. Steps per pass, not prompt size or tool count, tracked cost.
-**Takeaway:** A harness choice is only valid for the model you tested it with. Cutting wasted steps on doomed runs matters more than trimming the prompt. → [Evals & observability](../evals-and-observability/README.md#frontierharness-eval-v11--harness--model-leaderboard--2026-11-17-)
+**Takeaway:** A harness choice is only valid for the model you tested it with. Cutting wasted steps on doomed runs matters more than trimming the prompt. → [Evals & observability](../evals-and-observability/README.md#frontierharness-eval-v11--harness--model-leaderboard--2026-11-17)
 Source: [Runta](https://runta.com/blog/introducing-frontierharness-eval-v1-1/) · Added: 2026-11-19
 
 ### Controlled studies of harness tricks · Surge AI + FireFlash (UCLA), Nov 2026

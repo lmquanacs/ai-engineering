@@ -1,6 +1,6 @@
 # AWS for AI engineering
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Everything on AWS that matters to AI engineers: Bedrock models, AgentCore (the agent runtime platform), Strands Agents, Kiro, AWS MCP servers, and how they connect to Spring, Python and TypeScript apps. **re:Invent 2026 runs 30 Nov – 4 Dec**, so expect a large wave of launches.
 
@@ -11,6 +11,7 @@ _Last updated: 2026-11-26_
 | **2026-11-30 → 12-04** | **AWS re:Invent 2026**, Las Vegas | Watch the keynotes, then read the daily digests that week for the developer-relevant launches. ([event summary](https://ecorpit.com/aws-reinvent-2026-keynotes-what-to-watch/)) |
 | now | Amazon Q Developer is being replaced by **Kiro**: new sign-ups blocked since 2026-05-15, end of support for plugins and subscriptions on **2027-04-30** | Plan the migration of IDE plugins and team subscriptions to Kiro. ([Enterprise DNA](https://enterprisedna.co/resources/news/aws-kiro-replaces-amazon-q-developer-spec-driven-2026)) |
 | now (since 2026-11-12) | New **AgentCore runtimes default to the next-generation runtime (V2)** in 19 Regions; existing runtimes stay on V1 until you move them | Set `platformVersion` explicitly in your IaC: `V2` to migrate an existing runtime on update, `V1` to keep a new one on the old platform. ([What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/new-agentcore-runtime-default/)) |
+| **2027-04-08** | **Claude Sonnet 4.5 on Bedrock** (`anthropic.claude-sonnet-4-5-20250929-v1:0` and its `us.`/`eu.`/`au.`/`jp.`/`global.` profiles) reaches end of life; Legacy since 2026-10-08, public extended access from 2027-01-08 (GovCloud: 2027-04-27). Anthropic's own API retires it on 2026-11-30, but Bedrock calls keep working until then | Move to Sonnet 5.5 at your own pace; after end of life calls fail with `ResourceNotFoundException`. ([legacy models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-lifecycle-legacy.html)) |
 | if adopting the managed AWS MCP Server | Overlapping tools with `aws-api-mcp-server` and `aws-knowledge-mcp-server` | Remove those two from your MCP config, because duplicate tool names confuse agents. ([dev.to guide](https://dev.to/jangwook_kim_e31e7291ad98/aws-mcp-server-ga-secure-aws-api-access-for-ai-agents-2bia)) |
 
 ---
@@ -22,7 +23,7 @@ A new API lists the model-provider programs your account can join and their stat
 **Why it matters:** This is how Fable and Mythos stay usable for teams that can't let a vendor keep their data. It is also a new outage path: Bedrock stops serving covered models 24 hours after it loses access to your key or bucket, so monitor both. Preview only: no console yet, no condition keys to enforce it with SCPs, and test traffic only. The Claude API side is covered in [LLM APIs](../../build/llm-apis/README.md).
 Sources: [AWS ML blog](https://aws.amazon.com/blogs/machine-learning/introducing-the-amazon-bedrock-trusted-access-api-with-anthropics-enterprise-frontier-safeguards-and-enterprise-data-controls/) · [Bedrock user guide: EFS and EDC](https://docs.aws.amazon.com/bedrock/latest/userguide/anthropic-efs-enterprise-data-controls.html) · Added: 2026-11-25
 
-### OpenAI GPT-6.2 Astra and GPT-6.2 Sol on Bedrock · 2026-11-17 🆕
+### OpenAI GPT-6.2 Astra and GPT-6.2 Sol on Bedrock · 2026-11-17
 AWS made both models generally available on Bedrock. Astra is the frontier reasoning model and has an Ultrafast mode for latency-sensitive calls. Sol targets recurring coding and agentic work where speed and cost per task matter. The model cards give the details:
 
 | | Astra | Sol |
@@ -55,6 +56,7 @@ A managed platform for running agents in production: **Runtime** (serverless age
 
 | Date | What shipped | Why it matters |
 |---|---|---|
+| Nov 2026 (in the window) | **Agent Registry search types:** `searchType` takes `KEYWORD`, `SEMANTIC` or `HYBRID` (default); keyword search pages up to 1,000 results with `nextToken`. The Runtime identity service-linked policy now scopes the `GetWorkloadAccessToken*` actions to all resources | Use `KEYWORD` for exact tool or agent names, where semantic search can miss ([release notes](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.html)) |
 | 2026-11-23 | **Runtime Instances in AWS GovCloud (US-West):** instances, volumes and session data stay in GovCloud | Agents on EC2-backed sessions for regulated US workloads |
 | 2026-11-20 | **Gateway streaming response interceptors:** set `responseInterceptionMode: STREAM` and your interceptor Lambda gets each batch of SSE or event-stream events (batch size via `responseStreamingConfiguration.maxEventsPerInvocation`) to redact, change or drop | PII filtering on model output without losing streaming |
 | 2026-11-20 | **Runtime Instances on EC2 G7** (`g7.2xlarge`–`g7.48xlarge`, NVIDIA RTX PRO 4500 Blackwell): add them to the capacity provider's allowed types; drivers are installed, sessions up to 14 days; 8 Regions incl. ap-southeast-2 | A GPU per agent session for vision models or rendering |
@@ -112,6 +114,11 @@ Source: [The New Stack](https://thenewstack.io/aws-strands-labs-launch/) · Adde
 
 ## 🛠️ Kiro (AWS's agentic IDE, replacing Q Developer)
 
+### Kiro Enterprise: GPT 6.2 Astra preview and credit-pool limits · 2026-11-25 🆕
+GPT 6.2 Astra is starting to roll out in preview to Kiro Enterprise organisations, with limited access. It has a 1M context window, runs inference in the US only, and costs a 7.2× credit multiplier, rising to 14.4× for requests over 272K tokens. Admins enable it through model governance. Separately, admins can now cap pooled credits per user per billing cycle with `credit_pool.usage_limit` in Controls, set on the profile (default), a group or a user. A user's own limit wins, then the highest group limit, then the profile's. An account-wide overage switch sits in the same Controls. Enterprise Management is in preview in `us-east-1` and `eu-central-1`. Kiro is also now in scope for AWS SOC reports.
+**Why it matters:** one long Astra session can burn a large share of a team's pool, so set limits before you turn the model on.
+Sources: [GPT 6.2 Astra for Enterprise](https://kiro.dev/changelog/models/gpt-6-2-astra-for-enterprise/) · [Credit pooling limits and overages](https://kiro.dev/changelog/general/enterprise-management-credit-pooling-controls/) · [SOC scope](https://kiro.dev/changelog/general/kiro-is-now-in-scope-for-aws-soc-reports/) · Added: 2026-11-27
+
 ### Kiro CLI 3.6.0: SubagentStop hook and guided compaction · 2026-11-24 🆕
 In V3 sessions, a new **SubagentStop** hook runs when a dispatched subagent finishes and can send it one more instruction before its result goes back. Hook output over 3,000 characters is saved to a file, and the agent gets the start of the output plus the file path. `/compact <instructions>` shapes a single compaction, for example telling it to keep migration decisions. The release also adds conversation recaps, notification controls, managed V2 controls and an all-users Windows installer.
 **Why it matters:** A SubagentStop hook can make each subagent run its checks (tests, lint) before it reports back, instead of relying on the parent agent to remember.
@@ -127,7 +134,7 @@ The IDE gets the CLI's Permission Request hook (answer approval prompts from a s
 **Why it matters:** IDE and CLI users can now share one hook-based policy and one MCP sign-in.
 Source: [Kiro IDE 1.4.236 changelog](https://kiro.dev/changelog/ide/1-4-236/) · Added: 2026-11-20
 
-### Kiro CLI 3.4–3.5: permission hooks and org sign-in for MCP · 2026-11-17 🆕
+### Kiro CLI 3.4–3.5: permission hooks and org sign-in for MCP · 2026-11-17
 **CLI 3.4.0** (2026-11-16): in V3 sessions, a `PreToolUse` hook can return `updatedInput` to rewrite a tool call's inputs. A new `PermissionRequest` hook can answer `allow` or `deny` to permission prompts, and a deny from any hook overrides an allow. **CLI 3.5.0** (2026-11-17): MCP servers set to use organization sign-in share one IdP login (`kiro-cli mcp idp setup`, then sign in once from `/mcp`). Admins can set the portal that `kiro-cli login` opens with `auth.portalUrl`, or with the `AuthPortalUrl` policy. Also on 2026-11-16: IDE 1.4.215 adds conversation forking and cloud sessions in Frankfurt, and Kiro Web gains a terminal.
 **Why it matters:** You can now enforce team policy on tool calls in scripts, for example denying writes outside the repo, and stop separate browser logins for every internal MCP server.
 Sources: [Kiro CLI 3.4 changelog](https://kiro.dev/changelog/cli/3-4/) · [Kiro CLI 3.5 changelog](https://kiro.dev/changelog/cli/3-5/) · [Kiro changelog](https://kiro.dev/changelog/index) · Added: 2026-11-19
@@ -142,6 +149,16 @@ November brought Kiro CLI 3.0.0–3.1.0. October added a **local command sandbox
 Sources: [Kiro changelog](https://kiro.dev/changelog/dev-server-and-spec-workflows/) · [AWS Japan SA deck, Oct](https://speakerdeck.com/inariku/kiro-update-2026-10-en) · [Nov deck](https://speakerdeck.com/inariku/kiro-update-2026-11-en) · Added: 2026-11-18
 
 ## 🖥️ Self-hosted models on AWS
+
+### Lambda durable functions can drive Lambda MicroVMs (developer preview) · 2026-11-25 🆕
+A new extension to the AWS Durable Execution SDK (TypeScript and Python) adds durable operations that run tasks in Lambda MicroVMs, one per task or as a session where tasks share files and memory. The durable function owns the MicroVM lifecycle: it checkpoints each task, retries failures, refreshes MicroVM tokens and can run several MicroVMs in parallel, triggered from SQS or EventBridge. An optional worker library inside your MicroVM image receives tasks and reports results. AWS says not to use the preview in production.
+**Why it matters:** it is a serverless way to run agent-generated or untrusted code in VM-isolated sandboxes, with workflows that can last up to a year. Compare it with the sandboxes in [Agent infrastructure](../../architecture/agent-infrastructure/README.md) before you build your own orchestration.
+Source: [AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/lambda-durable-microvm/) · Added: 2026-11-27
+
+### Amazon Transcribe Turbo (preview): semantic turn-taking and per-turn hints for voice agents · 2026-11-25 🆕
+A new speech-to-text model. Streaming is in preview in us-east-2 for English, Portuguese, French, Italian, German and Spanish; English batch is GA in most Regions. For voice agents, `EndOfTurnDetection` decides a caller has finished from their words and prosody rather than silence alone, and a `ConfigureEvent` can send hints before each turn (menu options, expected names, the entity type you expect). Both are English-only at launch and cost nothing extra. AWS reports about 14% lower word error rate in English, about 615 ms end-of-turn response with a 5% interruption rate, and menu routing up from 87% to 97% with hints *(self-reported)*.
+**Why it matters:** cutting callers off mid-sentence is the most common voice-agent complaint, and this fixes it at the speech-to-text layer without changing your agent. More voice tooling: [Voice & multimodal](../../build/voice-and-multimodal/README.md).
+Source: [AWS What's New](https://aws.amazon.com/about-aws/whats-new/2026/11/transcribe-turbo-preview/) · Added: 2026-11-27
 
 ### CloudWatch Container Insights: built-in vLLM, SGLang, KServe and Ray dashboards on EKS · 2026-11-20 🆕
 Turning on OTel Container Insights for EKS (add-on/Helm chart 8.0.0 or later) now also monitors vLLM, SGLang, KServe, Ray, Karpenter, KEDA and Knative Serving with no Prometheus or Grafana to run. For model servers you get queued requests, time to first token and KV-cache usage, tagged by pod, workload and node. Metrics are billed at the EKS OpenTelemetry ingestion rate ($0.08 per GB).

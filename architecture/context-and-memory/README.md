@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory and caching. Retrieval lives in [RAG & retrieval](../rag-and-retrieval/README.md). Agent quality now depends more on this than on which model you pick.
 
@@ -43,6 +43,16 @@ Source: [Slides](https://docs.google.com/presentation/d/1BVqX1h2DPyIDCEWUSNXSVFI
 
 ## 🔬 Latest evidence
 
+### Let the model compact its own context: big gains at tight budgets · NVIDIA · arXiv 2611.34147 · 2026-11-25 🆕
+NVIDIA gave models a context API in its open-source agent harness, so the model decides when and what to compact, and compared that with harness-triggered summarisation on document research and ML-engineering tasks at budgets from 8K to 512K tokens. Models that used the API well scored higher, often with fewer input tokens: GPT 6.1 went from 21% to 56% on OfficeQA Pro v2 at a 32K budget, and Kimi improved while using up to 41% fewer input tokens. Models differed widely in how often and how hard they compacted, and prompt changes shifted the timing. Reusing the KV cache of the unchanged suffix after an edit cut prefill compute by up to 15% per request *(self-reported)*.
+**Why it matters:** if your agents run in small context windows, try exposing compaction as a tool instead of auto-summarising, and tune and evaluate it per model.
+Source: [arXiv 2611.34147](https://arxiv.org/abs/2611.34147) · Added: 2026-11-27
+
+### Memory in the prompt is still ignored, and old versions win · TASK memory · arXiv 2611.34762 · 2026-11-25 🆕
+Across five open models, even when the right memory is retrieved and placed in the prompt, the model returns to a stale fact from its weights in up to 46% of queries, applies the memory to the wrong entity in up to 24%, and, when both an old and a revised fact are stored, gives the superseded value in 53% of answers. The proposed fix combines the text note with activation steering and knowledge editing, so it needs open weights.
+**Why it matters:** with API models you can still act on the finding: overwrite or delete superseded facts instead of appending revisions, and test that answers actually use the stored memory rather than assuming retrieval is enough.
+Source: [arXiv 2611.34762](https://arxiv.org/abs/2611.34762) · Added: 2026-11-27
+
 ### Anthropic: the components of agent memory, and "dreaming" · 2026-11-06 (missed earlier) 🆕
 Anthropic's write-up of its agent-memory evals. Telling Claude what a memory folder is for, but not how to use it, worked best for recent models; a fixed rule such as "record only failures" removed much of the gain for Opus 5 and Opus 4.7, while older models (Sonnet 4.6) needed explicit prompting to read memory before answering. "Dreaming" is an offline pass in which the agent checks its notes against the original transcripts, corrects wrong notes, builds linked wiki pages and promotes key notes into what loads at session start. On a 350,000-file internal corpus, wiki plus search scored 61% against 53% for search alone and used about 20,000 fewer tokens per question; on multi-document merger questions the wiki scored 87% against 73%, but it gave no clear gain where one document held the answer *(self-reported)*.
 **Why it matters:** For memory files (including `CLAUDE.md`/`AGENTS.md`-style notes), state the purpose and let strong models judge salience instead of prescribing rules. Add a periodic pass that re-checks notes against transcripts, and build a linked summary layer only for corpora where answers span several documents.
@@ -78,7 +88,7 @@ OpenAI's migration guide says GPT-6.2 places top-level `instructions` after `inp
 **Why it matters:** This is a second reason, after the cache-pricing study below, to append to history rather than rewrite it. Audit code that edits or compacts earlier turns before switching to GPT-6.2.
 Source: [OpenAI migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra#gpt-6.2-astra-migration-quickstart) · [API changelog](https://developers.openai.com/api/docs/changelog) · Added: 2026-11-20
 
-### Trimming context can raise cost under prefix caching · arXiv 2611.22238 🆕
+### Trimming context can raise cost under prefix caching · arXiv 2611.22238
 A study of more than 20,000 coding-agent runs (open models; SWE-bench Verified, SWE-bench, Loc-Bench) tracked uncached input, cached input and output tokens separately. When cached input costs a tenth of uncached input, **removing old observations raised cost by 38–116%** and **adding retrieved code raised it by 33–42%**, with no measurable gain in resolve rate. Without a cache discount, the same removal saved 19–36%. Shorter prompts can also lead to more steps.
 **Why it matters:** Tool-result clearing and RAG injection both rewrite the prefix and throw away cache hits. Measure **cost per resolved task** with cache pricing switched on before you adopt a context-trimming trick, and prefer edits that append rather than rewrite. It also means concurrent experiments can share cached prefixes and skew cost comparisons.
 Source: [arXiv 2611.22238](https://arxiv.org/abs/2611.22238) · Added: 2026-11-19

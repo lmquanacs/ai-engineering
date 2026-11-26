@@ -1,10 +1,10 @@
 # Libraries · 🟦 TypeScript
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-26_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-27_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
-| [**Vercel AI SDK**](https://github.com/vercel/ai) (`ai`) | 7.0.182 (2026-11-25); also 6.0.337 and 5.0.293 with the same stream-size fix, see below | The most-used TS toolkit for model calls, tool loops, structured output and streaming into UIs. v6 (May 2026) made agents first-class with MCP and tool approval; v7 (Jun 25, 2026) added harness adapters. Apache-2.0. | Default for TS apps, especially web/Next.js |
+| [**Vercel AI SDK**](https://github.com/vercel/ai) (`ai`) | 7.0.183 (2026-11-26); also 6.0.338 and 5.0.294. Use these rather than 7.0.182 / 6.0.337 / 5.0.293 if you generate images through Responses, see below | The most-used TS toolkit for model calls, tool loops, structured output and streaming into UIs. v6 (May 2026) made agents first-class with MCP and tool approval; v7 (Jun 25, 2026) added harness adapters. Apache-2.0. | Default for TS apps, especially web/Next.js |
 | [**Mastra**](https://github.com/mastra-ai/mastra) (`@mastra/core`) | 1.86.0 (2026-11-25; adds durable experiments and an `interrupted` thread run status) | Full-stack agent framework: agents, memory, tools, workflows, evals and observability. Built on the AI SDK. Apache-2.0 (the `ee/` directory has an enterprise licence). | You want batteries included and a local dev playground |
 | [**LangGraph.js**](https://github.com/langchain-ai/langgraphjs) | 1.7.5 (2026-11-17) | State-graph orchestration with checkpoints | Same reasons as Python LangGraph, or a shared Py/TS team |
 | [**MCP TypeScript SDK**](https://github.com/modelcontextprotocol/typescript-sdk) | `@modelcontextprotocol/sdk` 1.32.2 / `@modelcontextprotocol/server` 2.4.0 (2026-10-23); Tier 1, supports the 2026-07-28 spec. **Upgrade to ≥ 1.32.0 / ≥ 2.3.0** for [four security fixes](../mcp-servers/README.md#-security-notes) | Official MCP SDK | Building MCP servers and clients in Node, Bun or edge runtimes |
@@ -12,6 +12,11 @@
 | **OpenAI Agents SDK (JS)** | — | OpenAI's agents SDK for TS | OpenAI-centric stacks |
 
 ## 🆕 Notable changes
+
+### AI SDK: the new 64 MiB event cap broke multi-image Responses streams; fixed next day · 7.0.183 / 6.0.338 / 5.0.294 (2026-11-26) 🆕
+Yesterday's per-event cap was too small for OpenAI and xAI Responses streams: their `response.completed` event repeats every output item, including base64 generated images, so a stream with several large images failed after all of them had arrived. In `@ai-sdk/provider-utils` 5.0.85, `createEventSourceResponseHandler` takes a `maxEventSize` option, and the OpenAI and xAI Responses models use it to accept events of up to 512 MiB.
+**Why it matters:** if you upgraded for the memory fix and use image generation through Responses, upgrade again, including the provider packages (`@ai-sdk/openai`, `@ai-sdk/xai`) that were republished the same day.
+Source: [`@ai-sdk/provider-utils` CHANGELOG](https://raw.githubusercontent.com/vercel/ai/main/packages/provider-utils/CHANGELOG.md) · [npm: ai](https://www.npmjs.com/package/ai?activeTab=versions) · Added: 2026-11-27
 
 ### AI SDK: a single streamed event is now capped at 64 MiB · 7.0.182 / 6.0.337 / 5.0.293 (2026-11-25) 🆕
 `@ai-sdk/provider-utils` buffered a server-sent event until it was complete, with no limit, so a streaming response that never finished an event could use up memory and crash the process. `parseJsonEventStream` and `createEventSourceResponseHandler` now stop at 67,108,864 characters per event, fail the stream and cancel the body; the cap also covers what `useChat` and `useCompletion` read, and a new `maxEventSize` option changes it. The fix ships in provider-utils 5.0.84, 4.0.68 and 3.0.47, which `ai` 7.0.182, 6.0.337 and 5.0.293 depend on.

@@ -1,6 +1,6 @@
 # Inference, cost & serving
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > What models cost, how to pay less, and how to serve open models yourself. Prices are list prices in USD per 1M tokens unless stated, and they change often, so check the provider's page before you budget.
 
@@ -34,7 +34,7 @@ _Last updated: 2026-11-26_
 | Gemini 4 Hydrogen | $1.50 | $0.075 | $7.50 | Batch/Flex −50% · cache writes billed from 2027-01-12 |
 | Gemini 3.8 Flash | $0.75 | $0.075 | $3.75 | Batch/Flex −50% · ⚠️ rises Jan 1 |
 | Grok 4.7 | $2 | $0.50 | $6 | Batch −20%; 200K+ prompts double |
-| DeepSeek-V4.1-Flash (`deepseek-flash`) | $0.30 / $0.15 off-peak | $0.006 | $1.20 / $0.60 off-peak | Off-peak (by UTC hour) −50% |
+| DeepSeek-V4.1-Flash (`deepseek-flash`) | $0.30 / $0.15 off-peak | $0.006 / $0.003 off-peak | $1.20 / $0.60 off-peak | Off-peak (by UTC hour) −50% |
 | DeepSeek-V4-Pro (`deepseek-v4-pro`) | $1.32 / $0.66 off-peak | $0.044 / $0.022 | $3.96 / $1.98 off-peak | Off-peak −50% |
 | Qwen4-Max (`qwen4-max`, international) | $1.50 | $0.075 (cache hit) | $4.50 | Explicit cache writes cost extra |
 | Mistral Large 4 | $0.70 | $0.07 | $2.10 | Batch −50% (the pricing page also shows $0.50/$1.50, so confirm for your ID) |
@@ -51,7 +51,7 @@ Source: [nhimg LLM pricing tracker](https://nhimg.org/llm-pricing-tracker), read
 4. **Off-peak pricing:** DeepSeek halves its rates by UTC hour, so schedule batch work then.
 5. **Trim the harness:** heavyweight harnesses cost 3–5× more for under 2% accuracy. → [Agentic workflows](../../architecture/agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle)
 
-### OpenAI background completion windows · −30% / −40% · 2026-11-17 🆕
+### OpenAI background completion windows · −30% / −40% · 2026-11-17
 In the Responses API (public beta), a background request can choose a two-hour or eight-hour completion window, and token rates drop 30% or 40% below Standard. It covers `gpt-6.2-astra`, `gpt-6.2-sol`, `gpt-6.1-terra` and `gpt-6-luna`.
 **Why it matters:** It is a middle ground between real-time and the Batch API. Agent sub-tasks, evals and enrichment jobs that can wait a few hours get a discount without restructuring into batch files.
 Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Background mode guide](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows) · Added: 2026-11-19

@@ -1,6 +1,6 @@
 # RAG & retrieval
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Getting the right facts from your own data into the model: chunking, search, reranking and the models and databases behind them. For what happens to context once it's in the window, see [Context engineering & memory](../context-and-memory/README.md).
 
@@ -25,6 +25,11 @@ _Last updated: 2026-11-26_
 ## 🗞️ Latest
 
 <!-- newest first: retrieval patterns with evidence, vector DB releases, RAG eval methods -->
+
+### Cheap cacheable scorers in front of your reranker · arXiv 2611.33844 🆕
+The paper composes rerankers of different kinds (lexical, single-vector, late-interaction, cross-encoder) without training them together. Putting two lightweight scorers with cacheable passage representations in front of a CrossEncoder or Provence raised answer accuracy on NoLiMa 32K with Gemma by 4.02–9.43 points and made online pruning 1.57–1.88× faster. Fusing one with ColBERTv2 via reciprocal rank fusion gave +4.60 points at 1.36× speed. The gains depended on the reader and the pairing, and a cascade could beat its final reranker yet lose to its coarse first stage alone *(self-reported)*.
+**Why it matters:** a two-stage rerank can be both faster and more accurate, but only measure it with stage-removal ablations: test each stage alone as well as the full cascade.
+Source: [arXiv 2611.33844](https://arxiv.org/abs/2611.33844) · Added: 2026-11-27
 
 ### Run agentic RAG evals more than once · arXiv 2611.31266 🆕
 A study of a deployed agentic RAG system for product-documentation questions ran each of 739 questions ten times. The correct page was retrieved in at least one run 69.4% of the time but in all ten runs only 50.9% of the time. Retrieval caused most run-to-run divergence (43.9%), and the number of parallel searches the agent chose at its first step alone explained 20.1% of divergent pairs, while answers stayed similar in meaning (BERTScore 0.90) *(self-reported; NeurIPS 2026 workshop paper)*.

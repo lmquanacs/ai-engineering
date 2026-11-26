@@ -33,7 +33,7 @@ Source: [Pydantic AI v2.71.0 release](https://github.com/pydantic/pydantic-ai/re
 Raises the `langgraph-prebuilt` minimum to 1.1.3, which makes tool calls dispatched with `Send` receive the same typed state as an edge. Not labelled breaking, but `ToolNode` code that read state in `Send` branches may see different values.
 Source: [langgraph PR #9742](https://github.com/langchain-ai/langgraph/pull/9742) · [PyPI](https://pypi.org/project/langgraph/) · Added: 2026-11-20
 
-### Pydantic AI 2.60: tool retries no longer produce `RetryPromptPart` 🆕
+### Pydantic AI 2.60: tool retries no longer produce `RetryPromptPart`
 Since v2.60.0 (2026-10-22), a tool retry is recorded as a `ToolReturnPart` with `outcome='retried'`, and a retry that answers no tool call is a `RetryFeedbackPart`. `RetryPromptPart` is deprecated, and `result.usage()` on `RunUsage` is deprecated in favour of `result.usage`.
 **Why it matters:** Code that checks `isinstance(part, RetryPromptPart)` (eval scorers, logging, dashboards) now silently finds no tool errors, with no exception or warning. Switch to `is_retry(part)` before upgrading past 2.59.
 Source: [Pydantic AI upgrade guide](https://pydantic.dev/docs/ai/project/changelog/) · latest 2.70.0 on [PyPI](https://pypi.org/project/pydantic-ai/) (2026-11-17) · Added: 2026-11-19

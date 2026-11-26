@@ -112,7 +112,7 @@ Source: [Daytona: macOS Sandboxes](https://www.daytona.io/dotfiles/macos-sandbox
 **Why it matters:** A durable agent runtime and a stable Python sandbox client from one vendor. Python users upgrading from 0.x must handle bytes I/O.
 Sources: [Vercel: eve is GA](https://vercel.com/blog/eve-is-now-generally-available) · [Vercel changelog: Sandbox Python SDK 1.0](https://vercel.com/changelog/vercel-sandbox-python-sdk-1-0-is-now-available) · Added: 2026-11-20
 
-### Temporal Cloud on Azure · public preview · 2026-11-17 🆕
+### Temporal Cloud on Azure · public preview · 2026-11-17
 Temporal Cloud now runs on Azure in public preview, with production workloads supported in **Central US and Australia East**. Access needs approval so Temporal can plan capacity.
 **Why it matters:** Azure-first teams, and teams with Australian data-residency needs, can run durable agent workflows on managed Temporal next to their other workloads instead of self-hosting.
 Source: [Temporal changelog](https://temporal.io/changelog/temporal-cloud-on-azure-is-in-public-preview) · Added: 2026-11-19

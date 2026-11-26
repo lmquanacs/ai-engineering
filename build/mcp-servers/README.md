@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -92,6 +92,14 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 
 ## 🔒 Security notes
 
+### WordPress MCP plugins: token-to-admin bypass and file upload; markdownify-mcp SSRF · published 2026-11-26 🆕
+- **Secure MCP Server for Claude, ChatGPT, Gemini, Cursor and other AI Agents** (WordPress plugin `miniorange-secure-mcp-server`) ≤ 1.5.8: any valid MCP bearer token, including a scope-restricted connection-test token, gets the token owner's Administrator role on arbitrary WordPress endpoints, which bypasses the plugin's scopes and allow-lists (CVE-2026-131688, CVSS 8.1). NVD names no fixed version; 1.5.9's changelog says only "minor bug fixes", and 1.5.10 is current.
+- **AI Engine – MCP Server & AI Chatbot** (WordPress) ≤ 3.9.4: an Editor-level user can upload HTML, SVG or JS through `/mwai/v1/helpers/create_image`, giving stored XSS against admins (CVE-2026-131589, CVSS 7.2). Fixed in 3.9.5. The same release added "Beast Mode", a single switch that exposes every MCP tool to agents, so check it is off.
+- **markdownify-mcp** < 1.2.0: SSRF guard bypass, so prompt-injected URLs can reach loopback and cloud metadata (CVE-2026-137308). Upgrade to 1.2.0; write-up in [AI security](../../architecture/security/README.md).
+
+**Do this:** update the miniorange plugin to 1.5.10 and rotate its MCP tokens (no fixed version is confirmed, so also limit which tokens exist); AI Engine to ≥ 3.9.5; markdownify-mcp to ≥ 1.2.0.
+Source: [NVD CVE-2026-131688](https://nvd.nist.gov/vuln/detail/CVE-2026-131688) · [Plugin readme](https://plugins.svn.wordpress.org/miniorange-secure-mcp-server/trunk/readme.txt) · [NVD CVE-2026-131589](https://nvd.nist.gov/vuln/detail/CVE-2026-131589) · [AI Engine readme](https://plugins.svn.wordpress.org/ai-engine/trunk/readme.txt) · [NVD CVE-2026-137308](https://nvd.nist.gov/vuln/detail/CVE-2026-137308) · Added: 2026-11-27
+
 ### GitLab MCP OAuth SSRF, Electerm MCP widget RCE, another AutoGPT MCP credential bug · published 2026-11-24 → 11-25 🆕
 - **GitLab EE** 18.10 to before 19.4.11, 19.5 before 19.5.9 and 19.6 before 19.6.2: an authenticated user can make the MCP server's OAuth token endpoint send requests to internal hosts (CVE-2026-135221, CVSS 6.3).
 - **Electerm** < 5.9.0: a web page can use DNS rebinding to reach its unauthenticated MCP Server widget on port 30837 and run commands locally and in open SSH sessions (CVE-2026-136630, CVSS 4.0 7.7).
@@ -142,7 +150,7 @@ CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-a
 **Do this:** run `mcp` ≥ 1.30.0 (1.x) or ≥ 2.2.0 (2.x). For CVE-2026-115563 upgrading isn't enough: set `issuer=` on `ClientCredentialsOAuthProvider`/`PrivateKeyJWTOAuthProvider`, replace the deprecated `RFC7523OAuthClientProvider`, and clear stored client registrations that lack an issuer. Details → [AI security](../../architecture/security/README.md#-recent-items)
 Source: [CVE-2026-115563](https://www.cve.org/CVERecord?id=CVE-2026-115563) · Added: 2026-11-20 · Updated: 2026-11-23
 
-### MCP TypeScript SDK: four CVEs fixed in 1.32.0 / 2.3.0 · 2026-10-20 🆕
+### MCP TypeScript SDK: four CVEs fixed in 1.32.0 / 2.3.0 · 2026-10-20
 Advisories published on 2026-10-20 cover the official TypeScript SDK:
 - **CVE-2026-111768** (CVSS 7.5): one request within the default 4 MiB limit can exhaust heap during tool-input validation and crash the server. No credentials needed. Fixed in `@modelcontextprotocol/sdk` 1.32.0 / `@modelcontextprotocol/server` 2.3.0.
 - **CVE-2026-111770** (CVSS 7.7): a shared stateless transport or shared `McpServer` instance can send one client's responses to another, because JSON-RPC ids collide. Fixed in `server` 2.3.0.
@@ -152,7 +160,7 @@ Advisories published on 2026-10-20 cover the official TypeScript SDK:
 **Do this:** If you run a remote TypeScript MCP server, upgrade to `sdk` ≥ 1.32.0 or `server` ≥ 2.3.0. Then create a server and transport per request or session rather than sharing one.
 Sources: [GitLab advisory: CVE-2026-111768](https://advisories.gitlab.com/npm/@modelcontextprotocol/sdk/CVE-2026-111768/) · [CVE-2026-111770](https://advisories.gitlab.com/npm/@modelcontextprotocol/server/CVE-2026-111770/) · [CVE-2026-111771](https://advisories.gitlab.com/npm/@modelcontextprotocol/sdk/CVE-2026-111771/) · [CVE-2026-111769](https://advisories.gitlab.com/npm/@modelcontextprotocol/sdk/CVE-2026-111769/) · Added: 2026-11-19
 
-### mcp-go: OAuth token-replay flaw fixed in v1.2.1 · 2026-11-05 🆕
+### mcp-go: OAuth token-replay flaw fixed in v1.2.1 · 2026-11-05
 **CVE-2026-123272** in `mark3labs/mcp-go` (≥ v0.48.0, < v1.2.1): `OAuthHandler.fetchServerMetadata` trusted the resource a malicious server declared in its well-known metadata. That server could get a token minted for a *different* MCP server and replay it there.
 **Do this:** Go MCP clients using mcp-go's OAuth handler should upgrade to v1.2.1.
 Source: [VulnCheck advisory](https://www.vulncheck.com/advisories/mcp-go-before-1.2.1-origin-validation-error-via-unvalidated-well-known-protected-resource-metadata) · CVSS 4.0 5.1 · Added: 2026-11-19

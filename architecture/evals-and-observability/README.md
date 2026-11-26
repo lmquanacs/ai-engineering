@@ -1,6 +1,6 @@
 # Evals & observability
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-27_
 
 > You can't improve an agent you can't see. This page covers tracing, evals, benchmarks and the standards underneath them.
 
@@ -38,6 +38,16 @@ Comparison sources: [benchlm.ai](https://www.benchlm.ai/blog/posts/best-llm-obse
 SWE-bench scores also carry test noise: a 2026-11-24 study flags 23% of Verified and 35% of Pro tasks as having overspecified tests → [Research](../../learn/research/README.md).
 
 ## 📰 Recent releases & results
+
+### Run 20% of your agent benchmark, chosen without running the agent · arXiv 2611.34617 · 2026-11-25 🆕
+A study of 14 black-box test-selection strategies across ten agent benchmarks. For estimating success rate, classic regression-testing methods worked best: for GPT 5.2 Codex on SWE-bench Verified, Category Partition picked 100 of 500 tasks, cut cost from $225 to $47 and estimated the success rate within 0.8 points. For finding failures early, LLM-as-judge selection worked best: 53.0% of its picked tasks exposed a failure, against 27.4% for random picks. No strategy won both goals.
+**Why it matters:** for per-change regression runs, use a fixed, stratified 20% subset to estimate pass rate, and a judge-picked "hard" subset when you want failures fast. Keep full runs for releases.
+Source: [arXiv 2611.34617](https://arxiv.org/abs/2611.34617) · Added: 2026-11-27
+
+### Langfuse: skills served through its MCP server; organization-level model prices · 2026-11-26 → 11-27 🆕
+Connecting Langfuse's MCP server now also gives your coding agent Langfuse's official skills, delivered through the MCP Skills extension and loaded on demand. Langfuse Cloud serves the latest skills; self-hosted instances serve the version that matches their install. Separately, custom model price definitions can now be set once per organization, and project definitions still override them.
+**Why it matters:** one MCP connection gives the agent both the tools and the instructions for instrumenting code, which works with the new skills-over-MCP support in Claude Code. Teams with many projects can stop copying custom model prices into each one.
+Source: [Langfuse skills via MCP](https://langfuse.com/changelog/2026-11-26-mcp-bundled-skills) · [Organization-level model definitions](https://langfuse.com/changelog/2026-11-27-organization-model-definitions) · Added: 2026-11-27
 
 ### Braintrust Patterns GA; Patterns and Loop start using credits on 2026-12-07 · 2026-11-23 (missed earlier) 🆕
 Patterns, which mines agent traces and logs for recurring problems (user frustration, unfinished workflows, unnecessary model calls, cost or latency shifts) even when calls succeed, is now generally available. Loop's GitHub and external MCP integrations are GA too. Model credits are renamed **Braintrust credits**, one balance for Patterns, Loop, Topics and built-in inference; Starter includes 10 a month and Pro 100. With your own provider key, the provider bills inference but Braintrust still charges credits for its own work.
@@ -84,7 +94,7 @@ Reads of traces, observations, scores, sessions and experiments are now audit-lo
 **Why it matters:** Trace data often holds prompts and customer data; read auditing and keyless AWS access help pass security review.
 Source: [Langfuse changelog](https://langfuse.com/changelog) · Added: 2026-11-20
 
-### FrontierHarness Eval v1.1 · harness × model leaderboard · 2026-11-17 🆕
+### FrontierHarness Eval v1.1 · harness × model leaderboard · 2026-11-17
 Runta, with Baseten serving the models, ran 22 harness configurations × 5 open models × 62 terminal tasks × 4 attempts: **27,280 runs and 83B tokens**. The model explained 92.8% of cost variance. With the model fixed, the priciest harness still cost about 1.8–5× the cheapest per task. The best-value harness changed with the model (Codex CLI was 1st on GLM-5.3 and 16th on Kimi-K3), spending more did not buy a higher pass rate, and **64.5% of spend went to runs that failed**. Steps per pass tracked cost; prompt size and tool count did not. Trials flagged for reward hacking (216) scored zero.
 **Why it matters:** If you switch models, re-benchmark your harness too, and report cost per *pass*, not per task. With most spend on failed runs, step caps and early aborts are worth testing. → [Agentic workflows](../agentic-workflows/README.md#-latest-evidence-what-actually-moves-the-needle)
 Source: [Runta: introducing FrontierHarness Eval v1.1](https://runta.com/blog/introducing-frontierharness-eval-v1-1/) · [live leaderboard](https://frontierharness.org/live/) · Added: 2026-11-19

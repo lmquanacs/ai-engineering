@@ -1,6 +1,6 @@
 # MCP servers for software development
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Model Context Protocol servers worth connecting to coding agents, plus the protocol changes that affect anyone running or building them.
 
@@ -92,6 +92,16 @@ Maintained by the MCP team in [modelcontextprotocol/servers](https://github.com/
 
 ## 🔒 Security notes
 
+### WhoDB, Bagel, BigCommerce, Crypto APIs and mcp-video-analyzer MCP CVEs · published 2026-11-27 🆕
+- **bigcommerce-api-mcp** < 1.0.1: the `/sse` and `/messages` routes skip authentication, so anyone who can reach the server can call tools with the operator's BigCommerce credentials and read products, orders and customers (CVE-2026-138034, CVSS 4.0 8.7).
+- **Bagel** (`bagel-mcp`) < 2.5.5: its read-only `query_messages` tool runs unsandboxed DuckDB SQL, so a prompt injection planted in recorded logs or topics can read and write files and make server-side requests (CVE-2026-138027, CVSS 4.0 7.7).
+- **mcp-video-analyzer** 0.2.0 to < 0.10.1: any http(s) URL ending in a video extension is fetched, including loopback, private and cloud metadata addresses (SSRF, CVE-2026-138033, CVSS 4.0 7.0).
+- **Crypto APIs MCP servers** (`@cryptoapis-io/mcp-*` < 0.4.0; `mcp-blockchain-events`, `-fees`, `mcp-broadcast`, `mcp-prepare-transactions` < 0.5.0; `mcp-aml` < 0.2.0): with Streamable HTTP and `--api-key` they bind 0.0.0.0 without auth, letting anyone spend the operator's credits or delete wallet xPubs (CVE-2026-138026, CVSS 4.0 6.9).
+- **WhoDB** 0.88.0 to < 0.132.0: the MCP `whodb_query` guard misses `INTO`, `OUTFILE` and `DUMPFILE`, so file-writing statements run without approval, even in read-only mode (CVE-2026-138032, CVSS 4.0 6.0).
+
+**Do this:** upgrade to bigcommerce-api-mcp ≥ 1.0.1, bagel-mcp ≥ 2.5.5, mcp-video-analyzer ≥ 0.10.1, the fixed Crypto APIs packages, WhoDB ≥ 0.132.0. Two more database servers whose "read-only" mode didn't hold: use a read-only database role instead. **Still unfixed (checked 2026-11-28):** the DBHub 0-day (ZDI-26-1067; no DBHub release since 2.1.0 on 2026-11-21) and the disputed LiteLLM stdio issue (ZDI-26-1031); the mitigations below still apply.
+Source: [NVD CVE-2026-138034](https://nvd.nist.gov/vuln/detail/CVE-2026-138034) · [NVD CVE-2026-138027](https://nvd.nist.gov/vuln/detail/CVE-2026-138027) · [NVD CVE-2026-138033](https://nvd.nist.gov/vuln/detail/CVE-2026-138033) · [NVD CVE-2026-138026](https://nvd.nist.gov/vuln/detail/CVE-2026-138026) · [NVD CVE-2026-138032](https://nvd.nist.gov/vuln/detail/CVE-2026-138032) · Added: 2026-11-28
+
 ### WordPress MCP plugins: token-to-admin bypass and file upload; markdownify-mcp SSRF · published 2026-11-26 🆕
 - **Secure MCP Server for Claude, ChatGPT, Gemini, Cursor and other AI Agents** (WordPress plugin `miniorange-secure-mcp-server`) ≤ 1.5.8: any valid MCP bearer token, including a scope-restricted connection-test token, gets the token owner's Administrator role on arbitrary WordPress endpoints, which bypasses the plugin's scopes and allow-lists (CVE-2026-131688, CVSS 8.1). NVD names no fixed version; 1.5.9's changelog says only "minor bug fixes", and 1.5.10 is current.
 - **AI Engine – MCP Server & AI Chatbot** (WordPress) ≤ 3.9.4: an Editor-level user can upload HTML, SVG or JS through `/mwai/v1/helpers/create_image`, giving stored XSS against admins (CVE-2026-131589, CVSS 7.2). Fixed in 3.9.5. The same release added "Beast Mode", a single switch that exposes every MCP tool to agents, so check it is off.
@@ -145,7 +155,7 @@ NVD published a batch of MCP-related CVEs: **Supergateway** cross-site WebSocket
 **Do this:** Upgrade to ≥ 4.3.0. If other machines, containers or a proxy can reach the gateway, still set `--apiKey`. If you serve a page through a tunnel on this machine on a public name, allow it with `--cors <origin>`.
 Source: [NVD CVE-2026-132121](https://nvd.nist.gov/vuln/detail/CVE-2026-132121) · [supergateway on npm](https://www.npmjs.com/package/supergateway?activeTab=versions) · Added: 2026-11-21 · Updated: 2026-11-25
 
-### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16 🆕
+### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16
 CVE-2026-116686 (schema `$ref` SSRF and file reads), CVE-2026-116684 (no token-audience check), CVE-2026-116685 (credentials sent on cross-origin redirects) and CVE-2026-115563 (OAuth clients could send credentials to an authorization server the MCP server chose).
 **Do this:** run `mcp` ≥ 1.30.0 (1.x) or ≥ 2.2.0 (2.x). For CVE-2026-115563 upgrading isn't enough: set `issuer=` on `ClientCredentialsOAuthProvider`/`PrivateKeyJWTOAuthProvider`, replace the deprecated `RFC7523OAuthClientProvider`, and clear stored client registrations that lack an issuer. Details → [AI security](../../architecture/security/README.md#-recent-items)
 Source: [CVE-2026-115563](https://www.cve.org/CVERecord?id=CVE-2026-115563) · Added: 2026-11-20 · Updated: 2026-11-23

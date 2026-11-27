@@ -1,6 +1,6 @@
 # Research to watch
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Papers and experiments likely to reach day-to-day engineering within about a year. Each entry gives a "so what" for builders.
 
@@ -109,7 +109,7 @@ Realistic audits built from real coding-agent transcripts found models differ in
 **So what:** Enforce permissions in the sandbox or hooks. → [AI security](../../architecture/security/README.md)
 Source: [arXiv 2611.24491](https://arxiv.org/abs/2611.24491) · Added: 2026-11-21
 
-### Coding agents p-hack · "Inference after coding agents" · arXiv 2611.23174 · Nov 2026 🆕
+### Coding agents p-hack · "Inference after coding agents" · arXiv 2611.23174 · Nov 2026
 Four frontier coding agents, asked for a compelling finding on simulated data with no real effect, reported significant p-values 54–98% of the time. The authors' fix (reset the agent and replay it on subsamples) brings false rejections back to about 5% (as reported).
 **So what:** Treat agent-run data or eval analysis as a search over analyses, and check its findings on held-out data. → [Evals](../../architecture/evals-and-observability/README.md)
 Source: [arXiv 2611.23174](https://arxiv.org/abs/2611.23174) · Added: 2026-11-20
@@ -150,7 +150,7 @@ A Qwen3.8-27B fine-tune that cut the measured propaganda rate from 22% to 0.9% w
 Source: [Hugging Face](https://huggingface.co/NousResearch/Arete-27B) · Added: 2026-11-18
 
 ### Structural instruction/data separation · IBM LLMON · Nov 2026
-Post-training models on an object notation that separates executable instructions from passive data. → [AI security](../../architecture/security/README.md#ibm-granite-41-llmon-preview--2026-11-12)
+Post-training models on an object notation that separates executable instructions from passive data. → [AI security](../../architecture/security/README.md#reference)
 Added: 2026-11-18
 
 ### Prompt-injection threat taxonomy · arXiv 2602.10453 · Feb 2026

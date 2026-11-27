@@ -1,6 +1,6 @@
 # Azure for AI engineering
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > What matters on Azure for AI engineers: Microsoft Foundry (models, Foundry Agent Service and hosted agents, Foundry IQ, evaluation and observability), Microsoft Agent Framework for Python and .NET (the successor to Semantic Kernel and AutoGen), the Azure MCP Server, and Spring AI and LangChain4j on Azure. **Microsoft Ignite 2026 ran 17–20 Nov** in San Francisco; the developer-relevant announcements are in the section below. OpenAI model launches live in [LLM news](../../models/news/README.md), non-Azure API features in [LLM APIs](../../build/llm-apis/README.md), and GitHub Copilot in [Coding agents](../../build/coding-agents/README.md).
 
@@ -98,7 +98,8 @@ Sources: [Ignite 2026 Book of News](https://news.microsoft.com/events/ignite/202
 ### Agent Framework GitHub repo taken offline; hold at 1.26.0 · 2026-11-25 🆕
 Microsoft has made the `microsoft/agent-framework` repository unavailable "as a necessary precaution" after the 2026-11-17 PyPI compromise, and gives no timeline for restoring it. Its post restates the scope: only the Python `agent-framework` meta-package versions 1.26.1 and 1.26.2 were malicious, the malicious code was in the published packages rather than the repo, and 1.26.0 and earlier, the other Python packages, the .NET packages and Semantic Kernel are unaffected. The framework has not been discontinued. Microsoft asks users to pin `agent-framework==1.26.0`, or the exact sub-packages they use, until it gives further guidance.
 **Why it matters:** CI jobs that clone the repo, vendor its samples or install from a Git URL will fail until it returns. If either bad version was ever installed, rebuild from a clean image rather than downgrading in place.
-Source: [Microsoft Agent Framework blog](https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-repository-update/) · Added: 2026-11-27
+**Update 2026-11-28:** The repo is still offline: its files return 404, while other Microsoft repos load. Microsoft has posted no new guidance (the blog's newest post is still the 11-25 update). PyPI's latest is still 1.26.0, and NuGet's `Microsoft.Agents.AI` is still 1.28.0, so keep the pin.
+Source: [Microsoft Agent Framework blog](https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-repository-update/) · [PyPI: agent-framework](https://pypi.org/project/agent-framework/) · Added: 2026-11-27 · Updated: 2026-11-28
 
 ### Foundry Ignite recap: details that change your code · 2026-11-24 🆕
 Microsoft's Ignite roundup (most launches are covered above) adds a few practical details. The **model router** accepts `model="auto"` on the Responses API without deploying a router first (preview). When a **budget block** stops a non-streaming request, Foundry returns HTTP 429 with `x-ms-budget-cause: budget_exceeded`, and the post says not to retry it as a transient rate limit. Registering an **external agent** with `ExternalAgentDefinition` needs `azure-ai-projects` 2.11.0 or later, a connected Application Insights resource, and a `gen_ai.agent.id` attribute on the top-level `invoke_agent` span. The **Foundry Dev Pack** is GA. It installs the `azd ai` CLI, a skill, the VS Code toolkit and a GitHub Copilot plugin in one step (`winget install Microsoft.FoundryDevPack` on Windows). Using Microsoft-Decision-1 as an evaluation judge needs `azure-ai-evaluation` 1.18.12 or later.

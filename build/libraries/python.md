@@ -1,10 +1,10 @@
 # Libraries · 🐍 Python
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-26_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-28_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
-| [**Pydantic AI**](https://github.com/pydantic/pydantic-ai) | 2.75.0 (2026-11-25); 2.73.0 changed `FallbackModel` behaviour, see below | Type-safe agent framework from the Pydantic team. V2 has been stable since 2026-06-23 and uses a "capabilities-first" design. It supports MCP and uses OpenTelemetry tracing (Logfire). Requires Python 3.11+. MIT. | Default for new Python agents, especially if you already use Pydantic or FastAPI |
+| [**Pydantic AI**](https://github.com/pydantic/pydantic-ai) | 2.76.0 (2026-11-27; not yet in the upgrade guide). 2.73.0–2.75.0 change fallback, usage and instruction behaviour, see below | Type-safe agent framework from the Pydantic team. V2 has been stable since 2026-06-23 and uses a "capabilities-first" design. It supports MCP and uses OpenTelemetry tracing (Logfire). Requires Python 3.11+. MIT. | Default for new Python agents, especially if you already use Pydantic or FastAPI |
 | [**LangGraph**](https://github.com/langchain-ai/langgraph) | 1.2.24 (2026-11-20) | Graph/state-machine orchestration with durable checkpoints, from LangChain. Python and TS. MIT. | You need explicit control flow, human-in-the-loop interrupts and resumable long runs |
 | [**MCP Python SDK**](https://github.com/modelcontextprotocol/python-sdk) | `mcp` 2.3.0 (2026-10-02); Tier 1, supports the 2026-07-28 spec | Official SDK for building MCP servers and clients | Exposing your Python tools to any agent |
 | [**Strands Agents**](https://github.com/strands-agents) (AWS) | 1.67.0 (2026-11-25; release notes not reviewed here) | AWS's open-source, model-driven agent harness SDK with behavioural middleware and sandboxing; deploys to Bedrock AgentCore or anywhere. Apache-2.0. | AWS/Bedrock-centric teams → [AWS](../../platforms/aws/README.md) |
@@ -14,8 +14,26 @@
 
 ## 🆕 Notable changes
 
+### Pydantic AI 2.74.0 and 2.75.0: upgrade notes now published · 2026-11-25 🆕
+The upgrade guide now lists compatibility changes for both releases.
+- **2.75.0:**
+  - Empty or unreadable model responses raise `ModelEmptyResponseError` or `ModelInvalidResponseError`. These subclass both `ModelAPIError` and `UnexpectedModelBehavior`, and `FallbackModel`/`ModelFallback` now fall back on them by default.
+  - Gemini thinking tokens called through `OpenAIChatModel` now count as output, so cost goes up and `UsageLimits` trip sooner.
+  - On the Gemini API, `thinking=False` for `gemini-2.5-flash` sends `thinking_budget=128` instead of 0. The guide says this lasts until a reroute on 2026-12-01, after which a budget of 0 returns 400.
+  - Capabilities whose authority is lowered with `with_authority()`, including MCP server instructions, now send their instructions as framed data on the user channel instead of in the system prompt.
+  - Durable runs that are in flight on Temporal or DBOS during the upgrade can hit nondeterminism errors.
+- **2.74.0:** on GPT-6.2, static instructions go out as leading input messages. Continuing with `openai_previous_response_id` and no `message_history` now inherits them.
+
+**Why it matters:**
+- Check any `except ModelAPIError` that comes before `except UnexpectedModelBehavior`.
+- Re-tune token limits if you call Gemini through the OpenAI-compatible endpoint.
+- Drain durable workflows before you upgrade.
+- 2.76.0 (2026-11-27) is on PyPI but not yet in the guide.
+
+Source: [Pydantic AI upgrade guide](https://pydantic.dev/docs/ai/project/changelog/) · [PyPI](https://pypi.org/project/pydantic-ai/) · Added: 2026-11-28
+
 ### Pydantic AI 2.73.0: unsupported settings dropped, `FallbackModel` stops falling back · 2026-11-24 🆕
-Pydantic AI no longer sends unified model settings that Claude, Gemini and Grok models reject; it drops them instead. Requests to models Anthropic or OpenAI have deprecated now raise a `DeprecatedModelWarning`, the `openai` dependency floor rises from 3.31.0 to 3.50.0, and OpenAI Responses `input_transformations` show up in `provider_details` and on the request span. 2.74.0 and 2.75.0 (11-25) have no compatibility notes in the upgrade guide.
+Pydantic AI no longer sends unified model settings that Claude, Gemini and Grok models reject; it drops them instead. Requests to models Anthropic or OpenAI have deprecated now raise a `DeprecatedModelWarning`, the `openai` dependency floor rises from 3.31.0 to 3.50.0, and OpenAI Responses `input_transformations` show up in `provider_details` and on the request span. Notes for 2.74.0 and 2.75.0 are in the entry above.
 **Why it matters:** A `FallbackModel` that relied on the provider's 400 to move to a later model now stays on the first model and silently runs without the setting. If you need the setting honoured, list a model that supports it first. Also check that your lockfile allows `openai` ≥ 3.50.0.
 Source: [Pydantic AI upgrade guide, v2.73.0](https://pydantic.dev/docs/ai/project/changelog/) · latest 2.75.0 on [PyPI](https://pypi.org/project/pydantic-ai/) (2026-11-25) · Added: 2026-11-26
 
@@ -24,12 +42,12 @@ Source: [Pydantic AI upgrade guide, v2.73.0](https://pydantic.dev/docs/ai/projec
 **Why it matters:** Breaking: the Visual Agent Builder routes and `google.adk.cli.built_in_agents` are gone; `McpInstructionProvider` no longer fills prompt arguments from `session.state` (pass `arguments=`); dynamic instruction routing is on by default (opt out with `ADK_DISABLE_DYNAMIC_INSTRUCTION_ROUTING=1`).
 Source: [ADK Python CHANGELOG](https://raw.githubusercontent.com/google/adk-python/main/CHANGELOG.md) · Added: 2026-11-21
 
-### Pydantic AI 2.71.0: renames, `PermissionRule`, `ModelRouter` · 2026-11-18 🆕
+### Pydantic AI 2.71.0: renames, `PermissionRule`, `ModelRouter` · 2026-11-18
 Compatibility changes: `PeerNetwork` is renamed `PeerConnection`; `StackOne`'s `api_key` is deprecated in favour of a new `auth` parameter; `DEPRECATED_ANTHROPIC_MODELS` is deprecated; pause/resume behaviour changed for deferred tools and `BackgroundTools`; the in-process `MCPToolsetClient` server is typed as a protocol rather than `FastMCP`. New: `ModelRouter`, `PermissionRule` (allow, ask or deny tool calls), harness capabilities such as `RequireVerification`, `Goal` and `WrapUpAtLimits`, secret masking with `Shell(secret_env=)`, and HTTP 408 now raises `ModelTimeoutError`.
 **Why it matters:** `PermissionRule` gives Python agents a declarative allow/ask/deny layer for tools. Check for the renamed and deprecated names before upgrading.
 Source: [Pydantic AI v2.71.0 release](https://github.com/pydantic/pydantic-ai/releases/tag/v2.71.0) · Added: 2026-11-20
 
-### LangGraph 1.2.23: `Send` tool calls get typed state · 2026-11-19 🆕
+### LangGraph 1.2.23: `Send` tool calls get typed state · 2026-11-19
 Raises the `langgraph-prebuilt` minimum to 1.1.3, which makes tool calls dispatched with `Send` receive the same typed state as an edge. Not labelled breaking, but `ToolNode` code that read state in `Send` branches may see different values.
 Source: [langgraph PR #9742](https://github.com/langchain-ai/langgraph/pull/9742) · [PyPI](https://pypi.org/project/langgraph/) · Added: 2026-11-20
 
@@ -45,4 +63,4 @@ Source: [Developers Digest: Pydantic AI V2 in late 2026](https://www.developersd
 
 Comparison source: [Pydantic AI vs LangGraph, verified 2026-10-18](https://www.developersdigest.tech/agent-frameworks/compare/pydantic-ai-vs-langgraph)
 
-Version numbers confirmed on 2026-11-26 at [PyPI](https://pypi.org/) (release upload dates).
+Version numbers confirmed on 2026-11-28 at [PyPI](https://pypi.org/) (release upload dates).

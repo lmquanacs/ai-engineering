@@ -1,6 +1,6 @@
 # Open-weight model providers
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Where to call GLM, DeepSeek, Kimi, Qwen, MiniMax and MiMo models: the labs' own APIs and coding plans, OpenAI- and Anthropic-compatible base URLs, which third-party hosts serve which model (and at what precision), routers, and how to wire them into AI SDK, Pydantic AI, Spring AI and LangChain4j. Launches and benchmarks are in [LLM news](../news/README.md). Frontier prices and self-hosting are in [Inference, cost & serving](../cost-and-serving/README.md). DeepSeek API feature changes are in [LLM APIs](../../build/llm-apis/README.md). Bedrock availability is in [AWS](../../platforms/aws/README.md).
 
@@ -73,7 +73,7 @@ The routers now list DeepSeek's current Flash model, so the last "not confirmed"
 Source: [AI Gateway models API](https://ai-gateway.vercel.sh/v1/models) · [OpenRouter models API](https://openrouter.ai/api/v1/models) · [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) · [`@ai-sdk/alibaba` on npm](https://www.npmjs.com/package/@ai-sdk/alibaba) · read 2026-11-27 · Added: 2026-11-27
 
 ### GLM-5.4 ships on the GLM Coding Plan first; API comes later · 2026-11-23 🆕
-Z.ai's newest model is available on all GLM Coding Plan tiers (Lite, Pro, Max), with 1M context and 128K max output. Its pay-as-you-go Model API will follow "upon completion of the security assessment", with no date given. In coding tools, use `glm-5.4`, or `glm-5.4[1m]` for the full 1M window. Weekly-quota plans get 1.5× their GLM-5.3 quota, and Z.ai quotes up to 200 tok/s off-peak and 70–80 tok/s at peak *(self-reported)*. As of 2026-11-27 there is still no pay-as-you-go API: Z.ai's docs still say the Model API waits on the security assessment, its pages don't mention open weights, and no `glm-5.4` listing exists on OpenRouter, AI Gateway, DeepInfra, Fireworks, Together, Baseten or Hugging Face.
+Z.ai's newest model is available on all GLM Coding Plan tiers (Lite, Pro, Max), with 1M context and 128K max output. Its pay-as-you-go Model API will follow "upon completion of the security assessment", with no date given. In coding tools, use `glm-5.4`, or `glm-5.4[1m]` for the full 1M window. Weekly-quota plans get 1.5× their GLM-5.3 quota, and Z.ai quotes up to 200 tok/s off-peak and 70–80 tok/s at peak *(self-reported)*. As of 2026-11-28 there is still no pay-as-you-go API: Z.ai's GLM-5.4 page still says the Model API waits on the security assessment, its pages don't mention open weights, and no `glm-5.4` listing exists on OpenRouter, AI Gateway, DeepInfra, Fireworks, Together, Baseten or Hugging Face (`zai-org`). The GLM-5.4 page now describes the model as about 750B parameters, built by looping 28 layers of the GLM-5 base twice, with video, image, text and file input *(self-reported)*.
 **Why it matters:** Coding-plan users can switch now. API, router and third-party-host users stay on `glm-5.3` until the API and weights land. If Claude Code says the `[1m]` model doesn't exist, update Claude Code. Confirm the switch with `/status`.
 ```json
 {
@@ -85,7 +85,7 @@ Z.ai's newest model is available on all GLM Coding Plan tiers (Lite, Pro, Max), 
   }
 }
 ```
-Source: [Z.ai GLM Coding Plan: latest model](https://docs.z.ai/devpack/latest-model.md) · [Z.ai model guide](https://docs.z.ai/guides/llm) · [OpenRouter Z.ai models](https://openrouter.ai/~z-ai) · release date from [benchlm.ai tracker](https://benchlm.ai/model-updates) · Added: 2026-11-25
+Source: [Z.ai GLM Coding Plan: latest model](https://docs.z.ai/devpack/latest-model.md) · [Z.ai GLM-5.4](https://docs.z.ai/guides/llm/glm-5.4.md) · [Z.ai model guide](https://docs.z.ai/guides/llm) · [OpenRouter Z.ai models](https://openrouter.ai/~z-ai) · release date from [benchlm.ai tracker](https://benchlm.ai/model-updates) · Added: 2026-11-25
 
 ### Together Link: open models inside Claude Code, Codex and OpenCode (beta) · 2026-10-05 (missed earlier) 🆕
 A launcher that points Claude Code, Codex CLI, OpenCode, Pi and the Claude and ChatGPT desktop apps at Together-hosted models without editing your own config files. It offers an "Auto" router plus Kimi K3, GLM 5.3, DeepSeek V4.1 Flash and Qwen 3.8, billed at Together's serverless rates. It needs a Together API key. An optional Anthropic key lets Auto send hard Claude Code requests to Claude Opus, billed to your Anthropic account. It is in beta, so commands and the model list may change.

@@ -1,6 +1,6 @@
 # AI security for builders
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Prompt injection, supply-chain risk from skills and MCP servers, and agent permissions: the practical side.
 
@@ -27,6 +27,15 @@ Source: [Simon Willison on Meta's Rule of Two](https://simonwillison.net/2025/no
 - [ ] Agent CLIs are kept current: security fixes ship weekly (see below).
 
 ## 🚨 Recent items
+
+### Airflow LLM decorators run injected templates, Pydantic Deep open by default, more MCP "read-only" bypasses · published 2026-11-26 → 11-27 🆕
+- **Apache Airflow** (CVE-2026-120353): the `common.ai` decorators (`@task.llm`, `@task.agent`, `@task.llm_sql`, `@task.llm_branch` and others) and `@task.bash`/`@task.sql`/`@task.kubernetes_cmd` rendered Jinja a second time on the worker. Text that a Dag passes into a prompt or argument, such as a ticket or a downloaded document, or run conf from anyone allowed to trigger the Dag, could run commands on the worker and read connection passwords and Variables. Upgrade `apache-airflow-providers-common-ai` to **1.2.0**, `-standard` to 1.22.0, `-common-sql` to 3.0.0 and `-cncf-kubernetes` to 11.0.0.
+- **Pydantic Deep** 0.2.18 to < 0.4.0 (CVE-2026-137953, CVSS 4.0 8.8): the bundled DeepResearch FastAPI app listens on all interfaces with no authentication, so anyone who can reach it can read sessions and workspace files and drive the agent. PyPI is at 0.4.2.
+- **MCP servers:** WhoDB 0.88.0 to < 0.132.0 lets `whodb_query` write files with `SELECT INTO OUTFILE` or `lo_export` despite read-only and confirmation modes (CVE-2026-138032). bagel-mcp < 2.5.5 runs unsandboxed DuckDB SQL from its "read-only" `query_messages` tool and accepts injected rsync options (CVE-2026-138027, CVE-2026-138028). bigcommerce-api-mcp < 1.0.1 skips auth on `/sse` and `/messages` (CVE-2026-138034), and the Crypto APIs `@cryptoapis-io/mcp-*` servers bind `0.0.0.0` with no auth on Streamable HTTP (CVE-2026-138026). More on the [MCP servers page](../../build/mcp-servers/README.md).
+- **Around agents:** n8n before 2.47.6 / 2.48.3 / 3.2.2: the Bedrock chat and embeddings nodes skip SSRF protection for a custom runtime endpoint (CVE-2026-137958). Budibase before 4.0.0 served its LiteLLM key to unauthenticated callers (CVE-2026-137497). nanobot 0.1.4 to < 0.4.1 retried Codex-provider requests without TLS verification, leaking bearer tokens (CVE-2026-137463). Serving: llama.cpp's RPC server had an unauthenticated heap write (CVE-2026-137567, CVSS 4.0 9.3, fixed in b12658), and three vLLM advisories, including a cross-user token leak in 0.16.0 to < 0.21.0 (CVE-2026-137477), are all fixed in current vLLM 0.34.0.
+- **LiteLLM MCP stdio and DBHub 0-days:** still no fix on 2026-11-28. Both NVD records are unchanged since 2026-11-24, LiteLLM's release notes up to 1.108.19 don't mention stdio, and DBHub's npm `latest` is still 2.1.0. Keep the mitigations from the 11-24 entry below.
+**Why it matters:** The Airflow bug shows what an LLM prompt template can become: if anything re-renders model input as a template, a prompt injection turns into code execution. Upgrade the providers if you use the AI decorators. The MCP batch is the familiar pattern again: SQL keyword filters and "read-only" tool labels don't stop writes, so use database roles and bind servers to localhost with auth.
+Source: [NVD CVE-2026-120353](https://nvd.nist.gov/vuln/detail/CVE-2026-120353) · [Apache announcement](https://lists.apache.org/thread/6szpozm1htzv0cyn11vc6m3pj8xz97nj) · [NVD CVE-2026-137953](https://nvd.nist.gov/vuln/detail/CVE-2026-137953) · [NVD CVE-2026-138032](https://nvd.nist.gov/vuln/detail/CVE-2026-138032) · [NVD CVE-2026-138027](https://nvd.nist.gov/vuln/detail/CVE-2026-138027) · [NVD CVE-2026-138034](https://nvd.nist.gov/vuln/detail/CVE-2026-138034) · [NVD CVE-2026-138026](https://nvd.nist.gov/vuln/detail/CVE-2026-138026) · [NVD CVE-2026-137958](https://nvd.nist.gov/vuln/detail/CVE-2026-137958) · [NVD CVE-2026-137567](https://nvd.nist.gov/vuln/detail/CVE-2026-137567) · [NVD CVE-2026-137477](https://nvd.nist.gov/vuln/detail/CVE-2026-137477) · Added: 2026-11-28
 
 ### A second Pydantic AI Harness browser bypass, markdownify-mcp SSRF, and recovery that drops security steps · 2026-11-25 → 11-26 🆕
 - **Pydantic AI Harness** `PlaywrightBrowser` (CVE-2026-136638, CVSS 5.9): the egress policy treated any URL containing a backslash as host-less and let it through, so a page script could reach private addresses and hosts outside `allowed_domains` (or inside `blocked_domains`) with fetch, XHR, `sendBeacon`, WebSocket or asset requests. Fixed in the same `pydantic-ai-harness` **0.74.0** as yesterday's WebRTC bypass, so one upgrade covers both.
@@ -153,7 +162,7 @@ Audits that continue real coding-agent transcripts toward a seeded risky behavio
 **Why it matters:** Enforce limits with the sandbox, permission rules or hooks, not prose in CLAUDE.md or AGENTS.md.
 Source: [arXiv 2611.24491](https://arxiv.org/abs/2611.24491) · Added: 2026-11-21
 
-### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16 🆕
+### MCP Python SDK: four CVEs fixed in 1.30.0 / 2.2.0 · published 2026-10-27 and 2026-11-16
 Advisories against the official Python SDK (`mcp` on PyPI):
 - **CVE-2026-115563** (GHSA-qx49-fqc8-xw99, CVSS 7.5, published 2026-11-16): OAuth support in `mcp.client.auth` could send a `client_secret`, authorization code, PKCE verifier or signed client assertion to an authorization server chosen by an untrusted MCP server. Affects ≥ 1.9.1 < 1.30.0 and ≥ 2.0.0a1 < 2.2.0; unattended `ClientCredentialsOAuthProvider` and `PrivateKeyJWTOAuthProvider` are the most exposed. **Upgrading is not enough:** set `issuer=` on those providers, replace the deprecated `RFC7523OAuthClientProvider` (it has no issuer option), and clear stored client registrations without an issuer so they register again.
 - **CVE-2026-116686** (GHSA-rwrf-2pqf-9j8j, CVSS 6.5): when a client validates a server-declared `outputSchema`, `$ref` URLs (http, https or file) are resolved, allowing blind outbound requests, local file reads and stalling every session in the process. Affects ≥ 1.10.0 < 1.30.0 and ≥ 2.0.0 < 2.2.0.
@@ -164,7 +173,7 @@ The fixed versions were on PyPI from 2026-09-07; the advisories came later.
 **Why it matters:** Clients that connect to untrusted MCP servers are the most exposed. Upgrade to `mcp` ≥ 1.30.0 or ≥ 2.2.0.
 Sources: [GHSA-rwrf-2pqf-9j8j](https://github.com/modelcontextprotocol/python-sdk/security/advisories/GHSA-rwrf-2pqf-9j8j) · [OpenCVE: CVE-2026-116686](https://app.opencve.io/cve/CVE-2026-116686) · [Mend: CVE-2026-116684](https://www.mend.io/vulnerability-database/CVE-2026-116684/) · [CVE-2026-115563](https://www.cve.org/CVERecord?id=CVE-2026-115563) · Added: 2026-11-20 · Updated: 2026-11-23
 
-### Claude Code 2.1.326 → 2.1.329 sandbox hardening · Nov 2026 🆕
+### Claude Code 2.1.326 → 2.1.329 sandbox hardening · Nov 2026
 Sandboxed commands write to fewer home folders, sign-in files are write-protected, and bypass mode now asks about some commands.
 **Why it matters:** Re-test unattended jobs. Details → [Coding agents](../../build/coding-agents/README.md)
 Added: 2026-11-20
@@ -183,20 +192,15 @@ Sources: [Wiz](https://www.wiz.io/blog/malicious-version-of-microsofts-agent-fra
 **2.1.319** fixes a sandbox escape during worktree creation and a Bash permission bypass using crafted environment prefixes, and auto mode now fails closed when the server-side check is unavailable. **2.1.321** fixes MCP OAuth requests sending secrets such as refresh tokens to another host after a server redirect, a read-only Bash command running outside the sandbox without a prompt, and deny rules not applying to the target of `cp`/`mv` into a directory. **2.1.325** fixes zstd response decoding, a Bash allow rule that could run a different program than it names, and compound commands running without asking; sandboxed Bash now prompts by default. **Upgrade to ≥ 2.1.325.** Details: [Coding agents](../../build/coding-agents/README.md).
 Sources: [Claude Code changelog](https://code.claude.com/docs/en/changelog#2-1-319) · [Claude Code CHANGELOG (v2.1.325 tag)](https://raw.githubusercontent.com/anthropics/claude-code/v2.1.325/CHANGELOG.md) · Added: 2026-11-18 · Updated: 2026-11-19
 
+## Reference
+
 ### IBM Granite 4.1 LLMON preview · 2026-11-12
-3B and 8B preview models post-trained on **LLMON (LLM Object Notation)** to enforce a structural separation between executable instructions and passive data. Claims are self-reported in an IBM preprint.
-**Why it matters:** It tries to give LLMs the "this is data" channel that fixed SQL injection. Worth tracking, but not yet proven against adaptive attacks.
+3B and 8B preview models post-trained on **LLMON (LLM Object Notation)** to separate executable instructions from passive data. Claims are self-reported in an IBM preprint, and the approach is not yet proven against adaptive attacks.
 Source: [techjacksolutions release tracker](https://techjacksolutions.com/ai-news/technology/?per=100&tag=neocloud) · Added: 2026-11-18
 
-### AI-found vulnerabilities at scale · OpenAI, Nov 2026
-One autonomous agent run produced **948 working Linux kernel root exploits** (about $1.2M in API credits), and humans reviewed the reports before disclosure. GPT-6 Cyber reports 81 new high-severity Firefox bugs.
-**Why it matters:** Discovery is getting cheaper for everyone, so patch velocity and dependency hygiene matter more.
-Sources: [OpenAI: a thousand fewer paths to root](https://openai.com/index/a-thousand-fewer-paths-to-root/) · [GPT-6 Cyber](https://openai.com/index/introducing-gpt-6-cyber/) · Added: 2026-11-18
-
-### MCP ecosystem hygiene (2026 data)
-- 30+ CVEs against MCP servers in January–February 2026; one scan found security findings in 66% of popular servers. ([Toolradar](https://toolradar.com/blog/best-mcp-servers-2026))
-- 48% of more than 19,000 MCP server codebases recommend insecure secret storage (Trend Micro). ([Amplitude summary](https://amplitude.com/compare/best-mcp-servers))
-- The MCP 2026-07-28 spec makes remote servers formal **OAuth 2.1 resource servers**. Prefer servers that implement it. → [MCP servers](../../build/mcp-servers/README.md)
+Other older background items, kept short:
+- **AI-found vulnerabilities at scale** (OpenAI, Nov 2026): one autonomous run produced 948 working Linux kernel root exploits for about $1.2M in API credits, and GPT-6 Cyber reports 81 new high-severity Firefox bugs. Patch velocity matters more. ([OpenAI](https://openai.com/index/a-thousand-fewer-paths-to-root/) · [GPT-6 Cyber](https://openai.com/index/introducing-gpt-6-cyber/))
+- **MCP ecosystem hygiene (2026 data):** 30+ CVEs against MCP servers in January–February 2026, and one scan found issues in 66% of popular servers ([Toolradar](https://toolradar.com/blog/best-mcp-servers-2026)). 48% of more than 19,000 MCP codebases recommend insecure secret storage (Trend Micro, via [Amplitude](https://amplitude.com/compare/best-mcp-servers)). The 2026-07-28 MCP spec makes remote servers OAuth 2.1 resource servers; prefer servers that implement it. → [MCP servers](../../build/mcp-servers/README.md)
 
 ## 📚 Further reading
 - [The Landscape of Prompt Injection Threats in LLM Agents (arXiv 2602.10453)](https://arxiv.org/abs/2602.10453): a taxonomy of attacks and defences.

@@ -129,7 +129,7 @@ Admins can connect Kiro cloud sessions to private resources in an Amazon VPC (En
 **Why it matters:** Cloud agents can work against private databases and services without exposing them publicly.
 Source: [Kiro changelog](https://kiro.dev/changelog/) · Added: 2026-11-21
 
-### Kiro IDE 1.4.236: permission hook and GitLab installs · 2026-11-18 🆕
+### Kiro IDE 1.4.236: permission hook and GitLab installs · 2026-11-18
 The IDE gets the CLI's Permission Request hook (answer approval prompts from a script), shows final arguments after Pre Tool Use hooks rewrite them, and supports one organization IdP sign-in across HTTP MCP servers. Powers and skills can be installed from public GitLab URLs; self-hosted GitLab hosts must be listed in `kiroAgent.powers.trustedGitLabHosts`.
 **Why it matters:** IDE and CLI users can now share one hook-based policy and one MCP sign-in.
 Source: [Kiro IDE 1.4.236 changelog](https://kiro.dev/changelog/ide/1-4-236/) · Added: 2026-11-20

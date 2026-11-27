@@ -1,26 +1,26 @@
 # Claude Code mastery
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Tips, tricks and workflows for getting the most out of Claude Code, refreshed every day. Release notes and upgrade warnings stay in [Coding agents & IDEs](../coding-agents/README.md); this page is about *how to use it well*.
 
 ## 💡 Tip of the day
 
-### Decide which MCP servers may hand Claude skills: `Skill(mcp__<server>__*)` rules
-From 2.1.331, an MCP server can serve skills as well as tools (public beta). They show up in `/` and `/skills` as `<server>:<skill>`, for example `/docs:pdf report.pdf` for a `pdf` skill on a server named `docs`; connector and plugin servers get a prefix such as `claude_ai_Docs:pdf`. In auto mode the classifier decides whether a skill loads without you seeing it, and the server can change the skill at any time, so set a rule per server. Run `/permissions`, or add to settings:
-```json
-{
-  "permissions": {
-    "allow": ["Skill(mcp__docs__*)"],
-    "ask":   ["Skill(mcp__vendor__*)"],
-    "deny":  ["Skill(mcp__scratch__*)", "Skill(docs:pdf)"]
-  }
-}
+### Get JSON your script can trust from `claude -p --json-schema`
+For a CI step or build script that acts on Claude's answer, pass a JSON Schema with `--output-format json`. The answer comes back validated in the `structured_output` field, next to the session ID and usage, instead of as prose you have to parse. Cap the run with `--max-turns` and `--max-budget-usd` so a confused run can't loop or overspend.
+```bash
+claude -p "Extract the main function names from auth.py" \
+  --output-format json \
+  --json-schema '{"type":"object","properties":{"functions":{"type":"array","items":{"type":"string"}}},"required":["functions"]}' \
+  | jq '.structured_output'
 ```
-`allow` approves every version of a server's skills, but only works in user or managed settings and only for servers you added at user or local scope or managed servers (not connectors, `.mcp.json` or plugin servers). `ask` prompts each time, even in auto and `bypassPermissions` mode. `deny` also blocks typed commands; deny `mcp__<server>` to block its tools too. Org admins turn skills on for other servers with `disableDirectMcpSkills: false` in managed settings, or keep them off with `true`.
-Gotchas: MCP skills don't load in `claude -p`, cloud sessions, GitHub Actions, the Agent SDK, or through cloud providers, a custom `ANTHROPIC_BASE_URL`, `apiKeyHelper` or `ANTHROPIC_AUTH_TOKEN`. They get no `allowed-tools` grant, and a `deny` rule still lets Claude read the server's resources (deny `ReadMcpResourceTool` for that). If a skill is missing, check `claude --debug=mcp`.
-**Why it matters:** a skill is instructions plus code that can steer Claude, coming from a server that can change it without telling you. One line per server decides whether that happens silently, with a prompt, or never. Pair it with yesterday's `PreSkillShellCommand` hook, below.
-Source: [MCP: use skills from MCP servers](https://code.claude.com/docs/en/mcp#use-skills-from-mcp-servers) · [Skills: skills from MCP servers](https://code.claude.com/docs/en/skills#skills-from-mcp-servers) · Added: 2026-11-27
+```bash
+claude -p --max-turns 3 "query"
+claude -p --max-budget-usd 5.00 "query"
+```
+Gotchas: if a run ends without valid structured output (for example Claude declined), the response has **no** `structured_output` field, so check it is present before using it. An invalid schema exits with `Error: --json-schema is not a valid JSON Schema`; `format` (such as `"email"`) is accepted but not enforced. `--json-schema`, `--max-turns` and `--max-budget-usd` are print-mode only. The budget cap uses Claude Code's client-side cost estimate, counts subagents, and spend can pass it, so leave headroom. Piped stdin is capped at 10MB; write bigger inputs to a file and name the path. Without `--bare`, `-p` runs a project's `.claude/settings.json` hooks and connects its `.mcp.json` servers even in a folder you never trusted, with no trust dialog; the docs recommend `--bare` for scripted calls, which skips that discovery (and CLAUDE.md, skills and plugins) but needs `ANTHROPIC_API_KEY` instead of your subscription login.
+**Why it matters:** "summarise the diff" becomes a step that returns fields a script can gate on (a list of risky files, a pass/fail verdict) without regex over free text.
+Source: [Headless: get structured output](https://code.claude.com/docs/en/headless#get-structured-output) · [CLI reference: flags](https://code.claude.com/docs/en/cli-reference#cli-flags) · Added: 2026-11-28
 
 ---
 
@@ -97,6 +97,22 @@ Source: [Best practices: start runs on a schedule or an event](https://code.clau
 ## 🗞️ Latest tips
 
 <!-- newest first: new workflows, tips from official docs and Anthropic posts, proven practitioner techniques. Each previous "Tip of the day" moves here. -->
+
+### Decide which MCP servers may hand Claude skills: `Skill(mcp__<server>__*)` rules 🆕
+From 2.1.331, an MCP server can serve skills as well as tools (public beta). They show up in `/` and `/skills` as `<server>:<skill>`, for example `/docs:pdf report.pdf` for a `pdf` skill on a server named `docs`; connector and plugin servers get a prefix such as `claude_ai_Docs:pdf`. In auto mode the classifier decides whether a skill loads without you seeing it, and the server can change the skill at any time, so set a rule per server. Run `/permissions`, or add to settings:
+```json
+{
+  "permissions": {
+    "allow": ["Skill(mcp__docs__*)"],
+    "ask":   ["Skill(mcp__vendor__*)"],
+    "deny":  ["Skill(mcp__scratch__*)", "Skill(docs:pdf)"]
+  }
+}
+```
+`allow` approves every version of a server's skills, but only works in user or managed settings and only for servers you added at user or local scope or managed servers (not connectors, `.mcp.json` or plugin servers). `ask` prompts each time, even in auto and `bypassPermissions` mode. `deny` also blocks typed commands; deny `mcp__<server>` to block its tools too. Org admins turn skills on for other servers with `disableDirectMcpSkills: false` in managed settings, or keep them off with `true`.
+Gotchas: MCP skills don't load in `claude -p`, cloud sessions, GitHub Actions, the Agent SDK, or through cloud providers, a custom `ANTHROPIC_BASE_URL`, `apiKeyHelper` or `ANTHROPIC_AUTH_TOKEN`. They get no `allowed-tools` grant, and a `deny` rule still lets Claude read the server's resources (deny `ReadMcpResourceTool` for that). If a skill is missing, check `claude --debug=mcp`.
+**Why it matters:** a skill is instructions plus code that can steer Claude, coming from a server that can change it without telling you. One line per server decides whether that happens silently, with a prompt, or never. Pair it with the `PreSkillShellCommand` hook, below.
+Source: [MCP: use skills from MCP servers](https://code.claude.com/docs/en/mcp#use-skills-from-mcp-servers) · [Skills: skills from MCP servers](https://code.claude.com/docs/en/skills#skills-from-mcp-servers) · Added: 2026-11-27
 
 ### Guard the shell commands skills run as they load, with a `PreSkillShellCommand` hook 🆕
 A skill's `` !`command` `` lines run while the skill loads, and `PreToolUse` hooks never see them. From 2.1.332, a `PreSkillShellCommand` hook does: it gets each command after the permission check, even in `bypassPermissions` mode, and can block it. Reuse the script you already run on `PreToolUse` (this one reads `tool_input.command` and denies `rm -rf`), match both tools that run injected commands, and set `onFailure: "block"` so a crashed or slow hook doesn't let the command through.
@@ -237,17 +253,17 @@ Source: [Memory: path-specific rules](https://code.claude.com/docs/en/memory#pat
 From 2.1.330, recurring scheduled tasks and `/loop` last up to 30 days instead of 7 while their session keeps running. Loops created before you upgrade still stop at 7 days, so recreate long-running watchers after upgrading. For anything that must outlive the session, use cloud or Desktop scheduled tasks. (The scheduled-tasks page still says seven days; the changelog is newer.)
 Source: [Claude Code changelog 2.1.330](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks) · Added: 2026-11-21
 
-### Give Claude a check it can run, then enforce it with a Stop hook 🆕
+### Give Claude a check it can run, then enforce it with a Stop hook
 Tell Claude how to verify its own work (tests, typecheck, lint). To make it non-negotiable, add a `Stop` hook in `.claude/settings.json` that runs the check and exits with code 2 on failure: the errors go back to Claude and it keeps working until the check passes.
 **Why it matters:** this turns "done" from Claude's opinion into a passing command.
 Source: [Best practices: enforce the check with a Stop hook](https://code.claude.com/docs/en/best-practices#enforce-the-check-with-a-stop-hook) · Added: 2026-11-20
 
-### Add an MCP server without putting its token on the command line 🆕
+### Add an MCP server without putting its token on the command line
 `claude mcp add-json <name> -` (2.1.327+) reads the server's JSON config from stdin, so a token piped in from a secrets manager or file never lands in shell history or `ps` output. It only works from your shell, not inside a Claude Code session.
 **Why it matters:** `claude mcp add ... --header "Authorization: Bearer ..."` leaves the secret in history.
 Source: [Claude Code changelog 2.1.327](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · [MCP docs](https://code.claude.com/docs/en/mcp) · Added: 2026-11-20
 
-### Make unattended runs survive the stricter sandbox 🆕
+### Make unattended runs survive the stricter sandbox
 Since 2.1.326, more Bash and PowerShell commands ask first, and in `-p` or scheduled runs with no one to answer they are refused. After upgrading, run the job once interactively, then add the exact commands it needs as allow rules in `.claude/settings.json`. If a sandboxed command needs to write to a home folder, add that path to `sandbox.filesystem.allowWrite` rather than turning the sandbox off.
 Source: [Claude Code changelog 2.1.326](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md) · [Settings](https://code.claude.com/docs/en/settings) · Added: 2026-11-20
 

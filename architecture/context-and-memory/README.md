@@ -1,6 +1,6 @@
 # Context engineering & memory
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Deciding what the model sees at each step: compaction, tool-result clearing, memory and caching. Retrieval lives in [RAG & retrieval](../rag-and-retrieval/README.md). Agent quality now depends more on this than on which model you pick.
 
@@ -83,7 +83,7 @@ IBM distils lessons from an agent's own trajectories into guidelines (shipped in
 **Why it matters:** Tune memory budgets per model; "inject everything" can hurt smaller ones.
 Source: [arXiv 2611.26361](https://arxiv.org/abs/2611.26361) · Added: 2026-11-21
 
-### GPT-6.2 changes what is cacheable and when reasoning is kept · OpenAI · 2026-11-17 🆕
+### GPT-6.2 changes what is cacheable and when reasoning is kept · OpenAI · 2026-11-17
 OpenAI's migration guide says GPT-6.2 places top-level `instructions` after `input`, so reusable instructions must move into a leading `developer` message to be cached. Reasoning items are dropped when an earlier part of the conversation is edited (developer messages or tool-call history), or when the model, user or org changes, which costs quality and tokens. Teams coming from GPT-5.5 or earlier replace `prompt_cache_retention` with `prompt_cache_options.ttl`.
 **Why it matters:** This is a second reason, after the cache-pricing study below, to append to history rather than rewrite it. Audit code that edits or compacts earlier turns before switching to GPT-6.2.
 Source: [OpenAI migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra#gpt-6.2-astra-migration-quickstart) · [API changelog](https://developers.openai.com/api/docs/changelog) · Added: 2026-11-20
@@ -105,3 +105,4 @@ Embedding, reranker and parser models, vector databases and RAG patterns now hav
 - **Managed memory stores on AWS:** AgentCore Memory, and since 2026-11-18 Amazon OpenSearch Memory (events in, derived memories out, hybrid search). → [AWS](../../platforms/aws/README.md)
 - **Spring AI Session API:** event-sourced short-term memory with compaction for JVM agents. ([spring.io](https://spring.io/team/tzolov))
 - **Skills as lazy context:** only the description is always loaded and the body loads on demand. → [Agent skills](../../build/agent-skills/README.md)
+- **Tracing memory and compaction:** OpenTelemetry GenAI conventions v0.1.0 (tagged 2026-11-21) add memory-operation spans (store and record create, update, search and delete) and a `gen_ai.conversation.compacted` attribute, so compaction and memory calls can show up in standard traces. → [Evals & observability](../evals-and-observability/README.md#-recent-releases--results)

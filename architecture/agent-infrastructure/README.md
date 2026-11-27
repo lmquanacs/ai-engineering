@@ -1,6 +1,6 @@
 # Agent infrastructure & runtimes
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-28_
 
 > Where agents actually run: sandboxes for untrusted code, durable execution for long runs, hosting, and identity and permissions. This is the layer between "I wrote an agent" and "it runs safely in production".
 
@@ -57,6 +57,11 @@ Source: [Upstash: sandbox providers for AI agents](https://upstash.com/blog/best
 
 ## 📰 Recent releases
 
+### Docker Sandboxes: saved-mount symlink swap, fixed in 0.54.0 · CVE-2026-126139 · published 2026-11-26 🆕
+When Docker Sandboxes (`sbx`) restarted a sandbox or swapped its kit, it looked up saved mount paths again. Anyone who could write to a shared workspace could replace a parent folder with a symlink and point another sandbox's mount at a different host directory, which that sandbox could then read and, on read-write mounts, change (CVSS 4.0 5.3). Kit-change replay arrived in 0.35.0 and restart replay in 0.45.0. Since **0.54.0** (2026-11-16), a sandbox won't start if a saved mount now resolves somewhere else; remove the mount with `sbx umount` and mount the intended folder again. 0.54.0 also stops crafted host or user names in the generated SSH config from running shell commands (rerun `sbx setup ssh`), and moves clone-mode Git fetches off an unauthenticated localhost TCP port. The current release is 0.54.1 (2026-11-24).
+**Why it matters:** If several coding agents share a writable workspace on one machine, one prompt-injected agent could reach another sandbox's host mounts. Upgrade `sbx`, and don't let sandboxes share writable folders that are the parents of other sandboxes' mounts.
+Source: [NVD CVE-2026-126139](https://nvd.nist.gov/vuln/detail/CVE-2026-126139) · [Docker Sandboxes release notes](https://docs.docker.com/ai/sandboxes/release-notes/) · Added: 2026-11-28
+
 ### Vercel Workflow SDK 5.8: speculative execution may re-run steps · 2026-11-24 → 11-25 🆕
 `workflow@5.8.0` runs on a new engine. Vercel reports p75 step-to-step overhead down from 85 ms to 7 ms against 5.2.0, and a five-turn streaming agent loop adding 0.9 s of overhead instead of 3.0 s *(self-reported)*. Much of the speed comes from **speculatively executing retryable steps**. New runs use the new engine by default, and runs already in flight stay on their old version.
 **Why it matters:** A step that isn't idempotent (sending an email, charging a card, a non-idempotent tool call) can now run more than once. Before upgrading, pass `getStepMetadata().stepId` as the idempotency key on side-effecting calls, or set `maxRetries = 0` on steps that must run at most once.
@@ -102,12 +107,12 @@ Measured on Bedrock AgentCore: agents waited a median 2.7 s per model reply and 
 **Why it matters:** Close sessions explicitly when a conversation ends, and size quotas by concurrent conversations. More in [Research](../../learn/research/README.md).
 Source: [arXiv 2611.26480](https://arxiv.org/abs/2611.26480) · Added: 2026-11-21
 
-### Daytona macOS Sandboxes · 2026-11-17 🆕
+### Daytona macOS Sandboxes · 2026-11-17
 Full macOS VMs on dedicated Apple silicon reserved for your organization. The base image ships macOS 26.6.2 with Xcode 26.6 and the iPhone simulator. Create one with `daytona sandbox create-macos --region macos-1 --image base-macos` or from the SDK; SSH uses short-lived tokens scoped to one sandbox, and computer-use (screenshots, input, accessibility tree) and filesystem snapshots are supported. Pricing and preview/GA status aren't stated.
 **Why it matters:** Agents that build iOS/macOS apps or drive macOS GUIs get a managed sandbox instead of a Mac farm.
 Source: [Daytona: macOS Sandboxes](https://www.daytona.io/dotfiles/macos-sandboxes) · Added: 2026-11-20
 
-### Vercel eve 1.0 GA + Sandbox Python SDK 1.0 · 2026-11-16 → 11-17 🆕
+### Vercel eve 1.0 GA + Sandbox Python SDK 1.0 · 2026-11-16 → 11-17
 **eve** is Vercel's open-source TypeScript agent framework: durable workflows that resume after a crash, approvals answerable in Slack, and Vercel Sandbox for code execution. It needs Node.js 24+ (`npx eve@latest init my-agent`); stable APIs follow semver. Vercel puts a 50-turn session on Vercel Workflows at 1.3¢ *(self-reported)*. Separately, **`vercel-sandbox` 1.0** for Python stabilises the API to match the TS SDK (context-manager cleanup, async on AnyIO, sync calls); **breaking:** command input and output are now bytes.
 **Why it matters:** A durable agent runtime and a stable Python sandbox client from one vendor. Python users upgrading from 0.x must handle bytes I/O.
 Sources: [Vercel: eve is GA](https://vercel.com/blog/eve-is-now-generally-available) · [Vercel changelog: Sandbox Python SDK 1.0](https://vercel.com/changelog/vercel-sandbox-python-sdk-1-0-is-now-available) · Added: 2026-11-20

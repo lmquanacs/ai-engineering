@@ -72,7 +72,7 @@ Source: [HF blog: harness adapters](https://huggingface.co/blog/harness-adapters
 **Why it matters:** Existing QLoRA and async GRPO jobs get faster when you upgrade, and local video and image fine-tuning gets cheaper.
 Source: [Unsloth changelog](https://unsloth.ai/docs/new/changelog) · [PyPI](https://pypi.org/project/unsloth/) · Added: 2026-11-21 · Updated: 2026-11-25
 
-### TRL 1.18.0 → 1.18.2: async GRPO goes stable · 2026-11-13 → 11-19 🆕
+### TRL 1.18.0 → 1.18.2: async GRPO goes stable · 2026-11-13 → 11-19
 - **1.18.0:** `AsyncGRPOTrainer` moves from `trl.experimental` to top-level `trl`. Breaking: `weight_transfer` and `rollout_worker` are removed and `max_inflight_tasks` is renamed `max_concurrent_rollouts`. MoE models saved by `SFTTrainer` from v1.7.0 to v1.17.1 keep `output_router_logits=True` in their config and need it reset by hand.
 - **1.18.1** (2026-11-17): accuracy rewards are graded in a separate process, so a pathological answer can't hang training; follows the Transformers 5.23 rename of gradient checkpointing to activation checkpointing.
 - **1.18.2** (2026-11-19): `BEMACallback` works with frozen parameters.

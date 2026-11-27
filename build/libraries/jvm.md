@@ -1,19 +1,24 @@
 # Libraries · ☕ JVM (Java / Kotlin / Spring Boot)
 
-← [Back to Libraries](README.md) · _Last updated: 2026-11-21_
+← [Back to Libraries](README.md) · _Last updated: 2026-11-28_
 
 | Library | Latest confirmed | What it is | Pick it when |
 |---|---|---|---|
 | [**Spring AI**](https://github.com/spring-projects/spring-ai) | **2.1.0 (2026-11-19; announced 11-20)**; 2.0.3 for 2.0.x | Spring-native LLM framework: ChatClient, advisors, tool calling, RAG, memory, observability, MCP client/server. **2.0 requires Spring Boot 4; 2.1 is built on Boot 4.2.** | Any Spring Boot service adding AI |
 | [**Embabel**](https://github.com/embabel/embabel-agent) | 1.5.4 (2026-10-28) | Goal-oriented agent framework by Rod Johnson (creator of Spring). Uses **GOAP planning** (A* search) over typed Java/Kotlin domain objects and runs on top of Spring AI. | Multistep agents where you want deterministic, type-safe, replannable flows |
 | [**Koog**](https://github.com/JetBrains/koog) | 1.3.0 (2026-09-23) | JetBrains' Kotlin agent framework with a type-safe DSL. Kotlin Multiplatform (JVM, Android, iOS, JS, Wasm), A2A support, persistence, plus a Java builder API. | Kotlin-first teams, or agents that must run on mobile and server alike |
-| [**LangChain4j**](https://github.com/langchain4j/langchain4j) | 1.24.0 (2026-11-18) | Framework-agnostic Java LLM library with integrations for Spring Boot, Quarkus and Micronaut, plus a `langchain4j-agentic` module | Non-Spring stacks (Quarkus/Micronaut) or the widest provider coverage |
+| [**LangChain4j**](https://github.com/langchain4j/langchain4j) | 1.24.1 / 1.24.1-beta34 (2026-11-26); the Tika parser now caps extracted text, see below | Framework-agnostic Java LLM library with integrations for Spring Boot, Quarkus and Micronaut, plus a `langchain4j-agentic` module | Non-Spring stacks (Quarkus/Micronaut) or the widest provider coverage |
 | [**MCP Java SDK**](https://java.sdk.modelcontextprotocol.io/latest/) (`io.modelcontextprotocol.sdk:mcp`) | 2.2.0 (2026-11-13) | Official MCP SDK for Java; one module implements both the stateless 2026-07-28 spec ("modern") and 2025-11-25 and earlier ("legacy") | Plain-Java MCP servers/clients; Spring AI builds its MCP support on it |
 | [**LangGraph4j**](https://github.com/bsorrentino/langgraph4j) | — | Stateful multi-agent graphs inspired by LangGraph; works with LangChain4j and Spring AI, has a Studio UI | Explicit graph control flow on the JVM |
 | [**Google ADK (Java)**](https://github.com/google/adk-java) | — | Google's code-first Agent Development Kit with A2A; Gemini-native, other models via LangChain4j | Gemini/Google Cloud shops |
 | **Quarkus LangChain4j** | — | Red Hat/IBM-maintained Quarkus extension; GraalVM native, Dev UI | Quarkus services |
 
 ## 🆕 Notable changes
+
+### LangChain4j 1.24.1: Apache Tika parser stops at 10,000,000 characters · 2026-11-26 🆕
+The GitHub release has no notes, but the published sources show the change. In `langchain4j-document-parser-apache-tika` 1.24.1-beta34, `ApacheTikaDocumentParser`'s default content handler extracts at most 10,000,000 characters. Previously it had no limit. A longer document now makes `parse()` throw a `RuntimeException` caused by Tika's `WriteLimitReachedException`, where it used to return a `Document`. The parser gains a `builder()` with `maxCharacters` (`-1` restores unlimited extraction). `DEFAULT_CONTENT_HANDLER_SUPPLIER` and the two four-argument constructors are deprecated in favour of the builder. The Javadoc also warns that the cap limits text but not Tika's memory use. For untrusted files, it recommends running Tika's `ForkParser` in a separate process with its own heap limit.
+**Why it matters:** RAG ingestion of very large documents can start failing after the upgrade, so set `maxCharacters` explicitly. The change matches the 10M default cap that Spring AI 2.1 added. Separately, the Elasticsearch and OpenSearch modules still pull `parsson` versions below 1.1.8, so keep any dependency override you already have.
+Source: [LangChain4j 1.24.1 release](https://github.com/langchain4j/langchain4j/releases/tag/1.24.1) · [`ApacheTikaDocumentParser` Javadoc](https://docs.langchain4j.dev/apidocs/dev/langchain4j/data/document/parser/apache/tika/ApacheTikaDocumentParser.html) · sources jar 1.24.1-beta34 on [Maven Central](https://repo1.maven.org/maven2/dev/langchain4j/langchain4j-document-parser-apache-tika/) · Added: 2026-11-28
 
 ### Spring AI 2.1.0 and 2.0.3: Session API, tool approval, 13 CVE fixes · 2026-11-20 🆕
 Spring AI 2.1 is built on Spring Boot 4.2, so upgrade the two together. It adds a Session API (event-log memory with turn-aware compaction) that replaces ChatMemory (now deprecated, removal planned for 3.0), tools marked `requiresConfirmation = true` that pause for human approval, per-turn tool-call limits (defaults 40 per tool and 150 in total, under `spring.ai.tools.limits.*`), a typed `DecisionModel` API, OpenAI Responses API support, `VectorStore.upsert()`, and client and server support for MCP 2026-07-28. It fixes 13 CVEs, one Critical (cross-user disclosure in the Redis semantic cache); 2.0.3 carries the same fixes for 2.0.x.
@@ -49,4 +54,4 @@ Kotlin-first / multiplatform ──► Koog
 Quarkus / Micronaut ──► LangChain4j (+ LangGraph4j for graphs)
 ```
 
-Version numbers confirmed on 2026-11-19 at [Maven Central](https://repo1.maven.org/maven2/) (artifact publish dates).
+Version numbers confirmed on 2026-11-28 at [Maven Central](https://repo1.maven.org/maven2/) (artifact publish dates).

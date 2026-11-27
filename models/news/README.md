@@ -1,6 +1,6 @@
 # LLM news: models, trends, techniques
 
-_Last updated: 2026-11-26 · This page keeps about 30 days; older items move to [archive/](archive/)_
+_Last updated: 2026-11-28 · This page keeps about 30 days; older items move to [archive/](archive/)_
 
 > Only what changes a builder's decision. Every model row carries its **API ID** and a primary source. Benchmark numbers are vendor claims unless marked otherwise.
 
@@ -11,6 +11,7 @@ _Last updated: 2026-11-26 · This page keeps about 30 days; older items move to 
 | **2026-11-30** | Claude Sonnet 4.5 retirement | Move pinned `claude-sonnet-4-5*` IDs to `claude-sonnet-5-5` or `claude-haiku-5-5` and re-run your evals. On Amazon Bedrock the model stays available until **2027-04-08** ([AWS](../../platforms/aws/README.md)). ([release notes](https://platform.claude.com/docs/en/release-notes/overview)) |
 | **2026-11-30** | Claude Opus 4.8 fast mode removed | Requests to `claude-opus-4-8` with `speed: "fast"` will error; use Claude Opus 5.5 for fast mode. ([release notes](https://platform.claude.com/docs/en/release-notes/overview)) |
 | **2026-11-30** | OpenAI shuts down `/v1/prompts` (reusable prompt objects), the Evals dashboard/API/graders and Agent Builder (announced 2026-06-03) | Move prompt content into your code, evals to another tool (OpenAI suggests Promptfoo), and Agent Builder flows to the Agents SDK or ChatKit. ([OpenAI deprecations](https://developers.openai.com/api/docs/deprecations)) |
+| **2026-12-01** | Gemini 4 Carbon (`gemini-4-carbon`) and Gemini 4 Argon (`gemini-4-argon`) introductory pricing ends: $2/$10 → $4/$20 per 1M in/out | Re-budget December, or evaluate `gemini-4-neon` ($3/$15) for agentic coding before the switch. Full details are in [Inference & cost](../cost-and-serving/README.md). ([Google pricing](https://aistudio.google.com/docs/pricing)) |
 | **2026-12-01** | OpenAI shuts down `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-1.5-2025-12-16` and `chatgpt-image-latest` | Move to `gpt-image-2.6-sunburst` or `gpt-image-2.6-flare`. ([OpenAI deprecations](https://developers.openai.com/api/docs/deprecations)) |
 | **2026-12-11** | OpenAI shuts down `gpt-5`, `gpt-5-mini`, `gpt-5-nano`, `gpt-5-pro`, `o3` and `o3-pro` (and their dated snapshots) | Replacements per OpenAI: `gpt-5`/`o3` → `gpt-6.1-sol`; `gpt-5-mini` → `gpt-6.1-terra`; `gpt-5-nano` → `gpt-6-luna`; `gpt-5-pro`/`o3-pro` → `gpt-6.1-sol` with `reasoning.mode: pro` (Responses API). Fine-tuned models on these bases go too. ([OpenAI deprecations](https://developers.openai.com/api/docs/deprecations)) |
 | **2027-01-06** | OpenAI shuts down `tts-1`, `tts-1-hd` and `gpt-4o-mini-tts*`; self-serve fine-tuning job creation ends | Move speech to `gpt-realtime-2.1-mini`; inference on existing fine-tunes continues until the base model is retired. ([OpenAI deprecations](https://developers.openai.com/api/docs/deprecations)) |

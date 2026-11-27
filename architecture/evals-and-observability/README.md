@@ -1,12 +1,12 @@
 # Evals & observability
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > You can't improve an agent you can't see. This page covers tracing, evals, benchmarks and the standards underneath them.
 
 ## 📏 The standard: OpenTelemetry GenAI semantic conventions
 
-Vendor-neutral `gen_ai.*` span attributes for model calls, token usage, agent steps and tool executions. The conventions now live in their own repository and are **still in development**: no `gen_ai.*` attribute carries a Stable badge yet, so expect renames.
+Vendor-neutral `gen_ai.*` span attributes for model calls, token usage, agent steps and tool executions. The conventions now live in their own repository, with a first standalone release, [v0.1.0](#-recent-releases--results) (tagged 2026-11-21, many renames). They are **still in development**: no `gen_ai.*` attribute carries a Stable badge yet, so expect more renames.
 **Do this:** Emit OTel from day one. Spring Boot 4.1 reads the standard `OTEL_*` environment variables, and Pydantic AI and Langfuse are OTel-native, so you can switch backends later.
 Sources: [Last9 overview](https://last9.io/blog/best-ai-observability-tools-2026) · [Rework guide](https://resources.rework.com/tools/ai-data-infra/best-llm-observability-tools-2026) · Added: 2026-11-18
 
@@ -38,6 +38,25 @@ Comparison sources: [benchlm.ai](https://www.benchlm.ai/blog/posts/best-llm-obse
 SWE-bench scores also carry test noise: a 2026-11-24 study flags 23% of Verified and 35% of Pro tasks as having overspecified tests → [Research](../../learn/research/README.md).
 
 ## 📰 Recent releases & results
+
+### OTel GenAI semantic conventions v0.1.0: first standalone release, many renames · tagged 2026-11-21 🆕
+This is the first release from the new `semantic-conventions-genai` repository, and it depends on core semantic conventions v1.45.0. Breaking changes include:
+- `gen_ai.client.token.usage` is replaced by per-operation input and output token histograms.
+- `gen_ai.client.operation.duration` is split into separate inference, embeddings, agent and tool duration metrics.
+- `gen_ai.usage.cache_creation.input_tokens` becomes `cache_write`.
+- Workflow spans fold into `invoke_agent`, and `gen_ai.workflow.name` becomes `gen_ai.agent.name`.
+- Retrieval uses `gen_ai.retrieval.top_k`.
+- The provider value `mistral_ai` becomes `mistral`.
+- Structured values are required where the old JSON-string fallback was allowed.
+
+New additions include memory-operation spans, a `gen_ai.conversation.compacted` attribute, `gen_ai.request.reasoning.level`, prompt version and variables, and A2A protocol conventions. The conventions are still not marked stable.
+**Why it matters:** dashboards, alerts and cost queries keyed on the old token-usage metric or the old cache-token attribute will break when your instrumentation libraries adopt this release. Map the renames before you upgrade OpenTelemetry instrumentation or your backend's GenAI views.
+Source: [CHANGELOG v0.1.0](https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/v0.1.0/CHANGELOG.md) · Added: 2026-11-28
+
+### Langfuse AI Gateway guardrails; numeric metadata filters · 2026-11-26 → 11-27 🆕
+The Langfuse AI Gateway can now block, redact or log PII, secrets, prompt injection and custom patterns in requests and responses. It can also call an existing Amazon Bedrock guardrail. Rules can apply to the whole organization or to specific users and API keys. Redaction happens before full trace capture, so redacted text never reaches the stored trace. Separately, on Langfuse v4 you can filter observations by numeric metadata (for example `metadata.latency_ms:>200`) in the table, dashboards, alerts, the v2 observations API and the MCP server.
+**Why it matters:** if you already route traffic through the Langfuse gateway, redacting there keeps secrets and PII out of both the provider and your trace store. → [AI security](../security/README.md)
+Source: [Langfuse: AI Gateway guardrails](https://langfuse.com/changelog/2026-11-27-ai-gateway-guardrails) · [Numeric metadata filters](https://langfuse.com/changelog/2026-11-26-numeric-metadata-filters) · Added: 2026-11-28
 
 ### Run 20% of your agent benchmark, chosen without running the agent · arXiv 2611.34617 · 2026-11-25 🆕
 A study of 14 black-box test-selection strategies across ten agent benchmarks. For estimating success rate, classic regression-testing methods worked best: for GPT 5.2 Codex on SWE-bench Verified, Category Partition picked 100 of 500 tasks, cut cost from $225 to $47 and estimated the success rate within 0.8 points. For finding failures early, LLM-as-judge selection worked best: 53.0% of its picked tasks exposed a failure, against 27.4% for random picks. No strategy won both goals.
@@ -89,7 +108,7 @@ From real developer–agent sessions (SWE-chat), the authors catalogue eleven ki
 **Why it matters:** Grade agents and hand off between them on artifacts (tests, diffs, tool logs), not on the agent's summary.
 Source: [arXiv 2611.25760](https://arxiv.org/abs/2611.25760) · Added: 2026-11-21
 
-### Langfuse: read audit logs, IAM role for Bedrock, gateway budgets, new trace view · 2026-11-17 → 11-20 🆕
+### Langfuse: read audit logs, IAM role for Bedrock, gateway budgets, new trace view · 2026-11-17 → 11-20
 Reads of traces, observations, scores, sessions and experiments are now audit-logged (11-17). Enterprise users can connect Bedrock with an IAM role instead of stored keys (11-18). The AI Gateway adds spend budgets per key, user and organization (11-19). The trace view was redesigned for reading and navigating large agent traces (11-20).
 **Why it matters:** Trace data often holds prompts and customer data; read auditing and keyless AWS access help pass security review.
 Source: [Langfuse changelog](https://langfuse.com/changelog) · Added: 2026-11-20

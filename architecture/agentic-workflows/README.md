@@ -1,6 +1,6 @@
 # Agentic workflows: patterns and breakthroughs
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > How to structure agent systems, and what the evidence says actually works. Patterns are stable; the "latest evidence" section changes fastest.
 
@@ -23,6 +23,11 @@ Production guardrails that apply to every pattern: an iteration cap, deadlock de
 ---
 
 ## 🔬 Latest evidence: what actually moves the needle
+
+### Parallel subagents for coding: +1–5 points at up to 3.8× the cost · arXiv 2611.33893 · 2026-11-25 🆕
+The study compares one coding agent with a main agent that delegates to parallel subagents, on whole-repository builds from NL2Repo and ProgramBench, at equal time and equal cost. On randomly drawn tasks, subagents raised hidden-test pass rates by only about 1–5 points at up to 3.8× the cost. The bigger gains on hard tasks came from three things a single agent can often get more cheaply. With GPT-5.6 Sol, one sentence telling a single agent to probe the reference program first recovered most of the gain at a fraction of the cost. A single agent that periodically restarted with an empty conversation progressed faster early on than one that kept resuming. Multi-agent runs did produce more modular code. A smaller replication with Opus 5.5 on Claude Code showed similar patterns *(self-reported)*. Code and data: `cogito233/subagent-study`.
+**Why it matters:** this agrees with the Vals AI agent-teams result below. Before turning on parallel subagents, try an explicit self-check instruction and periodic fresh sessions with a hand-off note. Keep subagents for tasks where a single agent stops checking too early or stalls in one long session.
+Source: [arXiv 2611.33893](https://arxiv.org/abs/2611.33893) · Added: 2026-11-28
 
 ### Delegate recurring subtasks, guided by your own traces · Partial routing · arXiv 2611.33402 · 2026-11-24 🆕
 Instead of routing a whole task to one model, a frontier "lead" model hands suitable subtasks to a cheaper worker during the run. The guidance comes from both models' past runs: find the subtasks that recur, measure each model's quality and cost on them, and tell the lead which ones to delegate (a parameter δ sets how much). Neither model is trained. At δ = 0.75 the lead's ViBench score rose from 70.2 to 78.5 at 19% lower cost, and its Terminal-Bench 4.0 pass rate from 54% to 61% at similar cost. Giving the lead only the subtask breakdown, with no worker, also cut cost *(self-reported)*.
@@ -59,7 +64,7 @@ The authors optimise the system prompt, tool schemas, skill library and planning
 **Why it matters:** If you can't fine-tune, optimising prompts and tool schemas inside your own harness is the cheap way to get most of the gain.
 Source: [arXiv 2611.25380](https://arxiv.org/abs/2611.25380) · Added: 2026-11-21
 
-### Agent teams cost 1.8–5.1× more for little gain · Vals AI, 2026-10-09 🆕
+### Agent teams cost 1.8–5.1× more for little gain · Vals AI, 2026-10-09
 On Vibe Code Bench (50 full-stack apps), Vals compared one agent against a lead with up to five subagents, using GPT 6 Sol and Claude Opus 5.5 at medium and max effort. Teams cost 1.8–5.1× as much; the only statistically significant team gain was Sol at medium effort (+7.3 points), while simply raising a single Sol agent to max effort gave +11.4 *(self-run, one run per setup)*.
 **Takeaway:** Try more effort on one agent before adding subagents.
 Source: [Vals AI: Do agent teams pay off?](https://www.vals.ai/blog/multi-agent-vibe-code-bench) · Added: 2026-11-20

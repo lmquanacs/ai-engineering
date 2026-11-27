@@ -1,6 +1,6 @@
 # RAG & retrieval
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Getting the right facts from your own data into the model: chunking, search, reranking and the models and databases behind them. For what happens to context once it's in the window, see [Context engineering & memory](../context-and-memory/README.md).
 
@@ -26,6 +26,16 @@ _Last updated: 2026-11-27_
 
 <!-- newest first: retrieval patterns with evidence, vector DB releases, RAG eval methods -->
 
+### weaviate-client 4.25.0: Weaviate 1.41 support, with breaking removals · 2026-11-26 🆕
+The Python client release for Weaviate 1.41 adds `rescore_factor` for PQ, BQ, SQ and RQ quantizers (and `rescore_limit` for PQ), rerankers that score objects by the probability they satisfy the query (`Configure.Reranker.typesafeai()` and `.openai()`), expiring DB users, and a previewable replica scale plan. It also breaks things. It drops Python 3.10 and servers older than 1.32 (connecting raises `WeaviateStartUpError` even with `skip_init_checks=True`). The legacy GraphQL aggregation path and the `weaviate.gql` module are gone, so aggregations always use gRPC. The deprecated PaLM vectorizer helpers are removed too.
+**Why it matters:** pin `weaviate-client<4.25` if you still run Python 3.10 or a pre-1.32 server, and search your code for `weaviate.gql` and `palm(` before upgrading. The Weaviate 1.41 server itself still has no published highlights, and the docs table lists no client versions for it yet.
+Source: [weaviate-client changelog](https://weaviate-python-client.readthedocs.io/en/latest/changelog.html) · [PyPI](https://pypi.org/project/weaviate-client/4.25.0/) · Added: 2026-11-28
+
+### Train a small model to write chunk context prefixes · ConTra · arXiv 2611.34366 · 2026-11-25 🆕
+Contextual retrieval adds a short "where this chunk comes from" prefix to each chunk before indexing. ConTra trains a small prefix writer with reinforcement learning, rewarded by frozen embedding and reranking models plus fact and length checks. The authors report that ConTra-2B beat a prompted 9B model using Anthropic's contextual-retrieval method, and the PPLX-4B contextual encoder, by up to 3.15 points on ConTEB and their new RealContextBench. It also indexed short documents 7.74× and 2.15× as fast, and was less thrown by distracting text than a prompted 2B model *(self-reported)*. Code, data and models: `SStan1/ConTra`.
+**Why it matters:** prefixes help both vector search and text rerankers, which vector-only context encoders don't. A small trained prefix writer could make contextual retrieval cheap enough to re-index often. Compare it with your current prompted prefixes on your own queries.
+Source: [arXiv 2611.34366](https://arxiv.org/abs/2611.34366) · Added: 2026-11-28
+
 ### Cheap cacheable scorers in front of your reranker · arXiv 2611.33844 🆕
 The paper composes rerankers of different kinds (lexical, single-vector, late-interaction, cross-encoder) without training them together. Putting two lightweight scorers with cacheable passage representations in front of a CrossEncoder or Provence raised answer accuracy on NoLiMa 32K with Gemma by 4.02–9.43 points and made online pruning 1.57–1.88× faster. Fusing one with ColBERTv2 via reciprocal rank fusion gave +4.60 points at 1.36× speed. The gains depended on the reader and the pairing, and a cascade could beat its final reranker yet lose to its coarse first stage alone *(self-reported)*.
 **Why it matters:** a two-stage rerank can be both faster and more accurate, but only measure it with stage-removal ablations: test each stage alone as well as the full cascade.
@@ -41,12 +51,12 @@ A training-free method for deep-search agents: at each step a fast "System One" 
 **Why it matters:** If your agent calls search many times, a cheap per-step rerank that also sees the original question can cut both steps and cost; a full cross-encoder at every step is often too slow.
 Source: [arXiv 2611.32917](https://arxiv.org/abs/2611.32917) · Added: 2026-11-26
 
-### OpenSearch 3.10: per-query hybrid fusion, template-based agentic search · 2026-11-17 🆕
+### OpenSearch 3.10: per-query hybrid fusion, template-based agentic search · 2026-11-17
 The `hybrid` query gains a fusion mode: normalisation and combination are set in the query body instead of a search pipeline, fused hybrid queries can nest inside `bool` or `dis_max`, and a `weights` parameter sets subquery weights per request (min-max, z-score, L2 and RRF remain). `half_float` vectors add 2-bit and 4-bit scalar quantisation. Experimental: search templates for agentic search, where the LLM fills in a registered template rather than writing the whole query, and an Intel SVS engine that OpenSearch reports at 2.6× Faiss HNSW-fp16 throughput at 0.95 recall *(self-reported)*.
 **Why it matters:** Hybrid weights become a per-request knob you can tune and A/B, and template-based agentic search bounds what an LLM-written query can do.
 Source: [OpenSearch blog: Explore OpenSearch 3.10](https://opensearch.org/blog/explore-opensearch-3-10/) · Added: 2026-11-20
 
-Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01) and now has `pg19` images. **Weaviate 1.41.0:** a `1.41.0` image (also tagged `latest`) appeared on Docker Hub on 2026-11-23, and as of 2026-11-26 the [docs' release table](https://docs.weaviate.io/weaviate/release-notes) lists v1.41.0 (2026-11-23) as the latest release, but with no highlights and no matching client library versions yet, so wait for the release notes before upgrading. The RC lists namespaces with RF=3, a lower-memory HNSW node format, semi-automatic shard rebalancing (preview) and reranking with decision models.
+Also checked (no notes worth an entry): Qdrant 1.20.1/1.20.2 patch images, Weaviate 1.40.6, Milvus v3.0.5 (2026-10-30); pgvector 0.8.7 is still the latest (2026-10-01) and now has `pg19` images. **Milvus v3.0.7:** images appeared on Docker Hub on 2026-11-27, but the [release notes](https://milvus.io/docs/release_notes.md) still stop at v3.0.5, so wait for them. **Weaviate 1.41.0:** a `1.41.0` image (also tagged `latest`) appeared on Docker Hub on 2026-11-23. As of 2026-11-28 the [docs' release table](https://docs.weaviate.io/weaviate/release-notes) lists v1.41.0 (2026-11-23) as the latest release, still with no highlights, so wait for the release notes before upgrading the server. The Python client for it is out (entry above). The RC lists namespaces with RF=3, a lower-memory HNSW node format, semi-automatic shard rebalancing (preview) and reranking with decision models.
 
 **On AWS:** Amazon Textract Insights (GA 2026-11-20) extracts schema-defined fields from mixed document packets with a confidence score and page/bounding-box grounding per value. → [AWS](../../platforms/aws/README.md)
 

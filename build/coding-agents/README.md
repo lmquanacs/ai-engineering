@@ -1,6 +1,6 @@
 # Coding agents & IDEs
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > Release notes that change how you work in Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Devin and Kiro. Only items worth acting on are included.
 
@@ -22,7 +22,9 @@ _Last updated: 2026-11-27_
 | when enabled | Devin Access and Sharing: Slack-started sessions take instructions only from people they're shared with | Agree group sharing defaults before your Cognition rep turns it on |
 | now | Cursor CLI < v2026.11.17: team-dashboard prompt hooks never ran in the CLI, and MCP resource downloads skipped file-write rules | Update the CLI; re-check any guardrail you set as a dashboard prompt hook |
 | now | Claude Code 2.1.331 (VS Code): wrappers, hooks or MCP servers that run VS Code as Node must set `ELECTRON_RUN_AS_NODE=1` | Add the variable to those scripts |
-| now | Antigravity CLI 1.5.16 / App 2.35.0: Auto mode now writes files outside the workspace inside any Git/Jujutsu/Mercurial repo, and reads outside the project, without asking | Add `ask` or `deny` rules for sibling repos and paths it shouldn't touch |
+| now | Antigravity CLI 1.5.16 / App 2.35.0–2.36.0: Auto mode now reads outside the project and (App 2.36.0 too) writes files in other version-controlled repos without asking | Add `ask` or `deny` rules for sibling repos and paths it shouldn't touch |
+| now | Antigravity App < 2.36.0: allowing non-project file access under legacy permissions could bypass protection of sensitive config files | Update the App to 2.36.0 |
+| now | Copilot CLI < 1.0.117: approving an MCP server's tools could also approve built-in requests (shell, memory) when the server's name matched a built-in permission type | Update to 1.0.117 |
 | now | Copilot CLI 1.0.115: `--available-tools=` with an empty value now gives the model no tools (before: all tools) | Check scripts that pass an empty or computed `--available-tools` |
 | now | Codex CLI 0.172.0: optional stdio MCP servers with cached tool lists start on first tool call | If a job expects a server to be up at session start, mark it required |
 | now | Claude Code 2.1.332 on Microsoft Foundry: the default model is now Sonnet 5.5, and `sonnet`/`opus` mean Sonnet 5.5/Opus 5.5 there and on Google Cloud's Agent Platform | Deploy `claude-sonnet-5-5` on Foundry or set `ANTHROPIC_DEFAULT_SONNET_MODEL`; on Agent Platform set `VERTEX_REGION_CLAUDE_5_5_SONNET` if you pinned a region for the 4.5 variable |
@@ -33,9 +35,20 @@ _Last updated: 2026-11-27_
 | now | Kiro Enterprise: GPT 6.2 Astra (preview) costs 7.2× credits, 14.4× over 272K tokens | Set `credit_pool.usage_limit` before you enable it ([AWS › Kiro](../../platforms/aws/README.md)) |
 | **2026-12-14** | Copilot retires Claude Fable 5, Claude Haiku 4.5, Gemini 3.8 Flash, Gemini 4 Argon, Grok 4.6 and Kimi K3 | Move to Fable 5.2, Haiku 5.5, Gemini 4 Hydrogen, Gemini 4 Carbon and Grok 4.7 (no Kimi replacement announced yet) |
 | **2026-12-18** | Copilot retires MAI-Code-1.1-Flash | Switch to the latest MAI Code Flash model (MAI-Code-2-Flash is in the Copilot CLI picker from 1.0.115) |
+| by **2026-12-30** | Copilot code review (Business/Enterprise): if no billing choice is saved, licensed members' reviews are billed to the organization that owns the repo | Select **Member** before then to keep using members' Copilot entitlements |
 | **Feb 2027** | Copilot in VS Code: the Local harness is removed | Move remaining workflows to the Copilot harness (already the default for new sessions) |
 
 ## 🗞️ Latest releases
+
+### Copilot CLI 1.0.116 → 1.0.117 + code review billing change · 2026-11-25 → 11-27 🆕
+**1.0.117** (11-27): approving an MCP server's tools for a session or location no longer also approves Copilot's built-in requests (such as shell commands or memory stores) when the server's name matches a built-in permission type. New `sandbox.userPolicy.network.extraCaCertificates` (user or managed settings) lets sandboxed commands trust a TLS-intercepting proxy's CA; custom agents can opt in to tools explicitly, and subagents respect their agent file's tool list. Starting in autopilot now asks before launching each extension. **1.0.116** (11-25) adds an `env` setting that sets variables for every process Copilot starts (shell, LSP and MCP servers, hooks, extensions) and warns when a plugin and a standalone MCP server hit the same endpoint. Separately, from **2026-12-30** Copilot code review for licensed members is billed to the repo's organization unless an admin has chosen **Member** (Business and Enterprise).
+**Why it matters:** an MCP server named like a built-in permission type could ride on one approval to get shell access; update. Org admins should make an explicit code review billing choice before 30 Dec.
+Source: [Copilot CLI changelog](https://raw.githubusercontent.com/github/copilot-cli/main/changelog.md) · [GitHub changelog: code review billing](https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization) · Added: 2026-11-28
+
+### Antigravity App 2.36.0: Auto mode edits other repos, permission-bypass fix · 2026-11-27 🆕
+The App catches up with CLI 1.5.16: Auto mode approves "safe" file edits in other version-controlled repositories and non-replacing file additions outside the project without asking, and skills in `~/.agents/skills` are discovered (`~/.gemini` wins on name clashes). It fixes legacy-permission non-project file access bypassing the protection of sensitive config files, and long turns failing when an OAuth token expires mid-session; MCP sign-in now asks for offline access so supporting servers issue refresh tokens. Also a floating composer in maximized panels and voice-call context carried into local conversations.
+**Why it matters:** update for the config-file protection fix, and add `ask`/`deny` rules if Auto mode shouldn't touch sibling repos.
+Source: [Antigravity changelog](https://antigravity.google/docs/changelog) · Added: 2026-11-28
 
 ### Claude Code 2.1.332: skills from MCP servers, a hook for skill shell commands, new cloud defaults · 2026-11-24 🆕
 Claude Code can now load skills that MCP servers serve (beta), shown as `server:skill` in the `/` menu; see [MCP servers](../mcp-servers/README.md#-protocol-news-the-2026-07-28-spec-mcp-goes-stateless) for the approval and admin rules. A new `PreSkillShellCommand` hook event can block the `` !`command` `` lines a skill runs while it loads, which `PreToolUse` never saw (how-to in [Claude Code mastery](../claude-code/README.md#-tip-of-the-day)). Cloud model changes: Foundry's default becomes Sonnet 5.5, `sonnet` on Agent Platform and Foundry means Sonnet 5.5 and Foundry's `opus` Opus 5.5, while `sonnet` on Amazon Bedrock stays at Sonnet 4.5 (Legacy on Bedrock since 2026-10-08, end of life 2027-04-08, so it keeps working after Anthropic's own 30 Nov retirement); `sonnet` on Bedrock Mantle no longer resolves to Haiku 4.5. `computer-use` becomes a reserved skill name on Macs with computer use on. Many freeze fixes (hooks or local MCP servers flooding output, named pipes such as a locked `.env`, long wildcard rules), and SSE MCP servers recover after their stream drops.
@@ -115,7 +128,7 @@ Source: [Antigravity changelog](https://antigravity.google/docs/changelog) · Ad
 **Why it matters:** Policy rules aimed at nested or wrapped commands may now behave differently.
 Source: [Gemini CLI release notes](https://raw.githubusercontent.com/google-gemini/gemini-cli/main/docs/changelogs/latest.md) · Added: 2026-11-21
 
-### Claude Code 2.1.326 → 2.1.329 · 2026-11-16 → 11-19 🆕
+### Claude Code 2.1.326 → 2.1.329 · 2026-11-16 → 11-19
 - **2.1.326:** a large permission and sandbox hardening pass. Sandboxed commands on macOS, Linux and WSL no longer write to some sensitive home folders by default (`sandbox.filesystem.allowWrite` re-allows some); file tools refuse writes to sign-in files such as `.credentials.json`; more Bash and PowerShell commands ask first, some even in bypass mode, and are refused where no one can answer. Self-hosted runners without `gh` get a built-in `gh api` routed via Anthropic (`--use-anthropic-gh false` turns it off). Adds `OTEL_RESOURCE_INCLUDE_HOST`.
 - **2.1.327:** `claude mcp add-json <name> -` reads server JSON from stdin so tokens stay off the command line; `ExitWorktree` asks before removing a worktree that may hold unsaved work; `permissions.blockReadsOutsideWorkingDirectories` covers more Bash commands; project-scope `claude mcp add/remove` no longer deletes other keys in `.mcp.json`. Auto mode now warns that an upcoming release removes the billed classifier fallback.
 - **2.1.328:** auto mode for Claude Opus 4.6 and Sonnet 4.6 on Bedrock, Google Cloud, Microsoft Foundry and the Claude apps gateway. Self-hosted runners turn the built-in `gh api` **off** by default where settings guard GitHub tools by name.

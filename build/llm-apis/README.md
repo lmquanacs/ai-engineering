@@ -1,6 +1,6 @@
 # LLM APIs & structured output
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > The provider API features you write code against: structured outputs, tool calling, streaming, batch and files, and the breaking changes between versions. Model launches live in [LLM news](../../models/news/README.md); prices in [Inference & cost](../../models/cost-and-serving/README.md).
 
@@ -24,6 +24,16 @@ _Last updated: 2026-11-27_
 ## 🗞️ Latest
 
 <!-- newest first: new API features, breaking changes, migration guides -->
+
+### Google: file slicing controls for Gemini 4 (missed earlier) · 2026-11-23 🆕
+With file slicing, a request names the part of an uploaded file the model should load, and only those tokens are billed:
+- **Documents and slides:** `start_page`/`end_page`, a `resolution` (`low`, `medium` or `high`), and `content_layers` (`page_text` or `page_image`).
+- **Spreadsheets:** `sheet_index` and `visible_cells`.
+- **Video and audio:** `start_offset`/`end_offset`.
+
+It works with every Gemini 4 model and with Files API URIs. You can reuse the same URI across turns, and also inside a function result, so an agent can pick its own slices. Without options, documents load as layout-preserving page images. Partners report token savings: 14× for single-page text extraction (Vercel) and 67% on a PDF (LiteLLM) *(self-reported)*.
+**Why it matters:** Skim a large PDF or workbook as text first, then load only the page you need as a high-resolution image, without splitting files yourself. Look up the exact request nesting in the docs before you code against it.
+Source: [Google blog: file slicing controls](https://blog.google/innovation-and-ai/technology/developers-tools/file-slicing-controls/) · Added: 2026-11-28
 
 ### Instructor 1.18.0: strict OpenAI batch schemas, failed batch items returned, unknown tool calls raise · 2026-11-26 🆕
 Published to PyPI on 2026-11-26 (the changelog heading says 2026-09-26). Upgrade notes that change behaviour: completed batch retrieval now returns failed requests as `BatchError` records; OpenAI batch schemas use strict structured outputs, so every named field is required (use nullable fields) and arbitrary-key mappings are rejected; unknown parallel tool calls raise `ResponseParsingError` and go through your retry policy instead of being dropped; incomplete non-streaming OpenAI Responses raise `IncompleteOutputException` and aren't cached; streamed JSON over 1 MiB or 128 levels deep raises `ValueError`. Security: remote-media URLs that use IPv6 transition addresses (NAT64, 6to4, Teredo) to reach private IPv4 are rejected. New and opt-in: `Mode.DECISIONS` for typed choice, predicate and score questions, and optional custom IDs for batch requests.
@@ -55,34 +65,34 @@ Developers report that since about 02:00 UTC on 2026-11-20, requests asking for 
 **Why it matters:** Confidence scoring and judge pipelines that read Gemini logprobs will break; the [Decisions API](../../models/news/README.md#-new-techniques) is Google's probability-returning alternative.
 Source: [Google AI Developers Forum thread](https://discuss.ai.google.dev/t/logprobs-turned-off-without-notice-for-gemini-4-hydrogen-argon-carbon-and-neon/203009) (not a vendor announcement) · Added: 2026-11-21
 
-### OpenAI: GPT-6.2 Responses API changes + background completion windows · 2026-11-17 🆕
+### OpenAI: GPT-6.2 Responses API changes + background completion windows · 2026-11-17
 - **GPT-6.2 migration:** tool calling with `gpt-6.2-astra` / `gpt-6.2-sol` requires the Responses API, reasoning effort `none` is rejected, and the handling of top-level `instructions` and of reasoning after prefix edits changes (caching details → [Context engineering](../../architecture/context-and-memory/README.md#-latest-evidence)).
 - **Background completion windows** (public beta): on `v1/responses`, set `background: true`, `background_options.completion_window` to `"2h"` or `"8h"` and `service_tier: "default"`, without streaming. Collect results from the `response.completed` webhook or by polling. Supported on `gpt-6.2-astra`, `gpt-6.2-sol`, `gpt-6.1-terra` and `gpt-6-luna`. The window is a target, not a guarantee. (Discounts → [Inference & cost](../../models/cost-and-serving/README.md).)
 
 **Why it matters:** Chat Completions tool-calling code won't carry over to GPT-6.2, and background windows are a simpler alternative to the Batch API for evals and backfills.
 Sources: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog) · [Migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6.2-astra#gpt-6.2-astra-migration-quickstart) · [Background mode guide](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows) · Added: 2026-11-20
 
-### Anthropic: linked billing (beta) · 2026-11-17 🆕
+### Anthropic: linked billing (beta) · 2026-11-17
 With beta header `user-profiles-billing-2026-10-01`, a `billing_policy` field on `/v1/messages` and `/v1/chat/completions` decides who pays for a request: your app, or the end customer's own Claude organization. Customers can cap or unlink your app's spend in the Console. Only customers whose organization pays Anthropic directly for API usage can be linked.
 **Why it matters:** B2B apps can pass inference cost through to customers instead of re-billing it.
 Source: [Claude release notes](https://platform.claude.com/docs/en/release-notes/overview) · Added: 2026-11-20
 
-### DeepSeek: built-in web search, URL reading and file input · 2026-11-13 🆕
+### DeepSeek: built-in web search, URL reading and file input · 2026-11-13
 For `deepseek-flash`, in the Messages, Responses and Chat Completions formats: a built-in `deepseek_web_search` tool that answers with citations (also with thinking on), a `deepseek_read_url` tool for links in user messages, and file input that parses PDFs, Office files and images into context. Standalone Search/Fetch, OCR, ASR and TTS APIs shipped at the same time.
 **Why it matters:** DeepSeek now runs search and document handling server-side, like Anthropic and OpenAI. Billing for these changed on 2026-11-18 → [Inference & cost](../../models/cost-and-serving/README.md).
 Sources: [DeepSeek API updates](https://api-docs.deepseek.com/updates) · [Web tools guide](https://api-docs.deepseek.com/guides/web_tools) · Added: 2026-11-20
 
-### Anthropic: thinking-block prefix check now enforced · 2026-11-09 🆕
+### Anthropic: thinking-block prefix check now enforced · 2026-11-09
 If you edit `system`, `tools` or an earlier message and then send back a thinking block from a later turn, the request now returns **400** for all accounts. The `prefix_mismatch_behavior` parameter chooses between the error and having the API drop the failing blocks; the response's `input_transformations` lists what was dropped or let through.
 **Why it matters:** Agent loops that trim or rewrite history while preserving thinking can start failing. Decide which behaviour you want and set it explicitly.
 Source: [Claude docs: preserved thinking, enforcement](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking#enforcement) · Added: 2026-11-20
 
-### Anthropic: computer use moves to `computer_toolset_20260801` · 2026-11-09 🆕
+### Anthropic: computer use moves to `computer_toolset_20260801` · 2026-11-09
 Requests that declare the older `computer_20251124` tool now return 400 on every platform except Amazon Bedrock. The docs include a migration section.
 **Why it matters:** Computer-use integrations stop working until migrated. → [Voice & multimodal](../voice-and-multimodal/README.md)
 Source: [Claude docs: migrate from computer_20251124](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#migrate-from-computer-20251124) · Added: 2026-11-20
 
-Library check (PyPI, 2026-11-27): Instructor 1.18.0 is above; no new releases of Outlines (1.3.3) or BAML (`baml-py` 0.226.3) in the window. No new API-feature entries through 2026-11-25 in the Anthropic, Gemini API, Mistral, xAI or DeepSeek changelogs; OpenAI's 2026-11-24 entries (healthcare model configurations, a `chat-latest` update) are model news → [LLM news](../../models/news/README.md). xAI retired `grok-build-0.1` on 2026-11-19.
+Library check (PyPI, 2026-11-28): Instructor 1.18.0 (above) is still the latest. Outlines (1.3.3) and BAML (`baml-py` 0.226.3) have no new releases. Changelog check (2026-11-28): Anthropic's newest entry is 2026-11-23, OpenAI's 2026-11-24, xAI's 2026-11-19 and DeepSeek's 2026-11-13, so none has API-feature entries after the ones above. OpenAI's 2026-11-24 entries (healthcare model configurations and a `chat-latest` update) are model news → [LLM news](../../models/news/README.md).
 
 ## 📚 Reference
 

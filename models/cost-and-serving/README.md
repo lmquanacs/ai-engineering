@@ -1,6 +1,6 @@
 # Inference, cost & serving
 
-_Last updated: 2026-11-27_
+_Last updated: 2026-11-28_
 
 > What models cost, how to pay less, and how to serve open models yourself. Prices are list prices in USD per 1M tokens unless stated, and they change often, so check the provider's page before you budget.
 
@@ -58,7 +58,7 @@ Source: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog)
 
 ---
 
-### DeepSeek: built-in search and fetch now billed as tokens · 2026-11-18 🆕
+### DeepSeek: built-in search and fetch now billed as tokens · 2026-11-18
 From 2026-11-18 12:00 Beijing time, server-side search and web-fetch calls made during a model call are no longer billed as separate tool calls; their results go into the context and are billed as input tokens. The standalone Search and Fetch APIs still cost $0.75 per 1,000 successful requests. Peak hours (full price) are 01:00–04:00 and 06:00–10:00 UTC on weekdays.
 **Why it matters:** Agents that lean on DeepSeek's built-in search now pay per token of fetched content, so long pages cost more. Re-estimate cost for tool-heavy runs.
 Source: [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing) · Added: 2026-11-20
@@ -70,10 +70,24 @@ Source: [Vertex pricing](https://cloud.google.com/vertex-ai/generative-ai/pricin
 
 ## 🖥️ Self-hosting & serving
 
-### vLLM v0.34.0 · 2026-11-16 🆕
-PyPI shows v0.34.0 uploaded on 2026-11-16. A copy of the release notes lists breaking changes, including removal of Model Runner V1, a larger default KV block size and a new `gpu_memory_utilization` default; we could not open the GitHub release to confirm them.
-**Why it matters:** This looks like an upgrade that changes memory behaviour. Read the GitHub release notes and test on staging before rolling it out.
-Source: [vLLM on PyPI](https://pypi.org/project/vllm/) · [GitHub release v0.34.0](https://github.com/vllm-project/vllm/releases/tag/v0.34.0) · Added: 2026-11-20
+### Inkling 2 Mini on one RTX PRO 6000: vLLM nightly + DSpark speculative decoding · 2026-11-25 (missed earlier) 🆕
+Hugging Face had a coding agent tune serving of Inkling 2 Mini on a single 96 GB RTX PRO 6000 (sm120, a card the published recipes don't target). Single-user decode rose from about 136 to 190.6 tok/s and 8-user throughput from about 570 to 716 tok/s, using vLLM nightly with the bundled DSpark drafter (7 draft tokens, probabilistic draft sampling). Greedy outputs matched the non-speculative run byte for byte *(self-reported)*. vLLM beat SGLang on this card and varied much less between runs. The drafter needs exactly 7 speculative tokens, and greedy draft sampling was 11% slower at temperature 1.0.
+**Why it matters:** It is a working config for a 26B looped MoE on one workstation GPU. Cap the context, because the default 1M-token KV cache plus the drafter does not fit in 96 GB. Lower `--gpu-memory-utilization`, because vLLM v0.34.0 raised its default from 0.92 to 1.0, which leaves no room for the drafter. Pin the image digest, since the setup relies on a nightly build.
+```bash
+vllm serve thinkingmachines/Inkling-2-Mini \
+ --tool-call-parser inkling \
+ --enable-auto-tool-choice \
+ --reasoning-parser inkling \
+ --max-model-len 262144 \
+ --gpu-memory-utilization 0.85 \
+ --speculative-config '{"method":"dspark","num_speculative_tokens":7,"draft_sample_method":"probabilistic"}'
+```
+Source: [Hugging Face blog](https://huggingface.co/blog/inkling-2-mini-inference-hillclimb) · Added: 2026-11-28
+
+### vLLM v0.34.0 · 2026-11-16
+PyPI shows v0.34.0 uploaded on 2026-11-16. A copy of the release notes lists breaking changes, including removal of Model Runner V1, a larger default KV block size and a new `gpu_memory_utilization` default. Hugging Face's Inkling 2 Mini serving write-up (above) confirms one of them: the default `--gpu-memory-utilization` went from 0.92 to 1.0, so the KV cache now takes all free VRAM. We still could not open the GitHub release to confirm the other changes.
+**Why it matters:** This upgrade changes memory behaviour. If you run a drafter, a second process or anything else on the same GPU, set `--gpu-memory-utilization` explicitly before you upgrade. Read the GitHub release notes and test on staging before rolling it out.
+Source: [vLLM on PyPI](https://pypi.org/project/vllm/) · [GitHub release v0.34.0](https://github.com/vllm-project/vllm/releases/tag/v0.34.0) · [Hugging Face blog (default change)](https://huggingface.co/blog/inkling-2-mini-inference-hillclimb) · Added: 2026-11-20 · Updated: 2026-11-28
 
 ### vLLM v0.33.0 · 2026-11-01
 Faster speculative decoding on NVIDIA and AMD, a ROCm decode path, new model support, and a `/v1/decisions` endpoint. **Breaking changes:** official builds are now **CUDA 13.0 only** (no more 12.9 wheels or images) and move to PyTorch 2.14. The LM Format Enforcer structured-output backend is deprecated: opt-in in v0.34, removed in v0.35.
